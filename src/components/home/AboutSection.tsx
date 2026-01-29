@@ -1,64 +1,67 @@
-import { BookOpen, Users, Award, Heart } from "lucide-react";
+import { useScrollAnimation, useMultipleScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 const stats = [
-  { icon: BookOpen, value: "10,000+", label: "Books" },
-  { icon: Users, value: "50,000+", label: "Happy Readers" },
-  { icon: Award, value: "15+", label: "Years Experience" },
-  { icon: Heart, value: "100%", label: "Passion" },
+  { value: "10K+", label: "Books" },
+  { value: "50K+", label: "Readers" },
+  { value: "15+", label: "Years" },
 ];
 
 const AboutSection = () => {
+  const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation();
+  const { setRef, visibleItems } = useMultipleScrollAnimation(stats.length);
+
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-20 md:py-32 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           {/* Content */}
-          <div>
-            <span className="text-accent font-medium text-sm uppercase tracking-wider">
-              Our Story
+          <div
+            ref={contentRef}
+            className={cn(
+              "animate-on-scroll-left",
+              contentVisible && "is-visible"
+            )}
+          >
+            <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3 block">
+              About Us
             </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mt-3 mb-6">
-              More Than Just a Bookstore
+            <h2 className="text-3xl md:text-4xl font-light text-foreground mb-6">
+              More Than a Bookstore
             </h2>
-            <div className="space-y-4 text-muted-foreground">
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
-                Founded with a passion for literature, BookHaven has been connecting 
-                readers with their perfect books for over 15 years. We believe that 
-                every book has the power to transform lives, spark imagination, and 
-                build bridges between worlds.
+                Founded with a passion for literature, we've been connecting 
+                readers with their perfect books for over 15 years.
               </p>
               <p>
-                Our carefully curated collection spans across genres, from timeless 
-                classics to contemporary bestsellers. Whether you're seeking adventure, 
-                wisdom, romance, or mystery, you'll find your next great read here.
-              </p>
-              <p>
-                Beyond selling books, we're committed to nurturing a community of 
-                passionate readers through author events, book clubs, and literary 
-                discussions.
+                Our carefully curated collection spans genres—from timeless 
+                classics to contemporary bestsellers. Whether you seek adventure, 
+                wisdom, or mystery, you'll find it here.
               </p>
             </div>
           </div>
 
           {/* Stats */}
-          <div className="grid grid-cols-2 gap-6">
-            {stats.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <div
-                  key={stat.label}
-                  className="bg-secondary rounded-lg p-6 text-center"
-                >
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-accent/10 mb-4">
-                    <Icon className="h-6 w-6 text-accent" />
-                  </div>
-                  <div className="font-serif text-3xl font-bold text-foreground mb-1">
-                    {stat.value}
-                  </div>
-                  <div className="text-muted-foreground text-sm">{stat.label}</div>
+          <div className="grid grid-cols-3 gap-8">
+            {stats.map((stat, index) => (
+              <div
+                key={stat.label}
+                ref={setRef(index)}
+                className={cn(
+                  "text-center animate-on-scroll-scale",
+                  `stagger-${index + 1}`,
+                  visibleItems[index] && "is-visible"
+                )}
+              >
+                <div className="text-4xl md:text-5xl font-light text-foreground mb-2">
+                  {stat.value}
                 </div>
-              );
-            })}
+                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  {stat.label}
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       </div>
