@@ -2,6 +2,8 @@ import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import BookCard, { Book } from "@/components/books/BookCard";
 import { ArrowRight } from "lucide-react";
+import { useScrollAnimation, useMultipleScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 // Sample featured books data
 const featuredBooks: Book[] = [
@@ -52,31 +54,50 @@ const featuredBooks: Book[] = [
 ];
 
 const FeaturedBooks = () => {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { setRef, visibleItems } = useMultipleScrollAnimation(featuredBooks.length);
+
   return (
-    <section className="py-16 md:py-24 bg-background">
+    <section className="py-20 md:py-32 bg-background">
       <div className="container mx-auto px-4">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-12">
+        <div
+          ref={headerRef}
+          className={cn(
+            "flex flex-col md:flex-row md:items-end justify-between mb-16 animate-on-scroll",
+            headerVisible && "is-visible"
+          )}
+        >
           <div>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-3">
+            <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3 block">
+              Collection
+            </span>
+            <h2 className="text-3xl md:text-4xl font-light text-foreground">
               Featured Books
             </h2>
-            <p className="text-muted-foreground text-lg max-w-xl">
-              Handpicked selections from our collection that we think you'll love.
-            </p>
           </div>
-          <Link to="/books" className="mt-4 md:mt-0">
-            <Button variant="outline">
-              View All Books
-              <ArrowRight className="ml-2 h-4 w-4" />
+          <Link to="/books" className="mt-6 md:mt-0">
+            <Button variant="ghost" className="group">
+              View All
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
             </Button>
           </Link>
         </div>
 
         {/* Books Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {featuredBooks.map((book) => (
-            <BookCard key={book.id} book={book} />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+          {featuredBooks.map((book, index) => (
+            <div
+              key={book.id}
+              ref={setRef(index)}
+              className={cn(
+                "animate-on-scroll",
+                `stagger-${index + 1}`,
+                visibleItems[index] && "is-visible"
+              )}
+            >
+              <BookCard book={book} />
+            </div>
           ))}
         </div>
       </div>

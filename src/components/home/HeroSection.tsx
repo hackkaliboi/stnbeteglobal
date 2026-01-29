@@ -1,53 +1,65 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, BookOpen } from "lucide-react";
-import heroImage from "@/assets/hero-bookstore.jpg";
+import { ArrowRight, ArrowDown } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 const HeroSection = () => {
-  return (
-    <section className="relative min-h-[600px] md:min-h-[700px] flex items-center">
-      {/* Background Image */}
-      <div className="absolute inset-0 z-0">
-        <img
-          src={heroImage}
-          alt="Cozy bookstore interior"
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 via-primary/70 to-primary/40" />
-      </div>
+  const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation();
 
+  const scrollToContent = () => {
+    window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
+  };
+
+  return (
+    <section className="relative min-h-screen flex items-center justify-center bg-background border-b border-border">
       {/* Content */}
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-2xl">
-          <div className="flex items-center gap-2 mb-6">
-            <BookOpen className="h-6 w-6 text-accent" />
-            <span className="text-accent font-medium">Welcome to BookHaven</span>
-          </div>
+      <div className="container mx-auto px-4 py-24">
+        <div
+          ref={contentRef}
+          className={cn(
+            "max-w-3xl mx-auto text-center animate-on-scroll",
+            contentVisible && "is-visible"
+          )}
+        >
+          <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6">
+            Independent Bookstore
+          </span>
           
-          <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl font-bold text-primary-foreground mb-6 leading-tight">
-            Discover Stories That <span className="text-accent">Inspire</span>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-light text-foreground mb-6 leading-[1.1] tracking-tight">
+            Stories That
+            <br />
+            <span className="font-medium">Inspire</span>
           </h1>
           
-          <p className="text-primary-foreground/90 text-lg md:text-xl mb-8 leading-relaxed">
-            Explore our curated collection of bestsellers, new releases, and timeless 
-            classics. Find your next adventure between the pages.
+          <p className="text-muted-foreground text-lg md:text-xl mb-10 max-w-xl mx-auto leading-relaxed font-light">
+            Curated books for curious minds. Explore our collection of bestsellers, new releases, and timeless classics.
           </p>
           
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link to="/books">
-              <Button size="lg" className="bg-accent text-accent-foreground hover:bg-accent/90 shadow-lg">
-                Browse Collection
-                <ArrowRight className="ml-2 h-5 w-5" />
+              <Button size="lg" className="min-w-[180px] group">
+                Browse Books
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Button>
             </Link>
             <Link to="/about">
-              <Button size="lg" variant="outline" className="border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/10">
-                Learn More
+              <Button size="lg" variant="outline" className="min-w-[180px]">
+                Our Story
               </Button>
             </Link>
           </div>
         </div>
       </div>
+
+      {/* Scroll Indicator */}
+      <button
+        onClick={scrollToContent}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 text-muted-foreground hover:text-foreground transition-colors"
+        aria-label="Scroll down"
+      >
+        <ArrowDown className="h-5 w-5 animate-bounce" />
+      </button>
     </section>
   );
 };
