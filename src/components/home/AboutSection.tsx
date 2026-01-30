@@ -1,67 +1,73 @@
-import { useScrollAnimation, useMultipleScrollAnimation } from "@/hooks/use-scroll-animation";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
 
-const stats = [
-  { value: "10K+", label: "Books" },
-  { value: "50K+", label: "Readers" },
-  { value: "15+", label: "Years" },
-];
-
 const AboutSection = () => {
-  const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation();
-  const { setRef, visibleItems } = useMultipleScrollAnimation(stats.length);
+  const { ref: leftRef, isVisible: leftVisible } = useScrollAnimation();
+  const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
 
   return (
-    <section className="py-20 md:py-32 bg-background">
+    <section className="py-24 md:py-32 bg-background">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
-          {/* Content */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
+          {/* Left - Large typography */}
           <div
-            ref={contentRef}
+            ref={leftRef}
             className={cn(
-              "animate-on-scroll-left",
-              contentVisible && "is-visible"
+              "lg:col-span-5 animate-on-scroll-left",
+              leftVisible && "is-visible"
             )}
           >
-            <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3 block">
+            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6 block font-mono">
               About Us
             </span>
-            <h2 className="text-3xl md:text-4xl font-light text-foreground mb-6">
-              More Than a Bookstore
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground leading-[1.1]">
+              More than<br />
+              just a<br />
+              <span className="italic">bookstore</span>
             </h2>
-            <div className="space-y-4 text-muted-foreground leading-relaxed">
-              <p>
-                Founded with a passion for literature, we've been connecting 
-                readers with their perfect books for over 15 years.
-              </p>
-              <p>
-                Our carefully curated collection spans genres—from timeless 
-                classics to contemporary bestsellers. Whether you seek adventure, 
-                wisdom, or mystery, you'll find it here.
-              </p>
-            </div>
           </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8">
-            {stats.map((stat, index) => (
-              <div
-                key={stat.label}
-                ref={setRef(index)}
-                className={cn(
-                  "text-center animate-on-scroll-scale",
-                  `stagger-${index + 1}`,
-                  visibleItems[index] && "is-visible"
-                )}
-              >
-                <div className="text-4xl md:text-5xl font-light text-foreground mb-2">
-                  {stat.value}
-                </div>
-                <div className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                  {stat.label}
+          {/* Right - Content offset */}
+          <div
+            ref={rightRef}
+            className={cn(
+              "lg:col-span-5 lg:col-start-8 lg:pt-24 animate-on-scroll-right",
+              rightVisible && "is-visible"
+            )}
+          >
+            <div className="space-y-6">
+              <p className="text-muted-foreground text-lg leading-relaxed">
+                Founded with a passion for literature, BookHaven is a sanctuary for book lovers. 
+                We believe in the power of stories to transform minds and connect hearts.
+              </p>
+              <p className="text-muted-foreground leading-relaxed">
+                Our carefully curated collection spans genres and generations, from contemporary 
+                bestsellers to timeless classics. Every book on our shelves is chosen with care.
+              </p>
+              
+              <div className="pt-6 border-t border-border">
+                <div className="grid grid-cols-2 gap-8">
+                  <div>
+                    <span className="text-3xl font-light text-foreground block">10+</span>
+                    <span className="text-sm text-muted-foreground">Years of service</span>
+                  </div>
+                  <div>
+                    <span className="text-3xl font-light text-foreground block">50k+</span>
+                    <span className="text-sm text-muted-foreground">Books sold</span>
+                  </div>
                 </div>
               </div>
-            ))}
+
+              <Link 
+                to="/about" 
+                className="inline-flex items-center text-sm font-medium text-foreground hover:text-muted-foreground transition-colors group pt-4"
+              >
+                Learn more about us
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </div>
           </div>
         </div>
       </div>
