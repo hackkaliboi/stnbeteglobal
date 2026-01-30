@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, MapPin, Mail, Phone, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
@@ -23,7 +23,6 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // TODO: Integrate with backend
     await new Promise((resolve) => setTimeout(resolve, 1000));
     
     toast({
@@ -36,58 +35,87 @@ const ContactSection = () => {
   };
 
   return (
-    <section className="py-20 md:py-32 bg-background" id="contact">
+    <section className="py-24 md:py-32 bg-background border-t border-border" id="contact">
       <div className="container mx-auto px-4">
-        <div className="grid lg:grid-cols-2 gap-16 max-w-5xl mx-auto">
-          {/* Info */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
+          {/* Left - Header & Info */}
           <div
             ref={leftRef}
             className={cn(
-              "animate-on-scroll-left",
+              "lg:col-span-5 animate-on-scroll-left",
               leftVisible && "is-visible"
             )}
           >
-            <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-3 block">
-              Contact
-            </span>
-            <h2 className="text-3xl md:text-4xl font-light text-foreground mb-6">
+            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 block font-mono">
               Get in Touch
+            </span>
+            <h2 className="text-4xl md:text-5xl font-light text-foreground leading-[1.1] mb-8">
+              Let's<br />
+              <span className="italic">connect</span>
             </h2>
-            <p className="text-muted-foreground mb-8 leading-relaxed">
-              Have questions or want to book a consultation? We'd love to hear from you.
-            </p>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-foreground mb-2">
+                  <MapPin className="h-4 w-4" />
+                  <span className="text-xs uppercase tracking-wider font-mono">Location</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  123 Book Street<br />
+                  Reading City, RC 12345
+                </p>
+              </div>
 
-            <div className="space-y-4 text-sm">
-              <div>
-                <span className="text-xs uppercase tracking-wider text-muted-foreground">Address</span>
-                <p className="text-foreground mt-1">123 Book Street, Reading City, RC 12345</p>
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-foreground mb-2">
+                  <Clock className="h-4 w-4" />
+                  <span className="text-xs uppercase tracking-wider font-mono">Hours</span>
+                </div>
+                <p className="text-sm text-muted-foreground">
+                  Mon–Fri: 9am–8pm<br />
+                  Sat–Sun: 10am–6pm
+                </p>
               </div>
-              <div>
-                <span className="text-xs uppercase tracking-wider text-muted-foreground">Email</span>
-                <p className="text-foreground mt-1">hello@bookhaven.com</p>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-foreground mb-2">
+                  <Mail className="h-4 w-4" />
+                  <span className="text-xs uppercase tracking-wider font-mono">Email</span>
+                </div>
+                <a 
+                  href="mailto:hello@bookhaven.com" 
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  hello@bookhaven.com
+                </a>
               </div>
-              <div>
-                <span className="text-xs uppercase tracking-wider text-muted-foreground">Phone</span>
-                <p className="text-foreground mt-1">+1 (234) 567-8900</p>
-              </div>
-              <div>
-                <span className="text-xs uppercase tracking-wider text-muted-foreground">Hours</span>
-                <p className="text-foreground mt-1">Mon – Sat: 9AM – 8PM</p>
+
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-foreground mb-2">
+                  <Phone className="h-4 w-4" />
+                  <span className="text-xs uppercase tracking-wider font-mono">Phone</span>
+                </div>
+                <a 
+                  href="tel:+12345678900" 
+                  className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  +1 (234) 567-8900
+                </a>
               </div>
             </div>
           </div>
 
-          {/* Form */}
+          {/* Right - Form */}
           <div
             ref={rightRef}
             className={cn(
-              "animate-on-scroll-right",
+              "lg:col-span-5 lg:col-start-8 animate-on-scroll-right",
               rightVisible && "is-visible"
             )}
           >
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-xs uppercase tracking-wider">Name</Label>
+                <Label htmlFor="name" className="text-xs uppercase tracking-wider font-mono">Name</Label>
                 <Input
                   id="name"
                   value={formData.name}
@@ -98,7 +126,7 @@ const ContactSection = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-xs uppercase tracking-wider">Email</Label>
+                <Label htmlFor="email" className="text-xs uppercase tracking-wider font-mono">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -110,7 +138,7 @@ const ContactSection = () => {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="message" className="text-xs uppercase tracking-wider">Message</Label>
+                <Label htmlFor="message" className="text-xs uppercase tracking-wider font-mono">Message</Label>
                 <Textarea
                   id="message"
                   value={formData.message}
