@@ -22,21 +22,21 @@ const ContactSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    
+
     toast({
       title: "Message sent",
       description: "We'll get back to you within 24 hours.",
     });
-    
+
     setFormData({ name: "", email: "", message: "" });
     setIsSubmitting(false);
   };
 
   return (
     <section className="py-24 md:py-32 bg-background border-t border-border" id="contact">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           {/* Left - Header & Info */}
           <div
@@ -53,7 +53,7 @@ const ContactSection = () => {
               Let's<br />
               <span className="italic">connect</span>
             </h2>
-            
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mt-12">
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-foreground mb-2">
@@ -82,11 +82,11 @@ const ContactSection = () => {
                   <Mail className="h-4 w-4" />
                   <span className="text-xs uppercase tracking-wider font-mono">Email</span>
                 </div>
-                <a 
-                  href="mailto:hello@bookhaven.com" 
+                <a
+                  href="mailto:hello@stnbeteglobal.com"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  hello@bookhaven.com
+                  hello@stnbeteglobal.com
                 </a>
               </div>
 
@@ -95,8 +95,8 @@ const ContactSection = () => {
                   <Phone className="h-4 w-4" />
                   <span className="text-xs uppercase tracking-wider font-mono">Phone</span>
                 </div>
-                <a 
-                  href="tel:+12345678900" 
+                <a
+                  href="tel:+12345678900"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
                   +1 (234) 567-8900

@@ -8,12 +8,12 @@ const Contact = () => {
     <MainLayout>
       {/* Hero */}
       <div className="bg-secondary py-12 md:py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground text-center mb-4">
             Contact Us
           </h1>
           <p className="text-muted-foreground text-lg text-center max-w-2xl mx-auto">
-            Have questions? We'd love to hear from you. Send us a message and we'll 
+            Have questions? We'd love to hear from you. Send us a message and we'll
             respond as soon as possible.
           </p>
         </div>
@@ -21,7 +21,7 @@ const Contact = () => {
 
       {/* Booking Section */}
       <section className="py-12 bg-background">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="max-w-3xl mx-auto">
             <Card className="bg-accent/5 border-accent/20">
               <CardContent className="p-6 md:p-8">
@@ -34,8 +34,8 @@ const Contact = () => {
                       Book a Consultation or Speaking Engagement
                     </h3>
                     <p className="text-muted-foreground mb-4">
-                      Interested in booking the author for a speaking engagement, book signing, 
-                      or literary consultation? Fill out the contact form below with your request 
+                      Interested in booking the author for a speaking engagement, book signing,
+                      or literary consultation? Fill out the contact form below with your request
                       details and we'll get back to you within 48 hours.
                     </p>
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">

@@ -48,15 +48,15 @@ const About = () => {
     <MainLayout>
       {/* Hero */}
       <div className="bg-secondary py-16 md:py-24">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto text-center">
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-6">
             <BookOpen className="h-8 w-8 text-accent" />
           </div>
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
-            About BookHaven
+            About stnbeteglobal
           </h1>
           <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            For over 15 years, we've been on a mission to connect readers with stories that 
+            For over 15 years, we've been on a mission to connect readers with stories that
             inspire, educate, and transform. Welcome to our world of books.
           </p>
         </div>
@@ -64,7 +64,7 @@ const About = () => {
 
       {/* Story Section */}
       <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div>
               <span className="text-accent font-medium text-sm uppercase tracking-wider">
@@ -75,19 +75,19 @@ const About = () => {
               </h2>
               <div className="space-y-4 text-muted-foreground">
                 <p>
-                  BookHaven started as a small corner shop in 2008, born from the dream of 
-                  creating a space where book lovers could discover, discuss, and share their 
+                  stnbeteglobal started as a small corner shop in 2008, born from the dream of
+                  creating a space where book lovers could discover, discuss, and share their
                   passion for reading.
                 </p>
                 <p>
-                  What began as a modest collection of 500 titles has grown into a comprehensive 
-                  library of over 10,000 carefully selected books spanning every genre imaginable. 
-                  Our journey has been fueled by the countless readers who have walked through 
+                  What began as a modest collection of 500 titles has grown into a comprehensive
+                  library of over 10,000 carefully selected books spanning every genre imaginable.
+                  Our journey has been fueled by the countless readers who have walked through
                   our doors and trusted us with their literary adventures.
                 </p>
                 <p>
-                  Today, we're proud to serve readers both locally and online, continuing our 
-                  tradition of personalized recommendations and exceptional customer service 
+                  Today, we're proud to serve readers both locally and online, continuing our
+                  tradition of personalized recommendations and exceptional customer service
                   that has made us a beloved destination for book enthusiasts.
                 </p>
               </div>
@@ -132,13 +132,13 @@ const About = () => {
 
       {/* Values */}
       <section className="py-16 md:py-24 bg-muted/50">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
               Our Values
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              These core principles guide everything we do at BookHaven.
+              These core principles guide everything we do at stnbeteglobal.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -162,13 +162,13 @@ const About = () => {
 
       {/* Team */}
       <section className="py-16 md:py-24 bg-background">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <div className="text-center mb-12">
             <h2 className="font-serif text-3xl md:text-4xl font-bold text-foreground mb-4">
               Meet Our Team
             </h2>
             <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              The passionate individuals behind BookHaven's success.
+              The passionate individuals behind stnbeteglobal's success.
             </p>
           </div>
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto">
@@ -193,13 +193,13 @@ const About = () => {
 
       {/* CTA */}
       <section className="py-16 md:py-24 bg-primary">
-        <div className="container mx-auto px-4 text-center">
+        <div className="container mx-auto text-center">
           <Award className="h-12 w-12 text-accent mx-auto mb-6" />
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary-foreground mb-4">
             Join Our Reading Community
           </h2>
           <p className="text-primary-foreground/80 text-lg max-w-2xl mx-auto">
-            Connect with fellow book lovers, attend author events, and be the first 
+            Connect with fellow book lovers, attend author events, and be the first
             to know about new releases and exclusive offers.
           </p>
         </div>

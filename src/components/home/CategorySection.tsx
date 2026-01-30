@@ -17,7 +17,7 @@ const CategorySection = () => {
 
   return (
     <section className="py-24 md:py-32 bg-secondary/30">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         {/* Editorial Header */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
           <div className="lg:col-span-2">
@@ -46,11 +46,11 @@ const CategorySection = () => {
         {/* Asymmetric Category Grid */}
         <div className="grid grid-cols-2 md:grid-cols-6 gap-3 md:gap-4">
           {categories.map((category, index) => {
-            const colSpan = category.size === "large" ? "md:col-span-2 md:row-span-2" : 
-                           category.size === "medium" ? "md:col-span-2" : "md:col-span-2";
-            const height = category.size === "large" ? "h-48 md:h-full" : 
-                          category.size === "medium" ? "h-32 md:h-40" : "h-28 md:h-32";
-            
+            const colSpan = category.size === "large" ? "md:col-span-2 md:row-span-2" :
+              category.size === "medium" ? "md:col-span-2" : "md:col-span-2";
+            const height = category.size === "large" ? "h-48 md:h-full" :
+              category.size === "medium" ? "h-32 md:h-40" : "h-28 md:h-32";
+
             return (
               <div
                 key={category.name}

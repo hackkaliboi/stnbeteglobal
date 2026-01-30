@@ -137,7 +137,7 @@ const Books = () => {
   return (
     <MainLayout>
       <div className="bg-secondary py-12 md:py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground text-center mb-4">
             Our Collection
           </h1>
@@ -147,7 +147,7 @@ const Books = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-8 md:py-12">
+      <div className="container mx-auto py-8 md:py-12">
         {/* Filters */}
         <div className="flex flex-col md:flex-row gap-4 mb-8">
           <div className="relative flex-1">

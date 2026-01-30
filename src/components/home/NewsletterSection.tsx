@@ -15,7 +15,7 @@ const NewsletterSection = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-    
+
     setIsSubmitted(true);
     toast({
       title: "Successfully subscribed",
@@ -27,7 +27,7 @@ const NewsletterSection = () => {
 
   return (
     <section className="py-24 md:py-32 bg-foreground text-background">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div
           ref={sectionRef}
           className={cn(
@@ -61,8 +61,8 @@ const NewsletterSection = () => {
                   required
                   className="flex-1 h-12 bg-background/10 border-background/20 text-background placeholder:text-background/50 focus-visible:ring-background/30"
                 />
-                <Button 
-                  type="submit" 
+                <Button
+                  type="submit"
                   variant="secondary"
                   size="lg"
                   className="group min-w-[140px]"

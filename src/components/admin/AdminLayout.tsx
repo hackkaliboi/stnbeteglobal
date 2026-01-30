@@ -39,7 +39,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       {/* Mobile Header */}
       <header className="lg:hidden sticky top-0 z-50 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
         <Link to="/admin" className="font-serif text-xl font-bold text-primary">
-          BookHaven Admin
+          stnbeteglobal Admin
         </Link>
         <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)}>
           {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -49,15 +49,14 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
       <div className="flex">
         {/* Sidebar */}
         <aside
-          className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-sidebar border-r border-sidebar-border transition-transform lg:translate-x-0 ${
-            sidebarOpen ? "translate-x-0" : "-translate-x-full"
-          }`}
+          className={`fixed lg:sticky top-0 left-0 z-40 h-screen w-64 bg-sidebar border-r border-sidebar-border transition-transform lg:translate-x-0 ${sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
         >
           <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="hidden lg:flex items-center h-16 px-6 border-b border-sidebar-border">
               <Link to="/admin" className="font-serif text-xl font-bold text-sidebar-foreground">
-                BookHaven Admin
+                stnbeteglobal Admin
               </Link>
             </div>
 
@@ -71,11 +70,10 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
                     key={item.name}
                     to={item.href}
                     onClick={() => setSidebarOpen(false)}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${
-                      isActive
-                        ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
-                        : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
-                    }`}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-md transition-colors ${isActive
+                      ? "bg-sidebar-accent text-sidebar-accent-foreground font-medium"
+                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"
+                      }`}
                   >
                     <Icon className="h-5 w-5" />
                     {item.name}

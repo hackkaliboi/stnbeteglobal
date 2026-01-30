@@ -21,7 +21,7 @@ const blogPosts: BlogPost[] = [
     id: "1",
     title: "The Rise of Independent Authors in 2024",
     excerpt: "Self-publishing has revolutionized the literary world, giving voice to countless talented writers who might otherwise never have been heard.",
-    author: "BookHaven Team",
+    author: "stnbeteglobal Team",
     date: "Jan 15, 2024",
     readTime: "5 min read",
     category: "Industry News",
@@ -52,7 +52,7 @@ const blogPosts: BlogPost[] = [
     id: "4",
     title: "Interview with Bestselling Author Sarah Mitchell",
     excerpt: "We sat down with the acclaimed author to discuss her creative process, inspirations, and upcoming projects.",
-    author: "BookHaven Team",
+    author: "stnbeteglobal Team",
     date: "Jan 8, 2024",
     readTime: "10 min read",
     category: "Author Interviews",
@@ -67,7 +67,7 @@ const Blog = () => {
   return (
     <MainLayout>
       <div className="bg-secondary py-12 md:py-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto">
           <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground text-center mb-4">
             Blog & News
           </h1>
@@ -77,7 +77,7 @@ const Blog = () => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 py-12 md:py-16">
+      <div className="container mx-auto py-12 md:py-16">
         {/* Featured Post */}
         {featuredPost && (
           <Link to={`/blog/${featuredPost.id}`} className="block mb-12">

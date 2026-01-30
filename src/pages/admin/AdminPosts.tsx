@@ -24,7 +24,7 @@ const posts = [
   {
     id: "1",
     title: "The Rise of Independent Authors in 2024",
-    author: "BookHaven Team",
+    author: "stnbeteglobal Team",
     category: "Industry News",
     status: "Published",
     date: "2024-01-15",
@@ -48,7 +48,7 @@ const posts = [
   {
     id: "4",
     title: "Interview with Bestselling Author Sarah Mitchell",
-    author: "BookHaven Team",
+    author: "stnbeteglobal Team",
     category: "Author Interviews",
     status: "Published",
     date: "2024-01-08",

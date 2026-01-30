@@ -3,15 +3,15 @@ import { Link } from "react-router-dom";
 const Footer = () => {
   return (
     <footer className="bg-background border-t border-border">
-      <div className="container mx-auto px-4 py-16 lg:py-20">
+      <div className="container mx-auto py-16 lg:py-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Brand - Large */}
           <div className="lg:col-span-5">
             <Link to="/" className="text-2xl font-light tracking-tight text-foreground">
-              BookHaven
+              stnbeteglobal
             </Link>
             <p className="text-muted-foreground mt-4 max-w-sm leading-relaxed">
-              Curated books for curious minds. Discover your next favorite read from our 
+              Curated books for curious minds. Discover your next favorite read from our
               collection of bestsellers and timeless classics.
             </p>
           </div>
@@ -43,8 +43,8 @@ const Footer = () => {
               Contact
             </h4>
             <div className="space-y-3 text-sm">
-              <a href="mailto:hello@bookhaven.com" className="block text-foreground hover:text-muted-foreground transition-colors">
-                hello@bookhaven.com
+              <a href="mailto:hello@stnbeteglobal.com" className="block text-foreground hover:text-muted-foreground transition-colors">
+                hello@stnbeteglobal.com
               </a>
               <a href="tel:+12345678900" className="block text-foreground hover:text-muted-foreground transition-colors">
                 +1 (234) 567-8900
@@ -60,7 +60,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-muted-foreground font-mono">
-            © {new Date().getFullYear()} BookHaven
+            © {new Date().getFullYear()} stnbeteglobal
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">

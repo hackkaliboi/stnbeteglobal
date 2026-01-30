@@ -9,7 +9,7 @@ const AboutSection = () => {
 
   return (
     <section className="py-24 md:py-32 bg-background">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
           {/* Left - Large typography */}
           <div
@@ -39,14 +39,14 @@ const AboutSection = () => {
           >
             <div className="space-y-6">
               <p className="text-muted-foreground text-lg leading-relaxed">
-                Founded with a passion for literature, BookHaven is a sanctuary for book lovers. 
+                Founded with a passion for literature, stnbeteglobal is a sanctuary for book lovers.
                 We believe in the power of stories to transform minds and connect hearts.
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                Our carefully curated collection spans genres and generations, from contemporary 
+                Our carefully curated collection spans genres and generations, from contemporary
                 bestsellers to timeless classics. Every book on our shelves is chosen with care.
               </p>
-              
+
               <div className="pt-6 border-t border-border">
                 <div className="grid grid-cols-2 gap-8">
                   <div>
@@ -60,8 +60,8 @@ const AboutSection = () => {
                 </div>
               </div>
 
-              <Link 
-                to="/about" 
+              <Link
+                to="/about"
                 className="inline-flex items-center text-sm font-medium text-foreground hover:text-muted-foreground transition-colors group pt-4"
               >
                 Learn more about us

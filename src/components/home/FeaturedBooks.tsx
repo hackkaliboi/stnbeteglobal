@@ -58,7 +58,7 @@ const FeaturedBooks = () => {
 
   return (
     <section className="py-24 md:py-32 bg-background">
-      <div className="container mx-auto px-4">
+      <div className="container mx-auto">
         {/* Editorial Header - Asymmetric */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
           <div
@@ -85,8 +85,8 @@ const FeaturedBooks = () => {
               <p className="text-muted-foreground mb-4">
                 Handpicked selections from our editors. Updated weekly with fresh finds.
               </p>
-              <Link 
-                to="/books" 
+              <Link
+                to="/books"
                 className="inline-flex items-center text-sm font-medium text-foreground hover:text-muted-foreground transition-colors group"
               >
                 View all books
@@ -108,7 +108,7 @@ const FeaturedBooks = () => {
           >
             <BookCard book={featuredBooks[0]} variant="featured" />
           </div>
-          
+
           {/* Stacked smaller books */}
           <div
             ref={setRef(1)}
@@ -119,7 +119,7 @@ const FeaturedBooks = () => {
           >
             <BookCard book={featuredBooks[1]} variant="compact" />
           </div>
-          
+
           <div
             ref={setRef(2)}
             className={cn(
