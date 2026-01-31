@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ShoppingCart, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { cn } from "@/lib/utils";
 
 const Header = () => {
@@ -82,6 +83,7 @@ const Header = () => {
               <Button variant="ghost" size="icon" className="h-9 w-9" aria-label="Cart">
                 <ShoppingCart className="h-4 w-4" />
               </Button>
+              <ThemeToggle />
               <Link to="/admin">
                 <Button variant="outline" size="sm" className="ml-2 text-xs font-mono">
                   Admin
@@ -136,6 +138,7 @@ const Header = () => {
                 <Button variant="ghost" size="icon" className="h-10 w-10" aria-label="Cart">
                   <ShoppingCart className="h-4 w-4" />
                 </Button>
+                <ThemeToggle />
                 <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
                   <Button variant="outline" size="sm" className="text-sm font-mono">
                     Admin

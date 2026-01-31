@@ -7,7 +7,7 @@ const Contact = () => {
   return (
     <MainLayout>
       {/* Enhanced Hero Section */}
-      <section className="min-h-[60vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 pt-20">
+      <section className="min-h-[60vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-20">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Content */}
@@ -42,12 +42,12 @@ const Contact = () => {
 
             {/* Right Content - Contact Info */}
             <div className="lg:col-span-5">
-              <div className="bg-background/50 backdrop-blur-sm rounded-lg p-8 border border-border/50">
+              <div className="bg-background/50 dark:bg-background/80 backdrop-blur-sm rounded-lg p-8 border border-border/50">
                 <h3 className="text-xl font-medium text-foreground mb-6">Reach Out</h3>
                 <div className="space-y-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Mail className="h-4 w-4 text-blue-600" />
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <Mail className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground">Email</div>
@@ -55,8 +55,8 @@ const Contact = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Phone className="h-4 w-4 text-blue-600" />
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <Phone className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground">Phone</div>
@@ -64,8 +64,8 @@ const Contact = () => {
                     </div>
                   </div>
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
-                      <Clock className="h-4 w-4 text-blue-600" />
+                    <div className="w-10 h-10 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center">
+                      <Clock className="h-4 w-4 text-blue-600 dark:text-blue-400" />
                     </div>
                     <div>
                       <div className="text-sm text-muted-foreground">Hours</div>

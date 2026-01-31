@@ -72,7 +72,7 @@ const Blog = () => {
   return (
     <MainLayout>
       {/* Enhanced Hero Section */}
-      <section className="min-h-[60vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 pt-20">
+      <section className="min-h-[60vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-20">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Content */}
@@ -119,7 +119,7 @@ const Blog = () => {
                 previewVisible && "is-visible"
               )}
             >
-              <div className="bg-background/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
+              <div className="bg-background/50 dark:bg-background/80 backdrop-blur-sm rounded-lg p-6 border border-border/50">
                 <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Latest Post</div>
                 <h3 className="text-lg font-medium text-foreground mb-2 leading-tight">
                   The Rise of Independent Authors in 2024

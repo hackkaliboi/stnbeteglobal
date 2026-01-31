@@ -9,7 +9,7 @@ const HeroSection = () => {
   const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
 
   return (
-    <section className="min-h-screen flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 pt-16 lg:pt-20">
+    <section className="min-h-screen flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-16 lg:pt-20">
       <div className="container mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-4 items-center min-h-[calc(100vh-4rem)] py-8 lg:py-0">
           {/* Left Content - Offset to the left */}

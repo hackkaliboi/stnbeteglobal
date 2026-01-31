@@ -47,13 +47,13 @@ const About = () => {
   return (
     <MainLayout>
       {/* Enhanced Hero Section */}
-      <section className="min-h-[70vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 pt-20">
+      <section className="min-h-[70vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-20">
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             {/* Left Content */}
             <div className="lg:col-span-7">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-6">
-                <BookOpen className="h-8 w-8 text-blue-600" />
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-6">
+                <BookOpen className="h-8 w-8 text-blue-600 dark:text-blue-400" />
               </div>
               <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-mono">
                 Our Story
@@ -85,7 +85,7 @@ const About = () => {
 
             {/* Right Content - Mission Statement */}
             <div className="lg:col-span-5">
-              <div className="bg-background/50 backdrop-blur-sm rounded-lg p-8 border border-border/50">
+              <div className="bg-background/50 dark:bg-background/80 backdrop-blur-sm rounded-lg p-8 border border-border/50">
                 <h3 className="text-xl font-medium text-foreground mb-4">Our Mission</h3>
                 <p className="text-muted-foreground leading-relaxed mb-6">
                   To create a sanctuary where book lovers can discover, discuss, and share their
