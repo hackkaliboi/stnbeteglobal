@@ -3,6 +3,8 @@ import MainLayout from "@/components/layout/MainLayout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 interface BlogPost {
   id: string;
@@ -61,21 +63,78 @@ const blogPosts: BlogPost[] = [
 ];
 
 const Blog = () => {
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
+  const { ref: previewRef, isVisible: previewVisible } = useScrollAnimation();
+
   const featuredPost = blogPosts.find((post) => post.featured);
   const regularPosts = blogPosts.filter((post) => !post.featured);
 
   return (
     <MainLayout>
-      <div className="bg-secondary py-12 md:py-16">
+      {/* Enhanced Hero Section */}
+      <section className="min-h-[60vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 pt-20">
         <div className="container mx-auto">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground text-center mb-4">
-            Blog & News
-          </h1>
-          <p className="text-muted-foreground text-lg text-center max-w-2xl mx-auto">
-            Stories, insights, and updates from the world of books and reading.
-          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Content */}
+            <div
+              ref={heroRef}
+              className={cn(
+                "lg:col-span-8 animate-on-scroll-left",
+                heroVisible && "is-visible"
+              )}
+            >
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-mono">
+                Stories & Insights
+              </span>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-foreground leading-[0.95] tracking-tight mb-6">
+                Blog &
+                <br />
+                <span className="font-medium italic">News</span>
+              </h1>
+              <p className="text-muted-foreground text-lg md:text-xl max-w-2xl leading-relaxed mb-8">
+                Stories, insights, and updates from the world of books and reading.
+                Discover author interviews, literary discussions, and the latest in publishing.
+              </p>
+              <div className="flex flex-wrap gap-6">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>Author Interviews</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>Book Reviews</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>Industry News</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Content - Latest Post Preview */}
+            <div
+              ref={previewRef}
+              className={cn(
+                "lg:col-span-4 animate-on-scroll-right",
+                previewVisible && "is-visible"
+              )}
+            >
+              <div className="bg-background/50 backdrop-blur-sm rounded-lg p-6 border border-border/50">
+                <div className="text-xs uppercase tracking-wider text-muted-foreground mb-2">Latest Post</div>
+                <h3 className="text-lg font-medium text-foreground mb-2 leading-tight">
+                  The Rise of Independent Authors in 2024
+                </h3>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Self-publishing has revolutionized the literary world...
+                </p>
+                <div className="text-xs text-muted-foreground">
+                  Jan 15, 2024 • 5 min read
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       <div className="container mx-auto py-12 md:py-16">
         {/* Featured Post */}

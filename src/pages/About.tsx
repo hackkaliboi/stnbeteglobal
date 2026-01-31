@@ -46,21 +46,70 @@ const team = [
 const About = () => {
   return (
     <MainLayout>
-      {/* Hero */}
-      <div className="bg-secondary py-16 md:py-24">
-        <div className="container mx-auto text-center">
-          <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-accent/10 mb-6">
-            <BookOpen className="h-8 w-8 text-accent" />
+      {/* Enhanced Hero Section */}
+      <section className="min-h-[70vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 pt-20">
+        <div className="container mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            {/* Left Content */}
+            <div className="lg:col-span-7">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-blue-100 mb-6">
+                <BookOpen className="h-8 w-8 text-blue-600" />
+              </div>
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-mono">
+                Our Story
+              </span>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-foreground leading-[0.95] tracking-tight mb-6">
+                About
+                <br />
+                <span className="font-medium">stnbeteglobal</span>
+              </h1>
+              <p className="text-muted-foreground text-lg md:text-xl max-w-2xl leading-relaxed mb-8">
+                For over 15 years, we've been on a mission to connect readers with stories that
+                inspire, educate, and transform. Welcome to our world of books.
+              </p>
+              <div className="flex flex-wrap gap-6">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>Est. 2008</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>15+ Years Experience</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>Community Focused</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Content - Mission Statement */}
+            <div className="lg:col-span-5">
+              <div className="bg-background/50 backdrop-blur-sm rounded-lg p-8 border border-border/50">
+                <h3 className="text-xl font-medium text-foreground mb-4">Our Mission</h3>
+                <p className="text-muted-foreground leading-relaxed mb-6">
+                  To create a sanctuary where book lovers can discover, discuss, and share their
+                  passion for reading. We believe in the transformative power of stories.
+                </p>
+                <div className="grid grid-cols-3 gap-4 text-center">
+                  <div>
+                    <div className="text-2xl font-light text-foreground mb-1">2k+</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Readers</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-light text-foreground mb-1">500+</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Books</div>
+                  </div>
+                  <div>
+                    <div className="text-2xl font-light text-foreground mb-1">15</div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-wider">Years</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-6">
-            About stnbeteglobal
-          </h1>
-          <p className="text-muted-foreground text-lg md:text-xl max-w-3xl mx-auto leading-relaxed">
-            For over 15 years, we've been on a mission to connect readers with stories that
-            inspire, educate, and transform. Welcome to our world of books.
-          </p>
         </div>
-      </div>
+      </section>
 
       {/* Story Section */}
       <section className="py-16 md:py-24 bg-background">

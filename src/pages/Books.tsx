@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, SlidersHorizontal } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 import {
   Select,
   SelectContent,
@@ -112,6 +114,9 @@ const Books = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
 
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
+  const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation();
+
   const filteredBooks = allBooks
     .filter((book) => {
       const matchesSearch =
@@ -136,16 +141,76 @@ const Books = () => {
 
   return (
     <MainLayout>
-      <div className="bg-secondary py-12 md:py-16">
+      {/* Enhanced Hero Section */}
+      <section className="min-h-[60vh] flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 pt-20">
         <div className="container mx-auto">
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-foreground text-center mb-4">
-            Our Collection
-          </h1>
-          <p className="text-muted-foreground text-lg text-center max-w-2xl mx-auto">
-            Browse through our extensive catalog of handpicked books for every reader.
-          </p>
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+            {/* Left Content */}
+            <div
+              ref={heroRef}
+              className={cn(
+                "lg:col-span-7 animate-on-scroll-left",
+                heroVisible && "is-visible"
+              )}
+            >
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-mono">
+                Curated Collection
+              </span>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-light text-foreground leading-[0.95] tracking-tight mb-6">
+                Our
+                <br />
+                <span className="font-medium">Collection</span>
+              </h1>
+              <p className="text-muted-foreground text-lg md:text-xl max-w-2xl leading-relaxed mb-8">
+                Browse through our extensive catalog of handpicked books for every reader.
+                From bestsellers to hidden gems, discover your next favorite story.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>500+ Titles</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>12 Categories</span>
+                </div>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                  <span>New Arrivals Weekly</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Content - Stats */}
+            <div
+              ref={statsRef}
+              className={cn(
+                "lg:col-span-4 lg:col-start-9 animate-on-scroll-right",
+                statsVisible && "is-visible"
+              )}
+            >
+              <div className="grid grid-cols-2 gap-6">
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-light text-foreground mb-2">500+</div>
+                  <div className="text-sm text-muted-foreground uppercase tracking-wider">Books</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-light text-foreground mb-2">12</div>
+                  <div className="text-sm text-muted-foreground uppercase tracking-wider">Categories</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-light text-foreground mb-2">2k+</div>
+                  <div className="text-sm text-muted-foreground uppercase tracking-wider">Readers</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-3xl md:text-4xl font-light text-foreground mb-2">15</div>
+                  <div className="text-sm text-muted-foreground uppercase tracking-wider">Years</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-      </div>
+      </section>
 
       <div className="container mx-auto py-8 md:py-12">
         {/* Filters */}
