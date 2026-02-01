@@ -1,60 +1,37 @@
 import { useScrollAnimation, useMultipleScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useBooks } from "@/hooks/useBooks";
 import { cn } from "@/lib/utils";
-import BookCard, { Book } from "@/components/books/BookCard";
+import BookCard from "@/components/books/BookCard";
 import { Link } from "react-router-dom";
-import { ArrowRight } from "lucide-react";
-
-// Sample featured books data
-const featuredBooks: Book[] = [
-  {
-    id: "1",
-    title: "The Art of Creative Writing",
-    author: "Sarah Mitchell",
-    price: 24.99,
-    coverImage: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
-    category: "Writing",
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-  },
-  {
-    id: "2",
-    title: "Journey Through Time",
-    author: "Michael Chen",
-    price: 19.99,
-    coverImage: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
-    category: "Fiction",
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-  },
-  {
-    id: "3",
-    title: "Mindful Living",
-    author: "Emma Thompson",
-    price: 16.99,
-    coverImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop",
-    category: "Self-Help",
-    isNew: true,
-    isBestseller: true,
-    inStock: true,
-  },
-  {
-    id: "4",
-    title: "The Silent Observer",
-    author: "James Wilson",
-    price: 21.99,
-    coverImage: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop",
-    category: "Mystery",
-    isNew: false,
-    isBestseller: false,
-    inStock: true,
-  },
-];
+import { ArrowRight, Loader2 } from "lucide-react";
 
 const FeaturedBooks = () => {
+  const { books, loading } = useBooks();
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+
+  // Get featured books (bestsellers and new books)
+  const featuredBooks = books
+    .filter(book => book.is_bestseller || book.is_new)
+    .slice(0, 4);
+
   const { setRef, visibleItems } = useMultipleScrollAnimation(featuredBooks.length);
+
+  if (loading) {
+    return (
+      <section className="py-24 md:py-32 bg-background">
+        <div className="container mx-auto">
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="ml-2 text-muted-foreground">Loading featured books...</span>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (featuredBooks.length === 0) {
+    return null; // Don't show section if no featured books
+  }
 
   return (
     <section className="py-24 md:py-32 bg-background">
@@ -99,51 +76,95 @@ const FeaturedBooks = () => {
         {/* Editorial Grid - Varied sizes */}
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
           {/* Large featured book */}
-          <div
-            ref={setRef(0)}
-            className={cn(
-              "md:col-span-7 md:row-span-2 animate-on-scroll",
-              visibleItems[0] && "is-visible"
-            )}
-          >
-            <BookCard book={featuredBooks[0]} variant="featured" />
-          </div>
+          {featuredBooks[0] && (
+            <div
+              ref={setRef(0)}
+              className={cn(
+                "md:col-span-7 md:row-span-2 animate-on-scroll",
+                visibleItems[0] && "is-visible"
+              )}
+            >
+              <BookCard
+                book={{
+                  ...featuredBooks[0],
+                  coverImage: featuredBooks[0].cover_image || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
+                  isNew: featuredBooks[0].is_new,
+                  isBestseller: featuredBooks[0].is_bestseller,
+                  inStock: featuredBooks[0].in_stock
+                }}
+                variant="featured"
+              />
+            </div>
+          )}
 
           {/* Stacked smaller books */}
-          <div
-            ref={setRef(1)}
-            className={cn(
-              "md:col-span-5 animate-on-scroll stagger-1",
-              visibleItems[1] && "is-visible"
-            )}
-          >
-            <BookCard book={featuredBooks[1]} variant="compact" />
-          </div>
+          {featuredBooks[1] && (
+            <div
+              ref={setRef(1)}
+              className={cn(
+                "md:col-span-5 animate-on-scroll stagger-1",
+                visibleItems[1] && "is-visible"
+              )}
+            >
+              <BookCard
+                book={{
+                  ...featuredBooks[1],
+                  coverImage: featuredBooks[1].cover_image || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
+                  isNew: featuredBooks[1].is_new,
+                  isBestseller: featuredBooks[1].is_bestseller,
+                  inStock: featuredBooks[1].in_stock
+                }}
+                variant="compact"
+              />
+            </div>
+          )}
 
-          <div
-            ref={setRef(2)}
-            className={cn(
-              "md:col-span-5 animate-on-scroll stagger-2",
-              visibleItems[2] && "is-visible"
-            )}
-          >
-            <BookCard book={featuredBooks[2]} variant="compact" />
-          </div>
+          {featuredBooks[2] && (
+            <div
+              ref={setRef(2)}
+              className={cn(
+                "md:col-span-5 animate-on-scroll stagger-2",
+                visibleItems[2] && "is-visible"
+              )}
+            >
+              <BookCard
+                book={{
+                  ...featuredBooks[2],
+                  coverImage: featuredBooks[2].cover_image || "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop",
+                  isNew: featuredBooks[2].is_new,
+                  isBestseller: featuredBooks[2].is_bestseller,
+                  inStock: featuredBooks[2].in_stock
+                }}
+                variant="compact"
+              />
+            </div>
+          )}
         </div>
 
         {/* Bottom row - offset */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
-          <div className="hidden md:block md:col-span-3" />
-          <div
-            ref={setRef(3)}
-            className={cn(
-              "md:col-span-6 animate-on-scroll stagger-3",
-              visibleItems[3] && "is-visible"
-            )}
-          >
-            <BookCard book={featuredBooks[3]} variant="horizontal" />
+        {featuredBooks[3] && (
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mt-6">
+            <div className="hidden md:block md:col-span-3" />
+            <div
+              ref={setRef(3)}
+              className={cn(
+                "md:col-span-6 animate-on-scroll stagger-3",
+                visibleItems[3] && "is-visible"
+              )}
+            >
+              <BookCard
+                book={{
+                  ...featuredBooks[3],
+                  coverImage: featuredBooks[3].cover_image || "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop",
+                  isNew: featuredBooks[3].is_new,
+                  isBestseller: featuredBooks[3].is_bestseller,
+                  inStock: featuredBooks[3].in_stock
+                }}
+                variant="horizontal"
+              />
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </section>
   );

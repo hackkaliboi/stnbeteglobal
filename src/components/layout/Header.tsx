@@ -1,14 +1,28 @@
 import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ShoppingCart, Search } from "lucide-react";
+import { Menu, X, ShoppingCart, Search, User, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { AuthModal } from "@/components/auth/AuthModal";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
   const location = useLocation();
+  const { user, signOut, loading } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -32,6 +46,25 @@ const Header = () => {
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+  };
+
+  const openAuthModal = (tab: "login" | "signup") => {
+    setAuthModalTab(tab);
+    setAuthModalOpen(true);
+  };
+
+  const getUserInitials = (name: string | null) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
   };
 
   return (
@@ -84,11 +117,61 @@ const Header = () => {
                 <ShoppingCart className="h-4 w-4" />
               </Button>
               <ThemeToggle />
-              <Link to="/admin">
-                <Button variant="outline" size="sm" className="ml-2 text-xs font-mono">
-                  Admin
-                </Button>
-              </Link>
+
+              {/* Authentication */}
+              {loading ? (
+                <div className="w-8 h-8 rounded-full bg-muted animate-pulse ml-2" />
+              ) : user ? (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" className="relative h-8 w-8 rounded-full ml-2">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name} />
+                        <AvatarFallback>{getUserInitials(user.user_metadata?.full_name)}</AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent className="w-56" align="end" forceMount>
+                    <DropdownMenuLabel className="font-normal">
+                      <div className="flex flex-col space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {user.user_metadata?.full_name || "User"}
+                        </p>
+                        <p className="text-xs leading-none text-muted-foreground">
+                          {user.email}
+                        </p>
+                      </div>
+                    </DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/profile" className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        <span>Profile</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/admin" className="cursor-pointer">
+                        <span className="mr-2 text-xs">⚙️</span>
+                        <span>Admin</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              ) : (
+                <div className="flex items-center gap-2 ml-2">
+                  <Button variant="ghost" size="sm" onClick={() => openAuthModal("login")}>
+                    Sign In
+                  </Button>
+                  <Button size="sm" onClick={() => openAuthModal("signup")}>
+                    Sign Up
+                  </Button>
+                </div>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -139,16 +222,63 @@ const Header = () => {
                   <ShoppingCart className="h-4 w-4" />
                 </Button>
                 <ThemeToggle />
-                <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
-                  <Button variant="outline" size="sm" className="text-sm font-mono">
-                    Admin
-                  </Button>
-                </Link>
+              </div>
+
+              {/* Mobile Authentication */}
+              <div className="pt-4 mt-4 border-t border-border/20">
+                {user ? (
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name} />
+                        <AvatarFallback>{getUserInitials(user.user_metadata?.full_name)}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <p className="text-sm font-medium">{user.user_metadata?.full_name || "User"}</p>
+                        <p className="text-xs text-muted-foreground">{user.email}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col gap-2">
+                      <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          <User className="mr-2 h-4 w-4" />
+                          Profile
+                        </Button>
+                      </Link>
+                      <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
+                        <Button variant="outline" size="sm" className="w-full justify-start">
+                          <span className="mr-2 text-xs">⚙️</span>
+                          Admin
+                        </Button>
+                      </Link>
+                      <Button variant="outline" size="sm" onClick={handleSignOut} className="w-full justify-start">
+                        <LogOut className="mr-2 h-4 w-4" />
+                        Sign Out
+                      </Button>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col gap-2">
+                    <Button onClick={() => openAuthModal("login")} className="w-full">
+                      Sign In
+                    </Button>
+                    <Button variant="outline" onClick={() => openAuthModal("signup")} className="w-full">
+                      Sign Up
+                    </Button>
+                  </div>
+                )}
               </div>
             </nav>
           </div>
         </div>
       )}
+
+      {/* Auth Modal */}
+      <AuthModal
+        open={authModalOpen}
+        onOpenChange={setAuthModalOpen}
+        defaultTab={authModalTab}
+      />
     </>
   );
 };

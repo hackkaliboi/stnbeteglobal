@@ -4,11 +4,13 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
+import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
 import Blog from "./pages/Blog";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBooks from "./pages/admin/AdminBooks";
 import AdminOrders from "./pages/admin/AdminOrders";
@@ -26,30 +28,33 @@ const App = () => (
       enableSystem
       disableTransitionOnChange
     >
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            {/* Storefront Routes */}
-            <Route path="/" element={<Index />} />
-            <Route path="/books" element={<Books />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              {/* Storefront Routes */}
+              <Route path="/" element={<Index />} />
+              <Route path="/books" element={<Books />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
+              <Route path="/profile" element={<Profile />} />
 
-            {/* Admin Routes */}
-            <Route path="/admin" element={<AdminDashboard />} />
-            <Route path="/admin/books" element={<AdminBooks />} />
-            <Route path="/admin/orders" element={<AdminOrders />} />
-            <Route path="/admin/posts" element={<AdminPosts />} />
-            <Route path="/admin/bookings" element={<AdminBookings />} />
+              {/* Admin Routes */}
+              <Route path="/admin" element={<AdminDashboard />} />
+              <Route path="/admin/books" element={<AdminBooks />} />
+              <Route path="/admin/orders" element={<AdminOrders />} />
+              <Route path="/admin/posts" element={<AdminPosts />} />
+              <Route path="/admin/bookings" element={<AdminBookings />} />
 
-            {/* Catch-all */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
+              {/* Catch-all */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

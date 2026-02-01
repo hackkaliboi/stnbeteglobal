@@ -1,11 +1,12 @@
 import { useState } from "react";
 import MainLayout from "@/components/layout/MainLayout";
-import BookCard, { Book } from "@/components/books/BookCard";
+import BookCard from "@/components/books/BookCard";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Filter, SlidersHorizontal } from "lucide-react";
+import { Search, Filter, SlidersHorizontal, Loader2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { useBooks } from "@/hooks/useBooks";
 import { cn } from "@/lib/utils";
 import {
   Select,
@@ -15,109 +16,32 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Sample books data
-const allBooks: Book[] = [
-  {
-    id: "1",
-    title: "The Art of Creative Writing",
-    author: "Sarah Mitchell",
-    price: 24.99,
-    coverImage: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
-    category: "Writing",
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-  },
-  {
-    id: "2",
-    title: "Journey Through Time",
-    author: "Michael Chen",
-    price: 19.99,
-    coverImage: "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
-    category: "Fiction",
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-  },
-  {
-    id: "3",
-    title: "Mindful Living",
-    author: "Emma Thompson",
-    price: 16.99,
-    coverImage: "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop",
-    category: "Self-Help",
-    isNew: true,
-    isBestseller: true,
-    inStock: true,
-  },
-  {
-    id: "4",
-    title: "The Silent Observer",
-    author: "James Wilson",
-    price: 21.99,
-    coverImage: "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop",
-    category: "Mystery",
-    isNew: false,
-    isBestseller: false,
-    inStock: true,
-  },
-  {
-    id: "5",
-    title: "Ocean's Whisper",
-    author: "Lisa Park",
-    price: 18.99,
-    coverImage: "https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=400&h=600&fit=crop",
-    category: "Romance",
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-  },
-  {
-    id: "6",
-    title: "The Entrepreneur's Guide",
-    author: "Robert Blake",
-    price: 29.99,
-    coverImage: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=600&fit=crop",
-    category: "Business",
-    isNew: false,
-    isBestseller: true,
-    inStock: false,
-  },
-  {
-    id: "7",
-    title: "Stars Beyond",
-    author: "Maria Santos",
-    price: 22.99,
-    coverImage: "https://images.unsplash.com/photo-1518744386442-2d48ac47a0e0?w=400&h=600&fit=crop",
-    category: "Science Fiction",
-    isNew: true,
-    isBestseller: false,
-    inStock: true,
-  },
-  {
-    id: "8",
-    title: "Cooking with Love",
-    author: "Chef Antonio",
-    price: 34.99,
-    coverImage: "https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=600&fit=crop",
-    category: "Cooking",
-    isNew: false,
-    isBestseller: true,
-    inStock: true,
-  },
-];
+// Book type from Supabase
+export interface Book {
+  id: string;
+  title: string;
+  author: string;
+  price: number;
+  cover_image: string | null;
+  category: string;
+  description?: string | null;
+  is_new: boolean;
+  is_bestseller: boolean;
+  in_stock: boolean;
+}
 
-const categories = ["All", "Fiction", "Non-Fiction", "Romance", "Mystery", "Self-Help", "Business", "Science Fiction", "Cooking"];
+const categories = ["All", "Fiction", "Non-Fiction", "Romance", "Mystery", "Self-Help", "Business", "Science Fiction", "Cooking", "Writing"];
 
 const Books = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
 
+  const { books, loading, error } = useBooks();
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
   const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation();
 
-  const filteredBooks = allBooks
+  const filteredBooks = books
     .filter((book) => {
       const matchesSearch =
         book.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -138,6 +62,17 @@ const Books = () => {
           return 0;
       }
     });
+
+  if (error) {
+    return (
+      <MainLayout>
+        <div className="container mx-auto py-20 text-center">
+          <p className="text-red-500 mb-4">Error loading books: {error}</p>
+          <Button onClick={() => window.location.reload()}>Try Again</Button>
+        </div>
+      </MainLayout>
+    );
+  }
 
   return (
     <MainLayout>
@@ -168,7 +103,7 @@ const Books = () => {
               <div className="flex flex-col sm:flex-row gap-4">
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-                  <span>500+ Titles</span>
+                  <span>{books.length}+ Titles</span>
                 </div>
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -191,7 +126,7 @@ const Books = () => {
             >
               <div className="grid grid-cols-2 gap-6">
                 <div className="text-center">
-                  <div className="text-3xl md:text-4xl font-light text-foreground mb-2">500+</div>
+                  <div className="text-3xl md:text-4xl font-light text-foreground mb-2">{books.length}+</div>
                   <div className="text-sm text-muted-foreground uppercase tracking-wider">Books</div>
                 </div>
                 <div className="text-center">
@@ -279,14 +214,31 @@ const Books = () => {
           </p>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+            <span className="ml-2 text-muted-foreground">Loading books...</span>
+          </div>
+        )}
+
         {/* Books Grid */}
-        {filteredBooks.length > 0 ? (
+        {!loading && filteredBooks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredBooks.map((book) => (
-              <BookCard key={book.id} book={book} />
+              <BookCard
+                key={book.id}
+                book={{
+                  ...book,
+                  coverImage: book.cover_image || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
+                  isNew: book.is_new,
+                  isBestseller: book.is_bestseller,
+                  inStock: book.in_stock
+                }}
+              />
             ))}
           </div>
-        ) : (
+        ) : !loading && (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg mb-4">
               No books found matching your criteria.
