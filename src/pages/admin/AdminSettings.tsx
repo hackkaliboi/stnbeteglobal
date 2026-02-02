@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -6,29 +6,28 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
+import { getAllSiteSettings, updateSiteSetting } from "@/lib/cms";
 import {
-    Settings,
     Globe,
     Mail,
-    Shield,
-    Database,
     Palette,
     Save,
-    RefreshCw
+    RefreshCw,
+    Loader2
 } from "lucide-react";
 
 const AdminSettings = () => {
     const { toast } = useToast();
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [saving, setSaving] = useState(false);
 
     // Site Settings
     const [siteSettings, setSiteSettings] = useState({
-        siteName: "stnbeteglobal",
-        siteDescription: "Curated books for curious minds. Explore our collection of bestsellers, new releases, and timeless classics.",
-        contactEmail: "hello@stnbeteglobal.com",
-        whatsappNumber: "+1234567890",
+        siteName: "",
+        siteDescription: "",
+        contactEmail: "",
+        whatsappNumber: "",
         maintenanceMode: false,
     });
 
@@ -38,102 +37,101 @@ const AdminSettings = () => {
         smtpPort: "587",
         smtpUser: "",
         smtpPassword: "",
-        fromEmail: "noreply@stnbeteglobal.com",
-        fromName: "stnbeteglobal",
+        fromEmail: "",
+        fromName: "",
     });
 
     // SEO Settings
     const [seoSettings, setSeoSettings] = useState({
-        metaTitle: "stnbeteglobal - Your Premier Online Bookstore",
-        metaDescription: "Discover amazing books at stnbeteglobal. From bestsellers to hidden gems, find your next great read.",
-        metaKeywords: "books, bookstore, reading, literature, bestsellers",
+        metaTitle: "",
+        metaDescription: "",
+        metaKeywords: "",
         googleAnalyticsId: "",
         facebookPixelId: "",
     });
 
-    const handleSaveSiteSettings = async () => {
-        setLoading(true);
+    // Fetch initial settings
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const data = await getAllSiteSettings();
+
+                setSiteSettings({
+                    siteName: data.site_name || "",
+                    siteDescription: data.site_description || "",
+                    contactEmail: data.contact_email || "",
+                    whatsappNumber: data.whatsapp_number || "",
+                    maintenanceMode: data.maintenance_mode || false,
+                });
+
+                setEmailSettings({
+                    smtpHost: data.smtp_host || "",
+                    smtpPort: data.smtp_port || "587",
+                    smtpUser: data.smtp_user || "",
+                    smtpPassword: data.smtp_password || "",
+                    fromEmail: data.from_email || "",
+                    fromName: data.from_name || "",
+                });
+
+                setSeoSettings({
+                    metaTitle: data.meta_title || "",
+                    metaDescription: data.meta_description || "",
+                    metaKeywords: data.meta_keywords || "",
+                    googleAnalyticsId: data.google_analytics_id || "",
+                    facebookPixelId: data.facebook_pixel_id || "",
+                });
+
+            } catch (error) {
+                console.error("Failed to load settings:", error);
+                toast({
+                    title: "Error",
+                    description: "Failed to load settings from database.",
+                    variant: "destructive",
+                });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchSettings();
+    }, [toast]);
+
+    const saveSettingsGroup = async (groupName: string, settings: Record<string, any>) => {
+        setSaving(true);
         try {
-            // In a real app, you would save these to your database or config
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
+            // Map camelCase to snake_case keys for database
+            const updates = Object.entries(settings).map(([key, value]) => {
+                const dbKey = key.replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
+                return updateSiteSetting(dbKey, value);
+            });
+
+            await Promise.all(updates);
 
             toast({
                 title: "Success",
-                description: "Site settings have been saved successfully.",
+                description: `${groupName} have been saved successfully.`,
             });
         } catch (error) {
+            console.error(`Failed to save ${groupName}:`, error);
             toast({
                 title: "Error",
-                description: "Failed to save site settings.",
+                description: `Failed to save ${groupName}.`,
                 variant: "destructive",
             });
         } finally {
-            setLoading(false);
+            setSaving(false);
         }
     };
 
-    const handleSaveEmailSettings = async () => {
-        setLoading(true);
-        try {
-            // In a real app, you would save these to your database or config
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-
-            toast({
-                title: "Success",
-                description: "Email settings have been saved successfully.",
-            });
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to save email settings.",
-                variant: "destructive",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const handleSaveSeoSettings = async () => {
-        setLoading(true);
-        try {
-            // In a real app, you would save these to your database or config
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-
-            toast({
-                title: "Success",
-                description: "SEO settings have been saved successfully.",
-            });
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to save SEO settings.",
-                variant: "destructive",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const clearCache = async () => {
-        setLoading(true);
-        try {
-            // In a real app, you would clear your cache
-            await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
-
-            toast({
-                title: "Success",
-                description: "Cache has been cleared successfully.",
-            });
-        } catch (error) {
-            toast({
-                title: "Error",
-                description: "Failed to clear cache.",
-                variant: "destructive",
-            });
-        } finally {
-            setLoading(false);
-        }
-    };
+    if (loading) {
+        return (
+            <AdminLayout>
+                <div className="flex items-center justify-center h-full min-h-[500px]">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
+                </div>
+            </AdminLayout>
+        );
+    }
 
     return (
         <AdminLayout>
@@ -207,8 +205,9 @@ const AdminSettings = () => {
                             />
                         </div>
 
-                        <Button onClick={handleSaveSiteSettings} disabled={loading}>
-                            <Save className="h-4 w-4 mr-2" />
+                        <Button onClick={() => saveSettingsGroup("Site settings", siteSettings)} disabled={saving}>
+                            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {!saving && <Save className="h-4 w-4 mr-2" />}
                             Save Site Settings
                         </Button>
                     </CardContent>
@@ -273,8 +272,9 @@ const AdminSettings = () => {
                             </div>
                         </div>
 
-                        <Button onClick={handleSaveSeoSettings} disabled={loading}>
-                            <Save className="h-4 w-4 mr-2" />
+                        <Button onClick={() => saveSettingsGroup("SEO settings", seoSettings)} disabled={saving}>
+                            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {!saving && <Save className="h-4 w-4 mr-2" />}
                             Save SEO Settings
                         </Button>
                     </CardContent>
@@ -350,45 +350,33 @@ const AdminSettings = () => {
                             </div>
                         </div>
 
-                        <Button onClick={handleSaveEmailSettings} disabled={loading}>
-                            <Save className="h-4 w-4 mr-2" />
+                        <Button onClick={() => saveSettingsGroup("Email settings", emailSettings)} disabled={saving}>
+                            {saving && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                            {!saving && <Save className="h-4 w-4 mr-2" />}
                             Save Email Settings
                         </Button>
                     </CardContent>
                 </Card>
 
-                {/* System Actions */}
+                {/* System Actions - Kept mocked for now as cache clearing is backend specific */}
                 <Card>
                     <CardHeader>
-                        <CardTitle className="flex items-center gap-2">
-                            <Database className="h-5 w-5" />
+                        <CardTitle className="flex items-center gap-1">
+                            <RefreshCw className="h-5 w-5" />
                             System Actions
                         </CardTitle>
                     </CardHeader>
                     <CardContent className="space-y-4">
                         <div className="flex items-center justify-between p-4 border rounded-lg">
                             <div>
-                                <h4 className="font-medium">Clear Cache</h4>
+                                <h4 className="font-medium">Clear Client Cache</h4>
                                 <p className="text-sm text-muted-foreground">
-                                    Clear all cached data to improve performance
+                                    Force browser to reload latest assets
                                 </p>
                             </div>
-                            <Button variant="outline" onClick={clearCache} disabled={loading}>
+                            <Button variant="outline" onClick={() => window.location.reload()}>
                                 <RefreshCw className="h-4 w-4 mr-2" />
-                                Clear Cache
-                            </Button>
-                        </div>
-
-                        <div className="flex items-center justify-between p-4 border rounded-lg">
-                            <div>
-                                <h4 className="font-medium">Database Backup</h4>
-                                <p className="text-sm text-muted-foreground">
-                                    Create a backup of your database
-                                </p>
-                            </div>
-                            <Button variant="outline" disabled>
-                                <Database className="h-4 w-4 mr-2" />
-                                Coming Soon
+                                Reload Page
                             </Button>
                         </div>
                     </CardContent>

@@ -30,8 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useBooks } from "@/hooks/useBooks";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { BookFormModal } from "@/components/admin/BookFormModal";
 
@@ -43,8 +42,7 @@ const AdminBooks = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { books, loading, error, deleteBook } = useBooks();
-  const { user } = useAuth();
-  const { isAdmin, loading: profileLoading } = useUserProfile();
+  const { user, isAdmin, loading: profileLoading } = useAuth();
   const { toast } = useToast();
 
   // Check if user is admin - removed old check

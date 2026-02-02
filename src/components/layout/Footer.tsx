@@ -1,6 +1,32 @@
 import { Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { getAllSiteSettings } from "@/lib/cms";
 
 const Footer = () => {
+  const [settings, setSettings] = useState<Record<string, any>>({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSettings = async () => {
+      try {
+        const data = await getAllSiteSettings();
+        setSettings(data);
+      } catch (error) {
+        console.error("Failed to load footer settings:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSettings();
+  }, []);
+
+  const currentYear = new Date().getFullYear();
+  const siteName = settings.site_name || "stnbeteglobal";
+  const siteDescription = settings.site_description || "Curated books for curious minds. Discover your next favorite read from our collection of bestsellers and timeless classics.";
+  const contactEmail = settings.contact_email || "hello@stnbeteglobal.com";
+  const footerText = settings.footer_text || `© ${currentYear} ${siteName}`;
+
   return (
     <footer className="bg-background border-t border-border">
       <div className="container mx-auto py-16 lg:py-20">
@@ -8,11 +34,10 @@ const Footer = () => {
           {/* Brand - Large */}
           <div className="lg:col-span-5">
             <Link to="/" className="text-2xl font-light tracking-tight text-foreground">
-              stnbeteglobal
+              {siteName}
             </Link>
             <p className="text-muted-foreground mt-4 max-w-sm leading-relaxed">
-              Curated books for curious minds. Discover your next favorite read from our
-              collection of bestsellers and timeless classics.
+              {siteDescription}
             </p>
           </div>
 
@@ -43,16 +68,9 @@ const Footer = () => {
               Contact
             </h4>
             <div className="space-y-3 text-sm">
-              <a href="mailto:hello@stnbeteglobal.com" className="block text-foreground hover:text-muted-foreground transition-colors">
-                hello@stnbeteglobal.com
+              <a href={`mailto:${contactEmail}`} className="block text-foreground hover:text-muted-foreground transition-colors">
+                {contactEmail}
               </a>
-              <a href="tel:+12345678900" className="block text-foreground hover:text-muted-foreground transition-colors">
-                +1 (234) 567-8900
-              </a>
-              <p className="text-muted-foreground pt-2">
-                123 Book Street<br />
-                Reading City, RC 12345
-              </p>
             </div>
           </div>
         </div>
@@ -60,7 +78,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4">
           <p className="text-xs text-muted-foreground font-mono">
-            © {new Date().getFullYear()} stnbeteglobal
+            {footerText}
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-xs text-muted-foreground hover:text-foreground transition-colors">
@@ -75,5 +93,6 @@ const Footer = () => {
     </footer>
   );
 };
+
 
 export default Footer;

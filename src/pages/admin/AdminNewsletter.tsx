@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Mail, Calendar, Users, Search, Download, UserX, Loader2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "../../contexts/AuthContext";
 import { format } from "date-fns";
 
 interface NewsletterSubscriber {
@@ -23,7 +23,7 @@ const AdminNewsletter = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const { toast } = useToast();
-    const { isAdmin, loading: profileLoading } = useUserProfile();
+    const { isAdmin, loading: profileLoading } = useAuth();
 
     useEffect(() => {
         fetchSubscribers();

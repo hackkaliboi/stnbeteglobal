@@ -1,240 +1,148 @@
 import { useState, useEffect } from "react";
-import MainLayout from "@/components/layout/MainLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useAuth, UserProfile } from "../contexts/AuthContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import MainLayout from "@/components/layout/MainLayout";
+import { supabase } from "@/lib/supabase";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, User, Mail, Shield, Calendar, ExternalLink } from "lucide-react";
-import { Navigate, Link } from "react-router-dom";
+import { Loader2, User as UserIcon } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
-const Profile = () => {
-    const { user, loading } = useAuth();
-    const { profile, isAdmin, loading: profileLoading } = useUserProfile();
-    const { toast } = useToast();
+export default function Profile() {
+    const { user, profile, loading: authLoading, refreshProfile } = useAuth();
     const [isEditing, setIsEditing] = useState(false);
-    const [formData, setFormData] = useState({
-        fullName: "",
-        email: "",
-    });
+    const [fullName, setFullName] = useState("");
+    const [loading, setLoading] = useState(false);
+    const { toast } = useToast();
+    const navigate = useNavigate();
 
+    // Redirect if not logged in
+    useEffect(() => {
+        if (!authLoading && !user) {
+            navigate("/");
+        }
+    }, [user, authLoading, navigate]);
+
+    // Initialize form with profile data
     useEffect(() => {
         if (profile) {
-            setFormData({
-                fullName: profile.full_name || "",
-                email: profile.email || "",
-            });
+            setFullName(profile.full_name || "");
         }
     }, [profile]);
 
-    if (loading || profileLoading) {
+    const handleUpdateProfile = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user) return;
+
+        setLoading(true);
+        try {
+            const { error } = await supabase
+                .from("users")
+                .update({ full_name: fullName })
+                .eq("id", user.id);
+
+            if (error) throw error;
+
+            toast({
+                title: "Profile Updated",
+                description: "Your profile information has been updated successfully.",
+            });
+
+            await refreshProfile();
+            setIsEditing(false);
+        } catch (error) {
+            console.error(error);
+            toast({
+                title: "Error",
+                description: "Failed to update profile.",
+                variant: "destructive",
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    if (authLoading) {
         return (
             <MainLayout>
-                <div className="container mx-auto py-20">
-                    <div className="flex items-center justify-center">
-                        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-                        <span className="ml-2 text-muted-foreground">Loading profile...</span>
-                    </div>
+                <div className="container mx-auto py-20 flex justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                 </div>
             </MainLayout>
         );
     }
 
-    if (!user) {
-        return <Navigate to="/" replace />;
-    }
-
-    const getUserInitials = (name: string | null) => {
-        if (!name) return "U";
-        return name
-            .split(" ")
-            .map((n) => n[0])
-            .join("")
-            .toUpperCase()
-            .slice(0, 2);
-    };
-
-    const handleSave = async () => {
-        // In a real app, you would update the user profile here
-        toast({
-            title: "Profile Updated",
-            description: "Your profile has been updated successfully.",
-        });
-        setIsEditing(false);
-    };
-
-    const userRole = profile?.role || 'user';
-    const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
-    const joinDate = new Date(user?.created_at || '').toLocaleDateString('en-US', {
-        month: 'long',
-        day: 'numeric',
-        year: 'numeric'
-    });
+    if (!user) return null;
 
     return (
         <MainLayout>
-            <div className="container mx-auto py-20">
+            <div className="container mx-auto py-10 px-4 md:px-0">
                 <div className="max-w-2xl mx-auto space-y-8">
-                    {/* Header */}
-                    <div className="text-center">
-                        <h1 className="text-3xl font-bold text-foreground mb-2">Profile</h1>
-                        <p className="text-muted-foreground">Manage your account settings and preferences</p>
+                    <div>
+                        <h1 className="text-3xl font-serif font-bold mb-2">My Profile</h1>
+                        <p className="text-muted-foreground">Manage your account settings and preferences.</p>
                     </div>
 
-                    {/* Profile Card */}
-                    <Card>
-                        <CardHeader className="text-center pb-6">
-                            <div className="flex justify-center mb-4">
-                                <Avatar className="h-24 w-24">
-                                    <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={displayName} />
-                                    <AvatarFallback className="text-2xl">
-                                        {getUserInitials(displayName)}
-                                    </AvatarFallback>
-                                </Avatar>
+                    <div className="bg-card border rounded-lg p-6 shadow-sm">
+                        <div className="flex items-center gap-6 mb-8">
+                            <div className="h-20 w-20 rounded-full bg-secondary flex items-center justify-center text-3xl font-medium">
+                                {profile?.avatar_url ? (
+                                    <img src={profile.avatar_url} alt="Profile" className="h-full w-full rounded-full object-cover" />
+                                ) : (
+                                    <span>{profile?.full_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}</span>
+                                )}
                             </div>
-                            <CardTitle className="text-2xl">
-                                {displayName}
-                            </CardTitle>
-                            <p className="text-muted-foreground">{user?.email}</p>
-                            {isAdmin && (
-                                <div className="flex justify-center mt-2 gap-2">
-                                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
-                                        <Shield className="h-3 w-3 mr-1" />
-                                        Administrator
-                                    </span>
-                                    <Link to="/admin">
-                                        <Button size="sm" variant="outline">
-                                            <ExternalLink className="h-3 w-3 mr-1" />
-                                            Admin Dashboard
-                                        </Button>
-                                    </Link>
-                                </div>
-                            )}
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <Separator />
+                            <div>
+                                <h2 className="text-xl font-semibold">{profile?.full_name || "User"}</h2>
+                                <p className="text-muted-foreground">{user.email}</p>
+                                <span className={`inline-block mt-2 px-2 py-1 text-xs rounded-full ${profile?.role === 'admin'
+                                    ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
+                                    : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
+                                    }`}>
+                                    {profile?.role === 'admin' ? "Administrator" : "Member"}
+                                </span>
+                            </div>
+                        </div>
 
-                            {/* Account Information */}
-                            <div className="space-y-4">
-                                <h3 className="text-lg font-semibold text-foreground">Account Information</h3>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="fullName">Full Name</Label>
-                                        {isEditing ? (
-                                            <Input
-                                                id="fullName"
-                                                value={formData.fullName}
-                                                onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
-                                                placeholder="Enter your full name"
-                                            />
-                                        ) : (
-                                            <div className="flex items-center space-x-2 p-2 bg-muted/50 rounded-md">
-                                                <User className="h-4 w-4 text-muted-foreground" />
-                                                <span className="text-foreground">{displayName || "Not set"}</span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label htmlFor="email">Email Address</Label>
-                                        <div className="flex items-center space-x-2 p-2 bg-muted/50 rounded-md">
-                                            <Mail className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-foreground">{user?.email}</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                    <div className="space-y-2">
-                                        <Label>Account Type</Label>
-                                        <div className="flex items-center space-x-2 p-2 bg-muted/50 rounded-md">
-                                            <Shield className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-foreground capitalize">{userRole}</span>
-                                        </div>
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <Label>Member Since</Label>
-                                        <div className="flex items-center space-x-2 p-2 bg-muted/50 rounded-md">
-                                            <Calendar className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-foreground">{joinDate}</span>
-                                        </div>
-                                    </div>
-                                </div>
+                        <form onSubmit={handleUpdateProfile} className="space-y-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="email">Email Address</Label>
+                                <Input id="email" value={user.email || ""} disabled className="bg-muted/50" />
+                                <p className="text-xs text-muted-foreground">Email address cannot be changed.</p>
                             </div>
 
-                            <Separator />
+                            <div className="space-y-2">
+                                <Label htmlFor="fullName">Full Name</Label>
+                                <Input
+                                    id="fullName"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                    disabled={!isEditing}
+                                />
+                            </div>
 
-                            {/* Actions */}
-                            <div className="flex justify-end space-x-2">
+                            <div className="flex justify-end gap-4 pt-4">
                                 {isEditing ? (
                                     <>
-                                        <Button variant="outline" onClick={() => setIsEditing(false)}>
+                                        <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} disabled={loading}>
                                             Cancel
                                         </Button>
-                                        <Button onClick={handleSave}>
+                                        <Button type="submit" disabled={loading}>
+                                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
                                             Save Changes
                                         </Button>
                                     </>
                                 ) : (
-                                    <Button onClick={() => setIsEditing(true)}>
+                                    <Button type="button" onClick={() => setIsEditing(true)}>
                                         Edit Profile
                                     </Button>
                                 )}
                             </div>
-                        </CardContent>
-                    </Card>
-
-                    {/* Additional Information */}
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Account Settings</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h4 className="font-medium text-foreground">Email Notifications</h4>
-                                    <p className="text-sm text-muted-foreground">Receive updates about new books and blog posts</p>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                    Manage
-                                </Button>
-                            </div>
-
-                            <Separator />
-
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h4 className="font-medium text-foreground">Privacy Settings</h4>
-                                    <p className="text-sm text-muted-foreground">Control your data and privacy preferences</p>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                    Configure
-                                </Button>
-                            </div>
-
-                            <Separator />
-
-                            <div className="flex items-center justify-between">
-                                <div>
-                                    <h4 className="font-medium text-foreground">Change Password</h4>
-                                    <p className="text-sm text-muted-foreground">Update your account password</p>
-                                </div>
-                                <Button variant="outline" size="sm">
-                                    Change
-                                </Button>
-                            </div>
-                        </CardContent>
-                    </Card>
+                        </form>
+                    </div>
                 </div>
             </div>
         </MainLayout>
     );
-};
-
-export default Profile;
+}

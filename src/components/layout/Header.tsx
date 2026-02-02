@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, ShoppingCart, Search, User, LogOut, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { AuthModal } from "@/components/auth/AuthModal";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { AuthModal } from "../auth/AuthModal";
+import { useAuth } from "../../contexts/AuthContext";
+import { getSiteSetting } from "@/lib/cms";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -23,9 +23,10 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
+  const [siteName, setSiteName] = useState("stnbeteglobal");
   const location = useLocation();
-  const { user, signOut, loading } = useAuth();
-  const { profile, isAdmin } = useUserProfile();
+  const navigate = useNavigate();
+  const { user, signOut, loading, profile, isAdmin } = useAuth();
   const { toast } = useToast();
 
   useEffect(() => {
@@ -34,6 +35,13 @@ const Header = () => {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  // Fetch site name
+  useEffect(() => {
+    getSiteSetting("site_name").then((name) => {
+      if (name) setSiteName(name);
+    });
   }, []);
 
   // Close mobile menu when route changes
@@ -73,10 +81,7 @@ const Header = () => {
           title: "Success",
           description: "You have been signed out successfully.",
         });
-        // Force a page reload to clear all state
-        setTimeout(() => {
-          window.location.href = '/';
-        }, 1000);
+        navigate('/');
       }
     } catch (error) {
       console.error('Sign out exception:', error);
@@ -126,7 +131,7 @@ const Header = () => {
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
                 <span className="text-white text-sm font-bold">S</span>
               </div>
-              <span className="hidden sm:block">stnbeteglobal</span>
+              <span className="hidden sm:block">{siteName}</span>
             </Link>
 
             {/* Desktop Navigation - Centered */}

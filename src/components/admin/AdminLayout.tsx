@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   LayoutDashboard,
   BookOpen,
@@ -12,9 +12,14 @@ import {
   X,
   Bell,
   Users,
+  Tag,
+  ArrowLeft,
+  LayoutTemplate
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -22,6 +27,8 @@ interface AdminLayoutProps {
 
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { name: "Categories", href: "/admin/categories", icon: Tag },
+  { name: "Pages", href: "/admin/pages", icon: LayoutTemplate },
   { name: "Books", href: "/admin/books", icon: BookOpen },
   { name: "Blog Posts", href: "/admin/posts", icon: FileText },
   { name: "Newsletter", href: "/admin/newsletter", icon: Bell },
@@ -31,6 +38,30 @@ const navItems = [
 const AdminLayout = ({ children }: AdminLayoutProps) => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { signOut } = useAuth();
+  const { toast } = useToast();
+
+  const handleSignOut = async () => {
+    try {
+      const { error } = await signOut();
+      if (error) {
+        toast({
+          title: "Error",
+          description: "Failed to sign out.",
+          variant: "destructive",
+        });
+      } else {
+        toast({
+          title: "Success",
+          description: "Signed out successfully.",
+        });
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Sign out error:", error);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-muted/30">
@@ -83,9 +114,16 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
             {/* Footer */}
             <div className="p-4 border-t border-sidebar-border space-y-2">
               <Link to="/" className="flex items-center gap-3 px-3 py-2.5 text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground rounded-md transition-colors">
-                <LogOut className="h-5 w-5" />
+                <ArrowLeft className="h-5 w-5" />
                 Back to Store
               </Link>
+              <button
+                onClick={handleSignOut}
+                className="w-full flex items-center gap-3 px-3 py-2.5 text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground rounded-md transition-colors text-left"
+              >
+                <LogOut className="h-5 w-5" />
+                Log Out
+              </button>
             </div>
           </div>
         </aside>

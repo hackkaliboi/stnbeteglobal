@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { supabase } from "@/lib/supabase";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "../../contexts/AuthContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -10,8 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 
 const AdminTest = () => {
-    const { user } = useAuth();
-    const { profile, isAdmin, loading } = useUserProfile();
+    const { user, profile, isAdmin, loading } = useAuth();
     const { toast } = useToast();
     const [email, setEmail] = useState("");
     const [updating, setUpdating] = useState(false);

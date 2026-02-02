@@ -14,12 +14,13 @@ import {
   ArrowDownRight,
   Loader2,
   Settings,
+  Tag,
+  LayoutTemplate
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBooks } from "@/hooks/useBooks";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
 
 interface DashboardStats {
@@ -34,19 +35,20 @@ interface DashboardStats {
 const quickActions = [
   { name: "Add New Book", href: "/admin/books", icon: BookOpen },
   { name: "Create Blog Post", href: "/admin/posts", icon: FileText },
-  { name: "Newsletter Subscribers", href: "/admin/newsletter", icon: TrendingUp },
+  { name: "Categories", href: "/admin/categories", icon: Tag },
+  { name: "Site Pages", href: "/admin/pages", icon: LayoutTemplate },
+  { name: "Newsletter", href: "/admin/newsletter", icon: TrendingUp },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 const AdminDashboard = () => {
-  const [stats, setStats] = useState<DashboardStats | null>(null);
-  const [loading, setLoading] = useState(true);
   const [userCount, setUserCount] = useState(0);
 
-  const { books } = useBooks();
-  const { posts } = useBlogPosts();
-  const { user } = useAuth();
-  const { isAdmin, loading: profileLoading } = useUserProfile();
+  const { books, loading: booksLoading } = useBooks();
+  const { posts, loading: postsLoading } = useBlogPosts();
+  const { user, isAdmin, loading: profileLoading } = useAuth();
+
+  const loading = booksLoading || postsLoading;
 
   useEffect(() => {
     const fetchUserCount = async () => {
@@ -65,20 +67,14 @@ const AdminDashboard = () => {
     }
   }, [isAdmin]);
 
-  useEffect(() => {
-    if (books.length > 0 || posts.length > 0) {
-      const dashboardStats: DashboardStats = {
-        totalBooks: books.length,
-        totalPosts: posts.length,
-        publishedPosts: posts.filter(post => post.published).length,
-        inStockBooks: books.filter(book => book.in_stock).length,
-        newBooks: books.filter(book => book.is_new).length,
-        bestsellers: books.filter(book => book.is_bestseller).length,
-      };
-      setStats(dashboardStats);
-      setLoading(false);
-    }
-  }, [books, posts]);
+  const stats: DashboardStats = {
+    totalBooks: books.length,
+    totalPosts: posts.length,
+    publishedPosts: posts.filter(post => post.published).length,
+    inStockBooks: books.filter(book => book.in_stock).length,
+    newBooks: books.filter(book => book.is_new).length,
+    bestsellers: books.filter(book => book.is_bestseller).length,
+  };
 
   if (profileLoading) {
     return (
@@ -103,7 +99,7 @@ const AdminDashboard = () => {
     );
   }
 
-  const statCards = stats ? [
+  const statCards = [
     {
       title: "Total Books",
       value: stats.totalBooks.toString(),
@@ -132,7 +128,7 @@ const AdminDashboard = () => {
       icon: Users,
       color: "text-orange-600",
     },
-  ] : [];
+  ];
 
   return (
     <AdminLayout>

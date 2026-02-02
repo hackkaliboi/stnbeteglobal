@@ -30,8 +30,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
-import { useAuth } from "@/contexts/AuthContext";
-import { useUserProfile } from "@/hooks/useUserProfile";
+import { useAuth } from "../../contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
 import { PostFormModal } from "@/components/admin/PostFormModal";
 
@@ -43,8 +42,7 @@ const AdminPosts = () => {
   const [isDeleting, setIsDeleting] = useState(false);
 
   const { posts, loading, error, deletePost } = useBlogPosts();
-  const { user } = useAuth();
-  const { isAdmin, loading: profileLoading } = useUserProfile();
+  const { user, isAdmin, loading: profileLoading } = useAuth();
   const { toast } = useToast();
 
   // Check if user is admin - removed old check

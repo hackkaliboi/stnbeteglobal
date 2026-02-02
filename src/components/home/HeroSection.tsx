@@ -3,10 +3,53 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
+import { getPageContent } from "@/lib/cms";
 
 const HeroSection = () => {
   const { ref: leftRef, isVisible: leftVisible } = useScrollAnimation();
   const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
+  const [heroContent, setHeroContent] = useState({
+    title: "Discover Stories\nThat Inspire",
+    subtitle: "Curated books for curious minds. Explore our collection of bestsellers, new releases, and timeless classics.",
+    cta_text: "Browse Books",
+    cta_link: "/books",
+    secondary_cta_text: "Our Story",
+    secondary_cta_link: "/about",
+    image_url: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
+    stats_titles: "500+",
+    stats_categories: "12",
+    stats_readers: "2k+"
+  });
+
+  useEffect(() => {
+    const fetchContent = async () => {
+      try {
+        const pageData = await getPageContent('/');
+        if (pageData && pageData.sections && pageData.sections.hero) {
+          setHeroContent(prev => ({ ...prev, ...pageData.sections.hero }));
+        }
+      } catch (error) {
+        console.error("Failed to load hero content:", error);
+      }
+    };
+    fetchContent();
+  }, []);
+
+  // Helper to process newlines in title for existing design
+  const renderTitle = (title: string) => {
+    if (!title.includes('\n')) return title;
+    const parts = title.split('\n');
+    return (
+      <>
+        {parts[0]}
+        <br />
+        {parts[1]}
+        {parts[2] && <br />}
+        {parts[2] && <span className="font-medium italic text-blue-600 dark:text-blue-400">{parts[2]}</span>}
+      </>
+    );
+  };
 
   return (
     <section className="min-h-screen flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-20 lg:pt-20">
@@ -19,14 +62,12 @@ const HeroSection = () => {
             </span>
 
             <h1 className="text-4xl md:text-5xl font-light text-foreground leading-[0.95] tracking-tight">
-              Discover Stories
-              <br />
-              That <span className="font-medium italic text-blue-600 dark:text-blue-400">Inspire</span>
+              {/* Simple render for mobile or dynamic title logic if needed */}
+              {heroContent.title.replace('\n', ' ')}
             </h1>
 
             <p className="text-muted-foreground text-lg leading-relaxed max-w-md mx-auto">
-              Curated books for curious minds. Explore our collection of bestsellers,
-              new releases, and timeless classics.
+              {heroContent.subtitle}
             </p>
 
             {/* Mobile Book Image */}
@@ -40,7 +81,7 @@ const HeroSection = () => {
                 style={{ borderRadius: '30px 0 30px 0' }}
               >
                 <img
-                  src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop"
+                  src={heroContent.image_url}
                   alt="Featured Book"
                   className="w-full h-full object-cover"
                 />
@@ -53,15 +94,15 @@ const HeroSection = () => {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 justify-center relative z-20">
-              <Link to="/books">
+              <Link to={heroContent.cta_link}>
                 <Button size="lg" className="min-w-[160px] group">
-                  Browse Books
+                  {heroContent.cta_text}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link to="/about">
+              <Link to={heroContent.secondary_cta_link}>
                 <Button size="lg" variant="outline" className="min-w-[160px]">
-                  Our Story
+                  {heroContent.secondary_cta_text}
                 </Button>
               </Link>
             </div>
@@ -69,15 +110,15 @@ const HeroSection = () => {
             {/* Mobile Stats */}
             <div className="flex items-center justify-center gap-8 text-sm relative z-20">
               <div className="text-center">
-                <span className="block text-2xl font-light text-foreground">500+</span>
+                <span className="block text-2xl font-light text-foreground">{heroContent.stats_titles}</span>
                 <span className="text-muted-foreground">Titles</span>
               </div>
               <div className="text-center">
-                <span className="block text-2xl font-light text-foreground">12</span>
+                <span className="block text-2xl font-light text-foreground">{heroContent.stats_categories}</span>
                 <span className="text-muted-foreground">Categories</span>
               </div>
               <div className="text-center">
-                <span className="block text-2xl font-light text-foreground">2k+</span>
+                <span className="block text-2xl font-light text-foreground">{heroContent.stats_readers}</span>
                 <span className="text-muted-foreground">Readers</span>
               </div>
             </div>
@@ -99,23 +140,19 @@ const HeroSection = () => {
             </span>
 
             <h1 className="text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-light text-foreground leading-[0.95] tracking-tight mb-8">
-              Stories
-              <br />
-              That
-              <br />
-              <span className="font-medium italic">Inspire</span>
+              {renderTitle(heroContent.title)}
             </h1>
 
             <div className="flex flex-col sm:flex-row gap-3">
-              <Link to="/books">
+              <Link to={heroContent.cta_link}>
                 <Button size="lg" className="min-w-[160px] group">
-                  Browse
+                  {heroContent.cta_text}
                   <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
                 </Button>
               </Link>
-              <Link to="/about">
+              <Link to={heroContent.secondary_cta_link}>
                 <Button size="lg" variant="outline" className="min-w-[160px]">
-                  Our Story
+                  {heroContent.secondary_cta_text}
                 </Button>
               </Link>
             </div>
@@ -140,7 +177,7 @@ const HeroSection = () => {
                   style={{ borderRadius: '40px 0 40px 0' }}
                 >
                   <img
-                    src="https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop"
+                    src={heroContent.image_url}
                     alt="Featured Book"
                     className="w-full h-full object-cover"
                   />
@@ -163,20 +200,19 @@ const HeroSection = () => {
           >
             <div className="border-l border-border pl-6">
               <p className="text-muted-foreground text-lg leading-relaxed mb-6">
-                Curated books for curious minds. Explore our collection of bestsellers,
-                new releases, and timeless classics.
+                {heroContent.subtitle}
               </p>
               <div className="flex flex-col gap-4 text-sm">
                 <div>
-                  <span className="block text-2xl font-light text-foreground">500+</span>
+                  <span className="block text-2xl font-light text-foreground">{heroContent.stats_titles}</span>
                   <span className="text-muted-foreground">Titles</span>
                 </div>
                 <div>
-                  <span className="block text-2xl font-light text-foreground">12</span>
+                  <span className="block text-2xl font-light text-foreground">{heroContent.stats_categories}</span>
                   <span className="text-muted-foreground">Categories</span>
                 </div>
                 <div>
-                  <span className="block text-2xl font-light text-foreground">2k+</span>
+                  <span className="block text-2xl font-light text-foreground">{heroContent.stats_readers}</span>
                   <span className="text-muted-foreground">Readers</span>
                 </div>
               </div>
