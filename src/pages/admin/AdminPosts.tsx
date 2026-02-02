@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useToast } from "@/hooks/use-toast";
 import { PostFormModal } from "@/components/admin/PostFormModal";
 
@@ -43,10 +44,10 @@ const AdminPosts = () => {
 
   const { posts, loading, error, deletePost } = useBlogPosts();
   const { user } = useAuth();
+  const { isAdmin, loading: profileLoading } = useUserProfile();
   const { toast } = useToast();
 
-  // Check if user is admin
-  const isAdmin = user?.user_metadata?.role === 'admin';
+  // Check if user is admin - removed old check
 
   const filteredPosts = posts.filter(
     (post) =>
@@ -83,6 +84,16 @@ const AdminPosts = () => {
       setPostToDelete(null);
     }
   };
+
+  if (profileLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   if (!isAdmin) {
     return (

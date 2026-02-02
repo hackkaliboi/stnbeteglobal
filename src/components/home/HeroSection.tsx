@@ -9,34 +9,28 @@ const HeroSection = () => {
   const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
 
   return (
-    <section className="min-h-screen flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-16 lg:pt-20">
-      <div className="container mx-auto">
+    <section className="min-h-screen flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-20 lg:pt-20">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         {/* Mobile Layout - Centered */}
-        <div className="lg:hidden text-center py-8">
-          <div
-            ref={leftRef}
-            className={cn(
-              "animate-on-scroll-up",
-              leftVisible && "is-visible"
-            )}
-          >
-            <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6 font-mono">
+        <div className="lg:hidden text-center py-12 min-h-[calc(100vh-5rem)] flex flex-col justify-center">
+          <div className="opacity-100 space-y-6">
+            <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono">
               Independent Bookstore
             </span>
 
-            <h1 className="text-4xl md:text-5xl font-light text-foreground leading-[0.95] tracking-tight mb-6">
+            <h1 className="text-4xl md:text-5xl font-light text-foreground leading-[0.95] tracking-tight">
               Discover Stories
               <br />
               That <span className="font-medium italic text-blue-600 dark:text-blue-400">Inspire</span>
             </h1>
 
-            <p className="text-muted-foreground text-lg leading-relaxed mb-8 max-w-md mx-auto">
+            <p className="text-muted-foreground text-lg leading-relaxed max-w-md mx-auto">
               Curated books for curious minds. Explore our collection of bestsellers,
               new releases, and timeless classics.
             </p>
 
             {/* Mobile Book Image */}
-            <div className="relative mb-8 mx-auto w-64 h-80">
+            <div className="relative mx-auto w-64 h-80">
               <div
                 className="absolute inset-0 bg-gradient-to-br from-blue-600 to-blue-800 shadow-2xl transform rotate-3"
                 style={{ borderRadius: '30px 0 30px 0' }}
@@ -58,7 +52,7 @@ const HeroSection = () => {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <div className="flex flex-col sm:flex-row gap-3 justify-center relative z-20">
               <Link to="/books">
                 <Button size="lg" className="min-w-[160px] group">
                   Browse Books
@@ -73,7 +67,7 @@ const HeroSection = () => {
             </div>
 
             {/* Mobile Stats */}
-            <div className="flex items-center justify-center gap-8 text-sm mt-8">
+            <div className="flex items-center justify-center gap-8 text-sm relative z-20">
               <div className="text-center">
                 <span className="block text-2xl font-light text-foreground">500+</span>
                 <span className="text-muted-foreground">Titles</span>

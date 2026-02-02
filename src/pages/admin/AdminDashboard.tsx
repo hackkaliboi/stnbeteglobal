@@ -13,11 +13,13 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   Loader2,
+  Settings,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBooks } from "@/hooks/useBooks";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { supabase } from "@/lib/supabase";
 
 interface DashboardStats {
@@ -32,8 +34,8 @@ interface DashboardStats {
 const quickActions = [
   { name: "Add New Book", href: "/admin/books", icon: BookOpen },
   { name: "Create Blog Post", href: "/admin/posts", icon: FileText },
-  { name: "View Orders", href: "/admin/orders", icon: ShoppingCart },
-  { name: "Manage Bookings", href: "/admin/bookings", icon: Calendar },
+  { name: "Newsletter Subscribers", href: "/admin/newsletter", icon: TrendingUp },
+  { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
 const AdminDashboard = () => {
@@ -44,9 +46,7 @@ const AdminDashboard = () => {
   const { books } = useBooks();
   const { posts } = useBlogPosts();
   const { user } = useAuth();
-
-  // Check if user is admin
-  const isAdmin = user?.user_metadata?.role === 'admin';
+  const { isAdmin, loading: profileLoading } = useUserProfile();
 
   useEffect(() => {
     const fetchUserCount = async () => {
@@ -79,6 +79,16 @@ const AdminDashboard = () => {
       setLoading(false);
     }
   }, [books, posts]);
+
+  if (profileLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   if (!isAdmin) {
     return (

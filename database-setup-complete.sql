@@ -1,4 +1,4 @@
--- Supabase Database Setup Script
+-- Complete Supabase Database Setup for stnbeteglobal
 -- Run this in your Supabase SQL Editor
 
 -- Create users table (extends auth.users)
@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS public.users (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create books table
+-- Create books table with all enhanced fields
 CREATE TABLE IF NOT EXISTS public.books (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     title TEXT NOT NULL,
@@ -24,6 +24,18 @@ CREATE TABLE IF NOT EXISTS public.books (
     is_new BOOLEAN DEFAULT false,
     is_bestseller BOOLEAN DEFAULT false,
     in_stock BOOLEAN DEFAULT true,
+    selar_url TEXT,
+    isbn TEXT,
+    pages INTEGER DEFAULT 0,
+    publisher TEXT DEFAULT 'stnbeteglobal',
+    publication_year INTEGER,
+    format TEXT DEFAULT 'Paperback',
+    dimensions TEXT DEFAULT '6 x 9 inches',
+    weight TEXT DEFAULT '1.2 lbs',
+    language TEXT DEFAULT 'English',
+    edition TEXT DEFAULT '1st Edition',
+    rating DECIMAL(2,1) DEFAULT 4.2,
+    review_count INTEGER DEFAULT 0,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -44,33 +56,36 @@ CREATE TABLE IF NOT EXISTS public.blog_posts (
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Create orders table
-CREATE TABLE IF NOT EXISTS public.orders (
+-- Create newsletter_subscribers table
+CREATE TABLE IF NOT EXISTS public.newsletter_subscribers (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    user_id UUID REFERENCES public.users(id) ON DELETE CASCADE,
-    total_amount DECIMAL(10,2) NOT NULL,
-    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'processing', 'shipped', 'delivered', 'cancelled')),
-    shipping_address JSONB,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
-    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Create order_items table
-CREATE TABLE IF NOT EXISTS public.order_items (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    order_id UUID REFERENCES public.orders(id) ON DELETE CASCADE,
-    book_id UUID REFERENCES public.books(id) ON DELETE CASCADE,
-    quantity INTEGER NOT NULL DEFAULT 1,
-    price DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+    email TEXT NOT NULL UNIQUE,
+    name TEXT,
+    subscribed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    is_active BOOLEAN DEFAULT true
 );
 
 -- Enable Row Level Security
 ALTER TABLE public.users ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.books ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.blog_posts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.orders ENABLE ROW LEVEL SECURITY;
-ALTER TABLE public.order_items ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.newsletter_subscribers ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist
+DROP POLICY IF EXISTS "Users can view their own profile" ON public.users;
+DROP POLICY IF EXISTS "Users can update their own profile" ON public.users;
+DROP POLICY IF EXISTS "Enable insert for authenticated users only" ON public.users;
+DROP POLICY IF EXISTS "Anyone can view books" ON public.books;
+DROP POLICY IF EXISTS "Only admins can insert books" ON public.books;
+DROP POLICY IF EXISTS "Only admins can update books" ON public.books;
+DROP POLICY IF EXISTS "Only admins can delete books" ON public.books;
+DROP POLICY IF EXISTS "Anyone can view published blog posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Admins can view all blog posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Only admins can insert blog posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Only admins can update blog posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Only admins can delete blog posts" ON public.blog_posts;
+DROP POLICY IF EXISTS "Anyone can subscribe to newsletter" ON public.newsletter_subscribers;
+DROP POLICY IF EXISTS "Admins can view all subscribers" ON public.newsletter_subscribers;
 
 -- Create policies for users table
 CREATE POLICY "Users can view their own profile" ON public.users
@@ -146,14 +161,11 @@ CREATE POLICY "Only admins can delete blog posts" ON public.blog_posts
         )
     );
 
--- Create policies for orders table
-CREATE POLICY "Users can view their own orders" ON public.orders
-    FOR SELECT USING (auth.uid() = user_id);
+-- Create policies for newsletter_subscribers table
+CREATE POLICY "Anyone can subscribe to newsletter" ON public.newsletter_subscribers
+    FOR INSERT WITH CHECK (true);
 
-CREATE POLICY "Users can create their own orders" ON public.orders
-    FOR INSERT WITH CHECK (auth.uid() = user_id);
-
-CREATE POLICY "Admins can view all orders" ON public.orders
+CREATE POLICY "Admins can view all subscribers" ON public.newsletter_subscribers
     FOR SELECT USING (
         EXISTS (
             SELECT 1 FROM public.users 
@@ -161,38 +173,7 @@ CREATE POLICY "Admins can view all orders" ON public.orders
         )
     );
 
-CREATE POLICY "Admins can update all orders" ON public.orders
-    FOR UPDATE USING (
-        EXISTS (
-            SELECT 1 FROM public.users 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
-
--- Create policies for order_items table
-CREATE POLICY "Users can view their own order items" ON public.order_items
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM public.orders 
-            WHERE id = order_id AND user_id = auth.uid()
-        )
-    );
-
-CREATE POLICY "Users can create order items for their orders" ON public.order_items
-    FOR INSERT WITH CHECK (
-        EXISTS (
-            SELECT 1 FROM public.orders 
-            WHERE id = order_id AND user_id = auth.uid()
-        )
-    );
-
-CREATE POLICY "Admins can view all order items" ON public.order_items
-    FOR SELECT USING (
-        EXISTS (
-            SELECT 1 FROM public.users 
-            WHERE id = auth.uid() AND role = 'admin'
-        )
-    );
+-- Note: Orders and order_items tables are not needed as purchases are handled via Selar
 
 -- Create functions for updated_at timestamps
 CREATE OR REPLACE FUNCTION update_updated_at_column()
@@ -202,6 +183,11 @@ BEGIN
     RETURN NEW;
 END;
 $$ language 'plpgsql';
+
+-- Drop existing triggers if they exist
+DROP TRIGGER IF EXISTS update_users_updated_at ON public.users;
+DROP TRIGGER IF EXISTS update_books_updated_at ON public.books;
+DROP TRIGGER IF EXISTS update_blog_posts_updated_at ON public.blog_posts;
 
 -- Create triggers for updated_at
 CREATE TRIGGER update_users_updated_at BEFORE UPDATE ON public.users
@@ -213,20 +199,33 @@ CREATE TRIGGER update_books_updated_at BEFORE UPDATE ON public.books
 CREATE TRIGGER update_blog_posts_updated_at BEFORE UPDATE ON public.blog_posts
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
-CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON public.orders
-    FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+-- Clear existing data (optional - remove these lines if you want to keep existing data)
+DELETE FROM public.blog_posts;
+DELETE FROM public.books;
 
--- Insert sample data
-INSERT INTO public.books (title, author, price, cover_image, category, description, is_new, is_bestseller, in_stock) VALUES
-('The Art of Creative Writing', 'Sarah Mitchell', 24.99, 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop', 'Writing', 'A comprehensive guide to unleashing your creative potential through the written word.', true, false, true),
-('Journey Through Time', 'Michael Chen', 19.99, 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop', 'Fiction', 'An epic tale spanning centuries, following the interconnected lives of extraordinary individuals.', false, true, true),
-('Mindful Living', 'Emma Thompson', 16.99, 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop', 'Self-Help', 'Discover the power of mindfulness and transform your daily life with practical techniques.', true, true, true),
-('The Silent Observer', 'James Wilson', 21.99, 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop', 'Mystery', 'A gripping psychological thriller that will keep you guessing until the very last page.', false, false, true),
-('Ocean''s Whisper', 'Lisa Park', 18.99, 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=400&h=600&fit=crop', 'Romance', 'A heartwarming love story set against the backdrop of a coastal town''s changing seasons.', true, false, true),
-('The Entrepreneur''s Guide', 'Robert Blake', 29.99, 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=600&fit=crop', 'Business', 'Essential strategies and insights for building a successful business in the modern world.', false, true, false),
-('Stars Beyond', 'Maria Santos', 22.99, 'https://images.unsplash.com/photo-1518744386442-2d48ac47a0e0?w=400&h=600&fit=crop', 'Science Fiction', 'A thrilling space odyssey exploring humanity''s place in the vast cosmos.', true, false, true),
-('Cooking with Love', 'Chef Antonio', 34.99, 'https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=600&fit=crop', 'Cooking', 'Authentic recipes and culinary wisdom passed down through generations.', false, true, true);
+-- Insert sample books data with complete information
+INSERT INTO public.books (title, author, price, cover_image, category, description, is_new, is_bestseller, in_stock, selar_url, isbn, pages, publisher, publication_year, format, dimensions, weight, language, edition, rating, review_count) VALUES
+('The Art of Creative Writing', 'Sarah Mitchell', 24.99, 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop', 'Writing', 'A comprehensive guide to unleashing your creative potential through the written word. Learn the fundamentals of storytelling, character development, and narrative structure.', true, false, true, 'https://selar.co/stnbeteglobal/the-art-of-creative-writing', '978-0123456789', 324, 'stnbeteglobal', 2024, 'Paperback', '6 x 9 inches', '1.2 lbs', 'English', '1st Edition', 4.2, 127),
 
+('Journey Through Time', 'Michael Chen', 19.99, 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop', 'Fiction', 'An epic tale spanning centuries, following the interconnected lives of extraordinary individuals across different eras and cultures.', false, true, true, 'https://selar.co/stnbeteglobal/journey-through-time', '978-0987654321', 298, 'stnbeteglobal', 2023, 'Paperback', '6 x 9 inches', '1.1 lbs', 'English', '1st Edition', 4.5, 89),
+
+('Mindful Living', 'Emma Thompson', 16.99, 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop', 'Self-Help', 'Discover the power of mindfulness and transform your daily life with practical techniques for stress reduction and mental clarity.', true, true, true, 'https://selar.co/stnbeteglobal/mindful-living', '978-0456789123', 276, 'stnbeteglobal', 2024, 'Paperback', '5.5 x 8.5 inches', '1.0 lbs', 'English', '1st Edition', 4.3, 156),
+
+('The Silent Observer', 'James Wilson', 21.99, 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop', 'Mystery', 'A gripping psychological thriller that will keep you guessing until the very last page. Follow detective Sarah as she unravels a complex web of secrets.', false, false, true, 'https://selar.co/stnbeteglobal/the-silent-observer', '978-0789123456', 342, 'stnbeteglobal', 2023, 'Paperback', '6 x 9 inches', '1.3 lbs', 'English', '1st Edition', 4.1, 203),
+
+('Ocean''s Whisper', 'Lisa Park', 18.99, 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=400&h=600&fit=crop', 'Romance', 'A heartwarming love story set against the backdrop of a coastal town''s changing seasons. Experience the magic of second chances and new beginnings.', true, false, true, 'https://selar.co/stnbeteglobal/oceans-whisper', '978-0321654987', 289, 'stnbeteglobal', 2024, 'Paperback', '5.5 x 8.5 inches', '1.0 lbs', 'English', '1st Edition', 4.4, 178),
+
+('The Entrepreneur''s Guide', 'Robert Blake', 29.99, 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=600&fit=crop', 'Business', 'Essential strategies and insights for building a successful business in the modern world. From startup to scale-up, this guide covers it all.', false, true, false, 'https://selar.co/stnbeteglobal/the-entrepreneurs-guide', '978-0654321098', 412, 'stnbeteglobal', 2023, 'Hardcover', '6.5 x 9.5 inches', '1.8 lbs', 'English', '2nd Edition', 4.6, 245),
+
+('Stars Beyond', 'Maria Santos', 22.99, 'https://images.unsplash.com/photo-1518744386442-2d48ac47a0e0?w=400&h=600&fit=crop', 'Science Fiction', 'A thrilling space odyssey exploring humanity''s place in the vast cosmos. Join Captain Rivera on an interstellar adventure that will change everything.', true, false, true, 'https://selar.co/stnbeteglobal/stars-beyond', '978-0987123654', 367, 'stnbeteglobal', 2024, 'Paperback', '6 x 9 inches', '1.4 lbs', 'English', '1st Edition', 4.0, 134),
+
+('Cooking with Love', 'Chef Antonio', 34.99, 'https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=600&fit=crop', 'Cooking', 'Authentic recipes and culinary wisdom passed down through generations. Learn to cook with passion and create memorable dining experiences.', false, true, true, 'https://selar.co/stnbeteglobal/cooking-with-love', '978-0123987654', 256, 'stnbeteglobal', 2023, 'Hardcover', '8 x 10 inches', '2.2 lbs', 'English', '1st Edition', 4.7, 312),
+
+('Digital Marketing Mastery', 'Alex Rodriguez', 27.99, 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=400&h=600&fit=crop', 'Business', 'Master the art of digital marketing in the modern age. From social media to SEO, learn strategies that actually work.', true, true, true, 'https://selar.co/stnbeteglobal/digital-marketing-mastery', '978-0147258369', 385, 'stnbeteglobal', 2024, 'Paperback', '6 x 9 inches', '1.3 lbs', 'English', '1st Edition', 4.4, 192),
+
+('The Philosophy of Success', 'Dr. Rachel Green', 23.99, 'https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=400&h=600&fit=crop', 'Self-Help', 'Explore the philosophical foundations of success and happiness. A thought-provoking journey into what it means to live a fulfilling life.', false, false, true, 'https://selar.co/stnbeteglobal/philosophy-of-success', '978-0963741852', 298, 'stnbeteglobal', 2023, 'Paperback', '6 x 9 inches', '1.2 lbs', 'English', '1st Edition', 4.1, 167);
+
+-- Insert sample blog posts
 INSERT INTO public.blog_posts (title, excerpt, content, author, image, category, featured, read_time) VALUES
 ('The Rise of Independent Authors in 2024', 'Self-publishing has revolutionized the literary world, giving voice to countless talented writers who might otherwise never have been heard.', 'Self-publishing has revolutionized the literary world, giving voice to countless talented writers who might otherwise never have been heard. In 2024, we''re seeing unprecedented growth in independent publishing, with authors taking control of their creative destiny and building direct relationships with their readers.
 
@@ -235,6 +234,7 @@ The traditional publishing model, while still relevant, is no longer the only pa
 Key trends we''re observing include the rise of serialized fiction, interactive storytelling, and genre-blending narratives that challenge conventional literary boundaries. Authors are also embracing multimedia approaches, incorporating audio, visual, and interactive elements into their work.
 
 The success of independent authors is reshaping the entire industry, forcing traditional publishers to adapt and innovate. This evolution benefits readers by providing more diverse content and giving them direct access to their favorite authors.', 'stnbeteglobal Team', 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop', 'Industry News', true, '5 min read'),
+
 ('10 Must-Read Books for Personal Growth', 'Transform your mindset with these powerful reads that have helped millions achieve their potential.', 'Personal growth is a lifelong journey, and books can be powerful catalysts for transformation. Here are ten essential reads that have helped millions of people unlock their potential and create meaningful change in their lives.
 
 1. "Atomic Habits" by James Clear - Learn how small changes can make a big difference
@@ -246,6 +246,7 @@ The success of independent authors is reshaping the entire industry, forcing tra
 Each of these books offers unique insights and practical strategies for personal development. Whether you''re looking to build better habits, develop resilience, or find your purpose, these authors provide roadmaps for transformation.
 
 The key to getting the most from these books is not just reading them, but implementing their teachings in your daily life. Start with one book, apply its principles consistently, and then move on to the next.', 'Emma Richardson', 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=800&h=500&fit=crop', 'Book Lists', false, '8 min read'),
+
 ('How to Build a Daily Reading Habit', 'Struggling to find time to read? Here are proven strategies to make reading a consistent part of your routine.', 'Building a daily reading habit can transform your life, but many people struggle to find the time or maintain consistency. Here are proven strategies to make reading a natural part of your daily routine.
 
 Start Small: Begin with just 10-15 minutes per day. This feels manageable and helps build the habit without overwhelming your schedule.
@@ -263,6 +264,7 @@ Track Your Progress: Use a reading journal or app to log your daily reading time
 Join a Reading Community: Connect with other readers through book clubs, online forums, or social media groups. Accountability and discussion enhance the experience.
 
 Remember, the goal is consistency, not speed. Focus on building the habit first, and your reading volume will naturally increase over time.', 'Michael Torres', 'https://images.unsplash.com/photo-1507842217343-583bb7270b66?w=800&h=500&fit=crop', 'Tips & Advice', false, '4 min read'),
+
 ('Interview with Bestselling Author Sarah Mitchell', 'We sat down with the acclaimed author to discuss her creative process, inspirations, and upcoming projects.', 'We recently had the pleasure of sitting down with bestselling author Sarah Mitchell to discuss her creative journey, writing process, and what''s next for this talented storyteller.
 
 Q: What inspired you to start writing?
@@ -282,3 +284,6 @@ Q: What can readers expect from your upcoming novel?
 Sarah: "Without giving too much away, it''s a departure from my usual contemporary fiction. I''m exploring historical fiction for the first time, set in 1920s Paris. It''s been an incredible research journey, and I''m excited to share this new world with my readers."
 
 Sarah''s dedication to her craft and her readers is evident in every conversation. We can''t wait to see what she creates next.', 'stnbeteglobal Team', 'https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=800&h=500&fit=crop', 'Author Interviews', false, '10 min read');
+
+-- Success message
+SELECT 'Database setup completed successfully! All tables, policies, and sample data have been created.' as message;

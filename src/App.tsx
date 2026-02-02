@@ -14,9 +14,10 @@ import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBooks from "./pages/admin/AdminBooks";
-import AdminOrders from "./pages/admin/AdminOrders";
 import AdminPosts from "./pages/admin/AdminPosts";
-import AdminBookings from "./pages/admin/AdminBookings";
+import AdminSettings from "./pages/admin/AdminSettings";
+import AdminNewsletter from "./pages/admin/AdminNewsletter";
+import AdminTest from "./pages/admin/AdminTest";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,9 +48,10 @@ const App = () => (
               {/* Admin Routes */}
               <Route path="/admin" element={<AdminDashboard />} />
               <Route path="/admin/books" element={<AdminBooks />} />
-              <Route path="/admin/orders" element={<AdminOrders />} />
               <Route path="/admin/posts" element={<AdminPosts />} />
-              <Route path="/admin/bookings" element={<AdminBookings />} />
+              <Route path="/admin/settings" element={<AdminSettings />} />
+              <Route path="/admin/newsletter" element={<AdminNewsletter />} />
+              <Route path="/admin/test" element={<AdminTest />} />
 
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />

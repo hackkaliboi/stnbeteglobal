@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import MainLayout from "@/components/layout/MainLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -7,20 +7,31 @@ import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, User, Mail, Shield, Calendar } from "lucide-react";
-import { Navigate } from "react-router-dom";
+import { Loader2, User, Mail, Shield, Calendar, ExternalLink } from "lucide-react";
+import { Navigate, Link } from "react-router-dom";
 
 const Profile = () => {
     const { user, loading } = useAuth();
+    const { profile, isAdmin, loading: profileLoading } = useUserProfile();
     const { toast } = useToast();
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState({
-        fullName: user?.user_metadata?.full_name || "",
-        email: user?.email || "",
+        fullName: "",
+        email: "",
     });
 
-    if (loading) {
+    useEffect(() => {
+        if (profile) {
+            setFormData({
+                fullName: profile.full_name || "",
+                email: profile.email || "",
+            });
+        }
+    }, [profile]);
+
+    if (loading || profileLoading) {
         return (
             <MainLayout>
                 <div className="container mx-auto py-20">
@@ -56,8 +67,9 @@ const Profile = () => {
         setIsEditing(false);
     };
 
-    const userRole = user.user_metadata?.role || 'user';
-    const joinDate = new Date(user.created_at).toLocaleDateString('en-US', {
+    const userRole = profile?.role || 'user';
+    const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
+    const joinDate = new Date(user?.created_at || '').toLocaleDateString('en-US', {
         month: 'long',
         day: 'numeric',
         year: 'numeric'
@@ -78,22 +90,28 @@ const Profile = () => {
                         <CardHeader className="text-center pb-6">
                             <div className="flex justify-center mb-4">
                                 <Avatar className="h-24 w-24">
-                                    <AvatarImage src={user.user_metadata?.avatar_url} alt={user.user_metadata?.full_name} />
+                                    <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={displayName} />
                                     <AvatarFallback className="text-2xl">
-                                        {getUserInitials(user.user_metadata?.full_name)}
+                                        {getUserInitials(displayName)}
                                     </AvatarFallback>
                                 </Avatar>
                             </div>
                             <CardTitle className="text-2xl">
-                                {user.user_metadata?.full_name || "User"}
+                                {displayName}
                             </CardTitle>
-                            <p className="text-muted-foreground">{user.email}</p>
-                            {userRole === 'admin' && (
-                                <div className="flex justify-center mt-2">
+                            <p className="text-muted-foreground">{user?.email}</p>
+                            {isAdmin && (
+                                <div className="flex justify-center mt-2 gap-2">
                                     <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary">
                                         <Shield className="h-3 w-3 mr-1" />
                                         Administrator
                                     </span>
+                                    <Link to="/admin">
+                                        <Button size="sm" variant="outline">
+                                            <ExternalLink className="h-3 w-3 mr-1" />
+                                            Admin Dashboard
+                                        </Button>
+                                    </Link>
                                 </div>
                             )}
                         </CardHeader>
@@ -117,7 +135,7 @@ const Profile = () => {
                                         ) : (
                                             <div className="flex items-center space-x-2 p-2 bg-muted/50 rounded-md">
                                                 <User className="h-4 w-4 text-muted-foreground" />
-                                                <span className="text-foreground">{user.user_metadata?.full_name || "Not set"}</span>
+                                                <span className="text-foreground">{displayName || "Not set"}</span>
                                             </div>
                                         )}
                                     </div>
@@ -126,7 +144,7 @@ const Profile = () => {
                                         <Label htmlFor="email">Email Address</Label>
                                         <div className="flex items-center space-x-2 p-2 bg-muted/50 rounded-md">
                                             <Mail className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-foreground">{user.email}</span>
+                                            <span className="text-foreground">{user?.email}</span>
                                         </div>
                                     </div>
                                 </div>

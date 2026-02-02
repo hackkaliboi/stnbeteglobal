@@ -23,10 +23,8 @@ interface AdminLayoutProps {
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Books", href: "/admin/books", icon: BookOpen },
-  { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { name: "Blog Posts", href: "/admin/posts", icon: FileText },
-  { name: "Bookings", href: "/admin/bookings", icon: Calendar },
-  { name: "Customers", href: "/admin/customers", icon: Users },
+  { name: "Newsletter", href: "/admin/newsletter", icon: Bell },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ];
 

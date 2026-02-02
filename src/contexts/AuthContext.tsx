@@ -45,6 +45,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
                         full_name: session.user.user_metadata?.full_name || null,
                         avatar_url: session.user.user_metadata?.avatar_url || null,
                         updated_at: new Date().toISOString(),
+                    }, {
+                        onConflict: 'id',
+                        ignoreDuplicates: false
                     })
 
                 if (error) {
@@ -78,8 +81,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
 
     const signOut = async () => {
-        const { error } = await supabase.auth.signOut()
-        return { error }
+        try {
+            const { error } = await supabase.auth.signOut()
+            if (!error) {
+                // Clear local state
+                setUser(null)
+                setSession(null)
+            }
+            return { error }
+        } catch (error) {
+            console.error('Sign out error:', error)
+            return { error: error as any }
+        }
     }
 
     const resetPassword = async (email: string) => {

@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { useBooks } from "@/hooks/useBooks";
 import { useAuth } from "@/contexts/AuthContext";
+import { useUserProfile } from "@/hooks/useUserProfile";
 import { useToast } from "@/hooks/use-toast";
 import { BookFormModal } from "@/components/admin/BookFormModal";
 
@@ -43,10 +44,10 @@ const AdminBooks = () => {
 
   const { books, loading, error, deleteBook } = useBooks();
   const { user } = useAuth();
+  const { isAdmin, loading: profileLoading } = useUserProfile();
   const { toast } = useToast();
 
-  // Check if user is admin
-  const isAdmin = user?.user_metadata?.role === 'admin';
+  // Check if user is admin - removed old check
 
   const filteredBooks = books.filter(
     (book) =>
@@ -89,6 +90,16 @@ const AdminBooks = () => {
     if (stock && stock < 10) return { status: "Low Stock", variant: "secondary" as const };
     return { status: "In Stock", variant: "default" as const };
   };
+
+  if (profileLoading) {
+    return (
+      <AdminLayout>
+        <div className="flex items-center justify-center h-64">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+        </div>
+      </AdminLayout>
+    );
+  }
 
   if (!isAdmin) {
     return (
