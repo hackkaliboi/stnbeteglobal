@@ -74,23 +74,41 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         let mounted = true;
 
         const initAuth = async () => {
-            // 1. Get Session
-            const { data: { session } } = await supabase.auth.getSession()
+            console.log('🚀 [AuthContext] initAuth starting...')
+            try {
+                // 1. Get Session
+                console.log('🚀 [AuthContext] Calling supabase.auth.getSession()...')
+                const { data: { session }, error } = await supabase.auth.getSession()
+                console.log('🚀 [AuthContext] Session retrieved:', {
+                    hasSession: !!session,
+                    userId: session?.user?.id,
+                    userEmail: session?.user?.email,
+                    error: error
+                })
 
-            if (mounted) {
-                setSession(session)
-                setUser(session?.user ?? null)
+                if (mounted) {
+                    setSession(session)
+                    setUser(session?.user ?? null)
+                }
+
+                // 2. If user exists, fetch profile
+                if (session?.user) {
+                    console.log('🚀 [AuthContext] User exists, calling fetchProfile...')
+                    const userProfile = await fetchProfile(session.user.id)
+                    if (mounted) setProfile(userProfile)
+                } else {
+                    console.log('⚠️ [AuthContext] No user in session, skipping profile fetch')
+                    if (mounted) setProfile(null)
+                }
+
+                if (mounted) setLoading(false)
+            } catch (error) {
+                console.error('💥 [AuthContext] initAuth failed:', error)
+                if (mounted) {
+                    setLoading(false)
+                    setProfile(null)
+                }
             }
-
-            // 2. If user exists, fetch profile
-            if (session?.user) {
-                const userProfile = await fetchProfile(session.user.id)
-                if (mounted) setProfile(userProfile)
-            } else {
-                if (mounted) setProfile(null)
-            }
-
-            if (mounted) setLoading(false)
         }
 
         initAuth()

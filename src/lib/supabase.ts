@@ -3,11 +3,29 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
 const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
+console.log('🔧 [Supabase] Initializing client with:', {
+    url: supabaseUrl,
+    keyPrefix: supabaseAnonKey?.substring(0, 20) + '...',
+    hasUrl: !!supabaseUrl,
+    hasKey: !!supabaseAnonKey
+})
+
 if (!supabaseUrl || !supabaseAnonKey) {
     throw new Error('Missing Supabase environment variables')
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+    },
+    global: {
+        headers: {
+            'x-client-info': 'author-haven-web'
+        }
+    }
+})
 
 // Database types (we'll expand these as we create tables)
 export type Database = {

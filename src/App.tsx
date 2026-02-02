@@ -1,5 +1,6 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
+import AuthDebugger from "@/pages/debug/AuthDebugger";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -7,6 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "./contexts/AuthContext";
 import { ProtectedRoute, AdminRoute } from "@/components/auth/RouteGuards";
 import Index from "./pages/Index";
+import Auth from "./pages/Auth";
 import Books from "./pages/Books";
 import BookDetails from "./pages/BookDetails";
 import Blog from "./pages/Blog";
@@ -42,6 +44,8 @@ const App = () => (
             <Routes>
               {/* Storefront Routes */}
               <Route path="/" element={<Index />} />
+              <Route path="/debug-auth" element={<AuthDebugger />} />
+              <Route path="/auth" element={<Auth />} />
               <Route path="/books" element={<Books />} />
               <Route path="/books/:id" element={<BookDetails />} />
               <Route path="/blog" element={<Blog />} />

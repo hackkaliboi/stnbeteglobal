@@ -44,6 +44,17 @@ const Header = () => {
     });
   }, []);
 
+  // DEBUG: Log auth state changes
+  useEffect(() => {
+    console.log('🎯 [Header] Auth State:', {
+      user: user?.email,
+      loading,
+      profile: profile,
+      isAdmin,
+      profileRole: profile?.role
+    });
+  }, [user, loading, profile, isAdmin]);
+
   // Close mobile menu when route changes
   useEffect(() => {
     setIsMenuOpen(false);
