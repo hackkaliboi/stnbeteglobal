@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import Index from "./pages/Index";
 import Books from "./pages/Books";
+import BookDetails from "./pages/BookDetails";
 import Blog from "./pages/Blog";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -37,6 +38,7 @@ const App = () => (
               {/* Storefront Routes */}
               <Route path="/" element={<Index />} />
               <Route path="/books" element={<Books />} />
+              <Route path="/books/:id" element={<BookDetails />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />

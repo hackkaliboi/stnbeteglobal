@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS public.books (
     is_new BOOLEAN DEFAULT false,
     is_bestseller BOOLEAN DEFAULT false,
     in_stock BOOLEAN DEFAULT true,
+    selar_url TEXT,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -217,15 +218,15 @@ CREATE TRIGGER update_orders_updated_at BEFORE UPDATE ON public.orders
     FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 
 -- Insert sample data
-INSERT INTO public.books (title, author, price, cover_image, category, description, is_new, is_bestseller, in_stock) VALUES
-('The Art of Creative Writing', 'Sarah Mitchell', 24.99, 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop', 'Writing', 'A comprehensive guide to unleashing your creative potential through the written word.', true, false, true),
-('Journey Through Time', 'Michael Chen', 19.99, 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop', 'Fiction', 'An epic tale spanning centuries, following the interconnected lives of extraordinary individuals.', false, true, true),
-('Mindful Living', 'Emma Thompson', 16.99, 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop', 'Self-Help', 'Discover the power of mindfulness and transform your daily life with practical techniques.', true, true, true),
-('The Silent Observer', 'James Wilson', 21.99, 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop', 'Mystery', 'A gripping psychological thriller that will keep you guessing until the very last page.', false, false, true),
-('Ocean''s Whisper', 'Lisa Park', 18.99, 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=400&h=600&fit=crop', 'Romance', 'A heartwarming love story set against the backdrop of a coastal town''s changing seasons.', true, false, true),
-('The Entrepreneur''s Guide', 'Robert Blake', 29.99, 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=600&fit=crop', 'Business', 'Essential strategies and insights for building a successful business in the modern world.', false, true, false),
-('Stars Beyond', 'Maria Santos', 22.99, 'https://images.unsplash.com/photo-1518744386442-2d48ac47a0e0?w=400&h=600&fit=crop', 'Science Fiction', 'A thrilling space odyssey exploring humanity''s place in the vast cosmos.', true, false, true),
-('Cooking with Love', 'Chef Antonio', 34.99, 'https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=600&fit=crop', 'Cooking', 'Authentic recipes and culinary wisdom passed down through generations.', false, true, true);
+INSERT INTO public.books (title, author, price, cover_image, category, description, is_new, is_bestseller, in_stock, selar_url) VALUES
+('The Art of Creative Writing', 'Sarah Mitchell', 24.99, 'https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop', 'Writing', 'A comprehensive guide to unleashing your creative potential through the written word.', true, false, true, 'https://selar.co/stnbeteglobal/the-art-of-creative-writing'),
+('Journey Through Time', 'Michael Chen', 19.99, 'https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop', 'Fiction', 'An epic tale spanning centuries, following the interconnected lives of extraordinary individuals.', false, true, true, 'https://selar.co/stnbeteglobal/journey-through-time'),
+('Mindful Living', 'Emma Thompson', 16.99, 'https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop', 'Self-Help', 'Discover the power of mindfulness and transform your daily life with practical techniques.', true, true, true, 'https://selar.co/stnbeteglobal/mindful-living'),
+('The Silent Observer', 'James Wilson', 21.99, 'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop', 'Mystery', 'A gripping psychological thriller that will keep you guessing until the very last page.', false, false, true, 'https://selar.co/stnbeteglobal/the-silent-observer'),
+('Ocean''s Whisper', 'Lisa Park', 18.99, 'https://images.unsplash.com/photo-1476275466078-4007374efbbe?w=400&h=600&fit=crop', 'Romance', 'A heartwarming love story set against the backdrop of a coastal town''s changing seasons.', true, false, true, 'https://selar.co/stnbeteglobal/oceans-whisper'),
+('The Entrepreneur''s Guide', 'Robert Blake', 29.99, 'https://images.unsplash.com/photo-1589829085413-56de8ae18c73?w=400&h=600&fit=crop', 'Business', 'Essential strategies and insights for building a successful business in the modern world.', false, true, false, 'https://selar.co/stnbeteglobal/the-entrepreneurs-guide'),
+('Stars Beyond', 'Maria Santos', 22.99, 'https://images.unsplash.com/photo-1518744386442-2d48ac47a0e0?w=400&h=600&fit=crop', 'Science Fiction', 'A thrilling space odyssey exploring humanity''s place in the vast cosmos.', true, false, true, 'https://selar.co/stnbeteglobal/stars-beyond'),
+('Cooking with Love', 'Chef Antonio', 34.99, 'https://images.unsplash.com/photo-1589998059171-988d887df646?w=400&h=600&fit=crop', 'Cooking', 'Authentic recipes and culinary wisdom passed down through generations.', false, true, true, 'https://selar.co/stnbeteglobal/cooking-with-love');
 
 INSERT INTO public.blog_posts (title, excerpt, content, author, image, category, featured, read_time) VALUES
 ('The Rise of Independent Authors in 2024', 'Self-publishing has revolutionized the literary world, giving voice to countless talented writers who might otherwise never have been heard.', 'Self-publishing has revolutionized the literary world, giving voice to countless talented writers who might otherwise never have been heard. In 2024, we''re seeing unprecedented growth in independent publishing, with authors taking control of their creative destiny and building direct relationships with their readers.

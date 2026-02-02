@@ -59,6 +59,7 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
         is_new: false,
         is_bestseller: false,
         in_stock: true,
+        selar_url: "",
     });
 
     const { addBook, updateBook } = useBooks();
@@ -78,6 +79,7 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
                 is_new: book.is_new,
                 is_bestseller: book.is_bestseller,
                 in_stock: book.in_stock,
+                selar_url: (book as any).selar_url || "",
             });
         } else {
             setFormData({
@@ -90,6 +92,7 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
                 is_new: false,
                 is_bestseller: false,
                 in_stock: true,
+                selar_url: "",
             });
         }
     }, [book, open]);
@@ -101,10 +104,10 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.title || !formData.author || !formData.category || formData.price <= 0) {
+        if (!formData.title || !formData.author || !formData.category || formData.price <= 0 || !formData.selar_url) {
             toast({
                 title: "Error",
-                description: "Please fill in all required fields",
+                description: "Please fill in all required fields including the Selar URL",
                 variant: "destructive",
             });
             return;
@@ -219,6 +222,19 @@ export function BookFormModal({ open, onOpenChange, book }: BookFormModalProps) 
                             onChange={(e) => handleInputChange("cover_image", e.target.value)}
                             placeholder="https://example.com/book-cover.jpg"
                         />
+                    </div>
+
+                    <div className="space-y-2">
+                        <Label htmlFor="selar_url">Selar Product URL *</Label>
+                        <Input
+                            id="selar_url"
+                            value={formData.selar_url || ""}
+                            onChange={(e) => handleInputChange("selar_url", e.target.value)}
+                            placeholder="https://selar.co/your-store/book-name"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                            The Selar URL where customers will be redirected to purchase this book
+                        </p>
                     </div>
 
                     <div className="space-y-2">

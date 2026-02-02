@@ -233,7 +233,8 @@ const Books = () => {
                   coverImage: book.cover_image || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
                   isNew: book.is_new,
                   isBestseller: book.is_bestseller,
-                  inStock: book.in_stock
+                  inStock: book.in_stock,
+                  selarUrl: book.selar_url
                 }}
               />
             ))}

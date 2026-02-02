@@ -90,7 +90,8 @@ const FeaturedBooks = () => {
                   coverImage: featuredBooks[0].cover_image || "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
                   isNew: featuredBooks[0].is_new,
                   isBestseller: featuredBooks[0].is_bestseller,
-                  inStock: featuredBooks[0].in_stock
+                  inStock: featuredBooks[0].in_stock,
+                  selarUrl: featuredBooks[0].selar_url
                 }}
                 variant="featured"
               />
@@ -112,7 +113,8 @@ const FeaturedBooks = () => {
                   coverImage: featuredBooks[1].cover_image || "https://images.unsplash.com/photo-1543002588-bfa74002ed7e?w=400&h=600&fit=crop",
                   isNew: featuredBooks[1].is_new,
                   isBestseller: featuredBooks[1].is_bestseller,
-                  inStock: featuredBooks[1].in_stock
+                  inStock: featuredBooks[1].in_stock,
+                  selarUrl: featuredBooks[1].selar_url
                 }}
                 variant="compact"
               />
@@ -133,7 +135,8 @@ const FeaturedBooks = () => {
                   coverImage: featuredBooks[2].cover_image || "https://images.unsplash.com/photo-1512820790803-83ca734da794?w=400&h=600&fit=crop",
                   isNew: featuredBooks[2].is_new,
                   isBestseller: featuredBooks[2].is_bestseller,
-                  inStock: featuredBooks[2].in_stock
+                  inStock: featuredBooks[2].in_stock,
+                  selarUrl: featuredBooks[2].selar_url
                 }}
                 variant="compact"
               />
@@ -158,7 +161,8 @@ const FeaturedBooks = () => {
                   coverImage: featuredBooks[3].cover_image || "https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400&h=600&fit=crop",
                   isNew: featuredBooks[3].is_new,
                   isBestseller: featuredBooks[3].is_bestseller,
-                  inStock: featuredBooks[3].in_stock
+                  inStock: featuredBooks[3].in_stock,
+                  selarUrl: featuredBooks[3].selar_url
                 }}
                 variant="horizontal"
               />
