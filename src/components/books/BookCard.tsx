@@ -36,7 +36,7 @@ interface BookCardProps {
 const BookCard = ({ book, variant = "default" }: BookCardProps) => {
   if (variant === "featured") {
     return (
-      <div className="group relative h-full min-h-[500px] bg-secondary overflow-hidden rounded-xl">
+      <div className="group relative h-full min-h-[500px] bg-secondary overflow-hidden" style={{ borderRadius: '50px 0 50px 0' }}>
         <img
           src={book.coverImage}
           alt={book.title}
@@ -80,8 +80,8 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
 
   if (variant === "compact") {
     return (
-      <div className="group flex gap-4 p-4 border border-border hover:bg-secondary/50 transition-colors duration-300 h-full rounded-xl">
-        <div className="w-20 h-28 bg-secondary flex-shrink-0 overflow-hidden rounded-lg">
+      <div className="group flex gap-4 p-4 border border-border hover:bg-secondary/50 transition-colors duration-300 h-full" style={{ borderRadius: '50px 0 50px 0' }}>
+        <div className="w-20 h-28 bg-secondary flex-shrink-0 overflow-hidden" style={{ borderRadius: '25px 0 25px 0' }}>
           <img
             src={book.coverImage}
             alt={book.title}
@@ -118,8 +118,8 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
 
   if (variant === "horizontal") {
     return (
-      <div className="group flex flex-col sm:flex-row gap-6 p-6 border border-border hover:bg-secondary/50 transition-colors duration-300 rounded-xl">
-        <div className="w-full sm:w-32 h-48 sm:h-44 bg-secondary flex-shrink-0 overflow-hidden rounded-lg">
+      <div className="group flex flex-col sm:flex-row gap-6 p-6 border border-border hover:bg-secondary/50 transition-colors duration-300" style={{ borderRadius: '50px 0 50px 0' }}>
+        <div className="w-full sm:w-32 h-48 sm:h-44 bg-secondary flex-shrink-0 overflow-hidden" style={{ borderRadius: '25px 0 25px 0' }}>
           <img
             src={book.coverImage}
             alt={book.title}
@@ -164,7 +164,7 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
   return (
     <div className="group relative">
       <Link to={`/books/${book.id}`}>
-        <div className="relative aspect-[3/4] overflow-hidden bg-muted mb-4 rounded-xl">
+        <div className="relative aspect-[3/4] overflow-hidden bg-muted mb-4" style={{ borderRadius: '50px 0 50px 0' }}>
           <img
             src={book.coverImage}
             alt={book.title}
@@ -183,7 +183,7 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
 
           {/* Out of Stock Overlay */}
           {!book.inStock && (
-            <div className="absolute inset-0 bg-background/60 flex items-center justify-center rounded-xl">
+            <div className="absolute inset-0 bg-background/60 flex items-center justify-center" style={{ borderRadius: '50px 0 50px 0' }}>
               <span className="text-sm text-muted-foreground">Out of Stock</span>
             </div>
           )}

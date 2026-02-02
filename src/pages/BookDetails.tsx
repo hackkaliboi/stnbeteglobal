@@ -75,7 +75,7 @@ const BookDetails = () => {
                     <div className="animate-pulse">
                         <div className="h-8 bg-muted rounded w-1/4 mb-8"></div>
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                            <div className="aspect-[3/4] bg-muted rounded-xl"></div>
+                            <div className="aspect-[3/4] bg-muted" style={{ borderRadius: '50px 0 50px 0' }}></div>
                             <div className="space-y-4">
                                 <div className="h-8 bg-muted rounded w-3/4"></div>
                                 <div className="h-6 bg-muted rounded w-1/2"></div>
@@ -112,10 +112,10 @@ const BookDetails = () => {
             <Star
                 key={i}
                 className={`h-4 w-4 ${i < Math.floor(rating)
-                        ? "fill-yellow-400 text-yellow-400"
-                        : i < rating
-                            ? "fill-yellow-400/50 text-yellow-400"
-                            : "text-muted-foreground"
+                    ? "fill-yellow-400 text-yellow-400"
+                    : i < rating
+                        ? "fill-yellow-400/50 text-yellow-400"
+                        : "text-muted-foreground"
                     }`}
             />
         ));
@@ -134,7 +134,7 @@ const BookDetails = () => {
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                     {/* Book Cover */}
                     <div className="relative">
-                        <div className="aspect-[3/4] overflow-hidden bg-muted rounded-xl shadow-2xl">
+                        <div className="aspect-[3/4] overflow-hidden bg-muted shadow-2xl" style={{ borderRadius: '50px 0 50px 0' }}>
                             <img
                                 src={book.cover_image || "/placeholder.svg"}
                                 alt={book.title}
@@ -363,7 +363,7 @@ const BookDetails = () => {
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                             {relatedBooks.map((relatedBook) => (
                                 <Link key={relatedBook.id} to={`/books/${relatedBook.id}`} className="group">
-                                    <div className="aspect-[3/4] overflow-hidden bg-muted rounded-xl mb-3">
+                                    <div className="aspect-[3/4] overflow-hidden bg-muted mb-3" style={{ borderRadius: '25px 0 25px 0' }}>
                                         <img
                                             src={relatedBook.cover_image || "/placeholder.svg"}
                                             alt={relatedBook.title}

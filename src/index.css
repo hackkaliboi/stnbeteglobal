@@ -211,6 +211,17 @@
     transform: translateX(0);
   }
 
+  .animate-on-scroll-up {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+  }
+
+  .animate-on-scroll-up.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
   .animate-on-scroll-scale {
     opacity: 0;
     transform: scale(0.95);
