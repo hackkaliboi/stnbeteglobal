@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export interface Book {
   id: string;
@@ -9,10 +10,22 @@ export interface Book {
   price: number;
   coverImage: string;
   category: string;
+  description?: string;
   isNew?: boolean;
   isBestseller?: boolean;
   inStock: boolean;
   selarUrl?: string | null;
+  isbn?: string | null;
+  pages?: number;
+  publisher?: string;
+  publicationYear?: number | null;
+  format?: string;
+  dimensions?: string;
+  weight?: string;
+  language?: string;
+  edition?: string;
+  rating?: number;
+  reviewCount?: number;
 }
 
 interface BookCardProps {
@@ -45,11 +58,11 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
           <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2 block font-mono">
             {book.category}
           </span>
-          <a href={book.selarUrl || `https://selar.co/stnbeteglobal/${book.title.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer">
-            <h3 className="text-2xl md:text-3xl font-light text-foreground mb-2 group-hover:translate-x-2 transition-transform duration-300">
+          <Link to={`/books/${book.id}`}>
+            <h3 className="text-2xl md:text-3xl font-light text-foreground mb-2 group-hover:translate-x-2 transition-transform duration-300 hover:text-muted-foreground">
               {book.title}
             </h3>
-          </a>
+          </Link>
           <p className="text-muted-foreground mb-4">{book.author}</p>
           <div className="flex items-center justify-between">
             <span className="text-xl font-light text-foreground">${book.price.toFixed(2)}</span>
@@ -85,11 +98,11 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
                 <Badge variant="outline" className="text-[9px] py-0 px-1">Bestseller</Badge>
               )}
             </div>
-            <a href={book.selarUrl || `https://selar.co/stnbeteglobal/${book.title.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer">
+            <Link to={`/books/${book.id}`}>
               <h3 className="text-sm font-medium text-foreground hover:text-muted-foreground transition-colors line-clamp-2">
                 {book.title}
               </h3>
-            </a>
+            </Link>
             <p className="text-xs text-muted-foreground mt-0.5">{book.author}</p>
           </div>
           <div className="flex items-center justify-between">
@@ -123,11 +136,11 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
                 <Badge variant="secondary" className="text-[9px] py-0">New</Badge>
               )}
             </div>
-            <a href={book.selarUrl || `https://selar.co/stnbeteglobal/${book.title.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer">
+            <Link to={`/books/${book.id}`}>
               <h3 className="text-xl font-light text-foreground group-hover:translate-x-1 transition-transform duration-300 hover:text-muted-foreground">
                 {book.title}
               </h3>
-            </a>
+            </Link>
             <p className="text-muted-foreground mt-1">{book.author}</p>
             <p className="text-sm text-muted-foreground mt-3 line-clamp-2">
               A compelling story that captures the essence of human experience and takes readers on an unforgettable journey.
@@ -149,55 +162,57 @@ const BookCard = ({ book, variant = "default" }: BookCardProps) => {
 
   // Default variant
   return (
-    <div className="group">
-      <div className="relative aspect-[3/4] overflow-hidden bg-muted mb-4 rounded-xl">
-        <img
-          src={book.coverImage}
-          alt={book.title}
-          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-        />
+    <div className="group relative">
+      <Link to={`/books/${book.id}`}>
+        <div className="relative aspect-[3/4] overflow-hidden bg-muted mb-4 rounded-xl">
+          <img
+            src={book.coverImage}
+            alt={book.title}
+            className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+          />
 
-        {/* Badges */}
-        <div className="absolute top-3 left-3 flex flex-col gap-2">
-          {book.isNew && (
-            <Badge variant="secondary" className="text-xs font-normal">New</Badge>
-          )}
-          {book.isBestseller && (
-            <Badge variant="outline" className="bg-background/90 text-xs font-normal">Bestseller</Badge>
-          )}
-        </div>
-
-        {/* Quick Buy - appears on hover */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-background/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-          <a href={book.selarUrl || `https://selar.co/stnbeteglobal/${book.title.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer">
-            <Button
-              size="sm"
-              className="w-full"
-              disabled={!book.inStock}
-            >
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              {book.inStock ? "Buy Now" : "Out of Stock"}
-            </Button>
-          </a>
-        </div>
-
-        {/* Out of Stock Overlay */}
-        {!book.inStock && (
-          <div className="absolute inset-0 bg-background/60 flex items-center justify-center rounded-xl">
-            <span className="text-sm text-muted-foreground">Out of Stock</span>
+          {/* Badges */}
+          <div className="absolute top-3 left-3 flex flex-col gap-2">
+            {book.isNew && (
+              <Badge variant="secondary" className="text-xs font-normal">New</Badge>
+            )}
+            {book.isBestseller && (
+              <Badge variant="outline" className="bg-background/90 text-xs font-normal">Bestseller</Badge>
+            )}
           </div>
-        )}
+
+          {/* Out of Stock Overlay */}
+          {!book.inStock && (
+            <div className="absolute inset-0 bg-background/60 flex items-center justify-center rounded-xl">
+              <span className="text-sm text-muted-foreground">Out of Stock</span>
+            </div>
+          )}
+        </div>
+      </Link>
+
+      {/* Quick Buy - appears on hover */}
+      <div className="absolute bottom-16 left-0 right-0 p-4 bg-gradient-to-t from-background/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        <a href={book.selarUrl || `https://selar.co/stnbeteglobal/${book.title.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer">
+          <Button
+            size="sm"
+            className="w-full"
+            disabled={!book.inStock}
+          >
+            <ShoppingCart className="h-4 w-4 mr-2" />
+            {book.inStock ? "Buy Now" : "Out of Stock"}
+          </Button>
+        </a>
       </div>
 
       <div className="space-y-1">
         <p className="text-xs text-muted-foreground uppercase tracking-wider font-mono">
           {book.category}
         </p>
-        <a href={book.selarUrl || `https://selar.co/stnbeteglobal/${book.title.toLowerCase().replace(/\s+/g, '-')}`} target="_blank" rel="noopener noreferrer">
+        <Link to={`/books/${book.id}`}>
           <h3 className="font-medium text-foreground hover:text-muted-foreground transition-colors line-clamp-1">
             {book.title}
           </h3>
-        </a>
+        </Link>
         <p className="text-sm text-muted-foreground">{book.author}</p>
         <p className="text-foreground font-medium pt-1">
           ${book.price.toFixed(2)}

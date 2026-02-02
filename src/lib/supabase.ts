@@ -26,6 +26,17 @@ export type Database = {
                     is_bestseller: boolean
                     in_stock: boolean
                     selar_url: string | null
+                    isbn: string | null
+                    pages: number
+                    publisher: string
+                    publication_year: number | null
+                    format: string
+                    dimensions: string
+                    weight: string
+                    language: string
+                    edition: string
+                    rating: number
+                    review_count: number
                     created_at: string
                     updated_at: string
                 }
@@ -41,6 +52,17 @@ export type Database = {
                     is_bestseller?: boolean
                     in_stock?: boolean
                     selar_url?: string | null
+                    isbn?: string | null
+                    pages?: number
+                    publisher?: string
+                    publication_year?: number | null
+                    format?: string
+                    dimensions?: string
+                    weight?: string
+                    language?: string
+                    edition?: string
+                    rating?: number
+                    review_count?: number
                     created_at?: string
                     updated_at?: string
                 }
@@ -56,6 +78,17 @@ export type Database = {
                     is_bestseller?: boolean
                     in_stock?: boolean
                     selar_url?: string | null
+                    isbn?: string | null
+                    pages?: number
+                    publisher?: string
+                    publication_year?: number | null
+                    format?: string
+                    dimensions?: string
+                    weight?: string
+                    language?: string
+                    edition?: string
+                    rating?: number
+                    review_count?: number
                     created_at?: string
                     updated_at?: string
                 }

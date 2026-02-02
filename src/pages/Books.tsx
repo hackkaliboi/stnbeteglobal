@@ -234,7 +234,18 @@ const Books = () => {
                   isNew: book.is_new,
                   isBestseller: book.is_bestseller,
                   inStock: book.in_stock,
-                  selarUrl: book.selar_url
+                  selarUrl: book.selar_url,
+                  isbn: book.isbn,
+                  pages: book.pages,
+                  publisher: book.publisher,
+                  publicationYear: book.publication_year,
+                  format: book.format,
+                  dimensions: book.dimensions,
+                  weight: book.weight,
+                  language: book.language,
+                  edition: book.edition,
+                  rating: book.rating,
+                  reviewCount: book.review_count
                 }}
               />
             ))}

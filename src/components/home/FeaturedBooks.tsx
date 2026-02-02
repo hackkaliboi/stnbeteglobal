@@ -91,7 +91,18 @@ const FeaturedBooks = () => {
                   isNew: featuredBooks[0].is_new,
                   isBestseller: featuredBooks[0].is_bestseller,
                   inStock: featuredBooks[0].in_stock,
-                  selarUrl: featuredBooks[0].selar_url
+                  selarUrl: featuredBooks[0].selar_url,
+                  isbn: featuredBooks[0].isbn,
+                  pages: featuredBooks[0].pages,
+                  publisher: featuredBooks[0].publisher,
+                  publicationYear: featuredBooks[0].publication_year,
+                  format: featuredBooks[0].format,
+                  dimensions: featuredBooks[0].dimensions,
+                  weight: featuredBooks[0].weight,
+                  language: featuredBooks[0].language,
+                  edition: featuredBooks[0].edition,
+                  rating: featuredBooks[0].rating,
+                  reviewCount: featuredBooks[0].review_count
                 }}
                 variant="featured"
               />
@@ -114,7 +125,18 @@ const FeaturedBooks = () => {
                   isNew: featuredBooks[1].is_new,
                   isBestseller: featuredBooks[1].is_bestseller,
                   inStock: featuredBooks[1].in_stock,
-                  selarUrl: featuredBooks[1].selar_url
+                  selarUrl: featuredBooks[1].selar_url,
+                  isbn: featuredBooks[1].isbn,
+                  pages: featuredBooks[1].pages,
+                  publisher: featuredBooks[1].publisher,
+                  publicationYear: featuredBooks[1].publication_year,
+                  format: featuredBooks[1].format,
+                  dimensions: featuredBooks[1].dimensions,
+                  weight: featuredBooks[1].weight,
+                  language: featuredBooks[1].language,
+                  edition: featuredBooks[1].edition,
+                  rating: featuredBooks[1].rating,
+                  reviewCount: featuredBooks[1].review_count
                 }}
                 variant="compact"
               />
@@ -136,7 +158,18 @@ const FeaturedBooks = () => {
                   isNew: featuredBooks[2].is_new,
                   isBestseller: featuredBooks[2].is_bestseller,
                   inStock: featuredBooks[2].in_stock,
-                  selarUrl: featuredBooks[2].selar_url
+                  selarUrl: featuredBooks[2].selar_url,
+                  isbn: featuredBooks[2].isbn,
+                  pages: featuredBooks[2].pages,
+                  publisher: featuredBooks[2].publisher,
+                  publicationYear: featuredBooks[2].publication_year,
+                  format: featuredBooks[2].format,
+                  dimensions: featuredBooks[2].dimensions,
+                  weight: featuredBooks[2].weight,
+                  language: featuredBooks[2].language,
+                  edition: featuredBooks[2].edition,
+                  rating: featuredBooks[2].rating,
+                  reviewCount: featuredBooks[2].review_count
                 }}
                 variant="compact"
               />
@@ -162,7 +195,18 @@ const FeaturedBooks = () => {
                   isNew: featuredBooks[3].is_new,
                   isBestseller: featuredBooks[3].is_bestseller,
                   inStock: featuredBooks[3].in_stock,
-                  selarUrl: featuredBooks[3].selar_url
+                  selarUrl: featuredBooks[3].selar_url,
+                  isbn: featuredBooks[3].isbn,
+                  pages: featuredBooks[3].pages,
+                  publisher: featuredBooks[3].publisher,
+                  publicationYear: featuredBooks[3].publication_year,
+                  format: featuredBooks[3].format,
+                  dimensions: featuredBooks[3].dimensions,
+                  weight: featuredBooks[3].weight,
+                  language: featuredBooks[3].language,
+                  edition: featuredBooks[3].edition,
+                  rating: featuredBooks[3].rating,
+                  reviewCount: featuredBooks[3].review_count
                 }}
                 variant="horizontal"
               />
