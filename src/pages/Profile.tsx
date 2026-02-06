@@ -1,148 +1,100 @@
-import { useState, useEffect } from "react";
-import { useAuth, UserProfile } from "../contexts/AuthContext";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { useAuth } from "@/contexts/AuthContext";
 import MainLayout from "@/components/layout/MainLayout";
-import { supabase } from "@/lib/supabase";
-import { useToast } from "@/hooks/use-toast";
-import { Loader2, User as UserIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Loader2, LogOut, User as UserIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-export default function Profile() {
-    const { user, profile, loading: authLoading, refreshProfile } = useAuth();
-    const [isEditing, setIsEditing] = useState(false);
-    const [fullName, setFullName] = useState("");
-    const [loading, setLoading] = useState(false);
-    const { toast } = useToast();
+const Profile = () => {
+    const { user, signOut, loading, isAdmin } = useAuth();
     const navigate = useNavigate();
 
-    // Redirect if not logged in
-    useEffect(() => {
-        if (!authLoading && !user) {
-            navigate("/");
-        }
-    }, [user, authLoading, navigate]);
-
-    // Initialize form with profile data
-    useEffect(() => {
-        if (profile) {
-            setFullName(profile.full_name || "");
-        }
-    }, [profile]);
-
-    const handleUpdateProfile = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!user) return;
-
-        setLoading(true);
-        try {
-            const { error } = await supabase
-                .from("users")
-                .update({ full_name: fullName })
-                .eq("id", user.id);
-
-            if (error) throw error;
-
-            toast({
-                title: "Profile Updated",
-                description: "Your profile information has been updated successfully.",
-            });
-
-            await refreshProfile();
-            setIsEditing(false);
-        } catch (error) {
-            console.error(error);
-            toast({
-                title: "Error",
-                description: "Failed to update profile.",
-                variant: "destructive",
-            });
-        } finally {
-            setLoading(false);
-        }
+    const handleSignOut = async () => {
+        await signOut();
+        navigate("/login");
     };
 
-    if (authLoading) {
+    if (loading) {
         return (
             <MainLayout>
-                <div className="container mx-auto py-20 flex justify-center">
-                    <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+                <div className="min-h-[60vh] flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 animate-spin text-primary" />
                 </div>
             </MainLayout>
         );
     }
 
-    if (!user) return null;
+    if (!user) {
+        navigate("/login");
+        return null;
+    }
 
     return (
         <MainLayout>
-            <div className="container mx-auto py-10 px-4 md:px-0">
-                <div className="max-w-2xl mx-auto space-y-8">
-                    <div>
-                        <h1 className="text-3xl font-serif font-bold mb-2">My Profile</h1>
-                        <p className="text-muted-foreground">Manage your account settings and preferences.</p>
-                    </div>
+            <div className="container mx-auto py-12 md:py-24">
+                <div className="max-w-2xl mx-auto">
+                    <h1 className="text-3xl font-bold mb-8">My Profile</h1>
 
-                    <div className="bg-card border rounded-lg p-6 shadow-sm">
-                        <div className="flex items-center gap-6 mb-8">
-                            <div className="h-20 w-20 rounded-full bg-secondary flex items-center justify-center text-3xl font-medium">
-                                {profile?.avatar_url ? (
-                                    <img src={profile.avatar_url} alt="Profile" className="h-full w-full rounded-full object-cover" />
-                                ) : (
-                                    <span>{profile?.full_name?.[0]?.toUpperCase() || user.email?.[0]?.toUpperCase()}</span>
+                    <Card>
+                        <CardHeader className="flex flex-row items-center gap-4">
+                            <Avatar className="h-20 w-20">
+                                <AvatarImage src={user.user_metadata?.avatar_url} />
+                                <AvatarFallback className="text-xl">
+                                    {user.user_metadata?.full_name?.charAt(0) || user.email?.charAt(0).toUpperCase()}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div>
+                                <CardTitle className="text-2xl">{user.user_metadata?.full_name || "User"}</CardTitle>
+                                <CardDescription>{user.email}</CardDescription>
+                                {isAdmin && (
+                                    <span className="inline-block px-2 py-1 mt-2 text-xs font-bold text-white bg-primary rounded-full">
+                                        Admin
+                                    </span>
                                 )}
                             </div>
-                            <div>
-                                <h2 className="text-xl font-semibold">{profile?.full_name || "User"}</h2>
-                                <p className="text-muted-foreground">{user.email}</p>
-                                <span className={`inline-block mt-2 px-2 py-1 text-xs rounded-full ${profile?.role === 'admin'
-                                    ? "bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300"
-                                    : "bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300"
-                                    }`}>
-                                    {profile?.role === 'admin' ? "Administrator" : "Member"}
-                                </span>
-                            </div>
-                        </div>
-
-                        <form onSubmit={handleUpdateProfile} className="space-y-6">
-                            <div className="space-y-2">
-                                <Label htmlFor="email">Email Address</Label>
-                                <Input id="email" value={user.email || ""} disabled className="bg-muted/50" />
-                                <p className="text-xs text-muted-foreground">Email address cannot be changed.</p>
-                            </div>
-
-                            <div className="space-y-2">
-                                <Label htmlFor="fullName">Full Name</Label>
-                                <Input
-                                    id="fullName"
-                                    value={fullName}
-                                    onChange={(e) => setFullName(e.target.value)}
-                                    disabled={!isEditing}
-                                />
+                        </CardHeader>
+                        <CardContent className="space-y-6">
+                            <div className="grid gap-4">
+                                <div className="p-4 rounded-lg bg-muted/20 border">
+                                    <div className="flex items-center gap-2 mb-2 font-medium">
+                                        <UserIcon className="h-4 w-4" />
+                                        Account Details
+                                    </div>
+                                    <dl className="space-y-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <dt className="text-muted-foreground">User ID</dt>
+                                            <dd className="font-mono">{user.id.substring(0, 8)}...</dd>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <dt className="text-muted-foreground">Joined</dt>
+                                            <dd>{new Date(user.created_at).toLocaleDateString()}</dd>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <dt className="text-muted-foreground">Last Sign In</dt>
+                                            <dd>{user.last_sign_in_at ? new Date(user.last_sign_in_at).toLocaleDateString() : 'Never'}</dd>
+                                        </div>
+                                    </dl>
+                                </div>
                             </div>
 
-                            <div className="flex justify-end gap-4 pt-4">
-                                {isEditing ? (
-                                    <>
-                                        <Button type="button" variant="ghost" onClick={() => setIsEditing(false)} disabled={loading}>
-                                            Cancel
-                                        </Button>
-                                        <Button type="submit" disabled={loading}>
-                                            {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-                                            Save Changes
-                                        </Button>
-                                    </>
-                                ) : (
-                                    <Button type="button" onClick={() => setIsEditing(true)}>
-                                        Edit Profile
+                            <div className="flex gap-4">
+                                {isAdmin && (
+                                    <Button onClick={() => navigate("/admin")} variant="default">
+                                        Go to Dashboard
                                     </Button>
                                 )}
+                                <Button onClick={handleSignOut} variant="destructive">
+                                    <LogOut className="mr-2 h-4 w-4" />
+                                    Sign Out
+                                </Button>
                             </div>
-                        </form>
-                    </div>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </MainLayout>
     );
-}
+};
+
+export default Profile;

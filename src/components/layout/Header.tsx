@@ -1,33 +1,19 @@
+
 import { useState, useEffect } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
-import { Menu, X, ShoppingCart, Search, User, LogOut, ChevronDown } from "lucide-react";
+import { Link, useLocation } from "react-router-dom";
+import { Menu, X, ShoppingCart, Search, User, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ThemeToggle } from "@/components/theme-toggle";
-import { AuthModal } from "../auth/AuthModal";
-import { useAuth } from "../../contexts/AuthContext";
 import { getSiteSetting } from "@/lib/cms";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
-import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [authModalTab, setAuthModalTab] = useState<"login" | "signup">("login");
-  const [siteName, setSiteName] = useState("stnbeteglobal");
+  const [siteName, setSiteName] = useState("STNBETE");
   const location = useLocation();
-  const navigate = useNavigate();
-  const { user, signOut, loading, profile, isAdmin } = useAuth();
-  const { toast } = useToast();
+  const { user } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,17 +29,6 @@ const Header = () => {
       if (name) setSiteName(name);
     });
   }, []);
-
-  // DEBUG: Log auth state changes
-  useEffect(() => {
-    console.log('🎯 [Header] Auth State:', {
-      user: user?.email,
-      loading,
-      profile: profile,
-      isAdmin,
-      profileRole: profile?.role
-    });
-  }, [user, loading, profile, isAdmin]);
 
   // Close mobile menu when route changes
   useEffect(() => {
@@ -72,56 +47,6 @@ const Header = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleSignOut = async () => {
-    try {
-      console.log('Attempting to sign out...');
-      const { error } = await signOut();
-
-      console.log('Sign out result:', { error });
-
-      if (error) {
-        console.error('Sign out error:', error);
-        toast({
-          title: "Error",
-          description: `Failed to sign out: ${error.message}`,
-          variant: "destructive",
-        });
-      } else {
-        console.log('Sign out successful');
-        toast({
-          title: "Success",
-          description: "You have been signed out successfully.",
-        });
-        navigate('/');
-      }
-    } catch (error) {
-      console.error('Sign out exception:', error);
-      toast({
-        title: "Error",
-        description: "An unexpected error occurred during sign out.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const openAuthModal = (tab: "login" | "signup") => {
-    setAuthModalTab(tab);
-    setAuthModalOpen(true);
-  };
-
-  const getUserInitials = (name: string | null) => {
-    if (!name) return "U";
-    return name
-      .split(" ")
-      .map((n) => n[0])
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
-  };
-
-  const displayName = profile?.full_name || user?.user_metadata?.full_name || "User";
-  const displayEmail = user?.email || "";
-
   return (
     <>
       <header
@@ -137,12 +62,12 @@ const Header = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-2 text-xl font-semibold tracking-tight text-foreground z-50 relative hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 text-xl font-bold tracking-tight text-brand-navy z-50 relative hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-blue-800 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-brand-navy rounded-lg flex items-center justify-center">
                 <span className="text-white text-sm font-bold">S</span>
               </div>
-              <span className="hidden sm:block">{siteName}</span>
+              <span className="hidden sm:block text-brand-navy dark:text-white">{siteName}</span>
             </Link>
 
             {/* Desktop Navigation - Centered */}
@@ -190,75 +115,20 @@ const Header = () => {
 
               <ThemeToggle />
 
-              {/* Authentication */}
-              {loading ? (
-                <div className="w-9 h-9 rounded-full bg-muted animate-pulse" />
-              ) : user ? (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" className="relative h-9 w-auto rounded-full px-3 gap-2 hover:bg-secondary">
-                      <Avatar className="h-6 w-6">
-                        <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={displayName} />
-                        <AvatarFallback className="text-xs">{getUserInitials(displayName)}</AvatarFallback>
-                      </Avatar>
-                      <span className="text-sm font-medium hidden xl:block">
-                        {displayName.split(' ')[0]}
-                      </span>
-                      <ChevronDown className="h-3 w-3 opacity-50" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-56" align="end" forceMount>
-                    <DropdownMenuLabel className="font-normal">
-                      <div className="flex flex-col space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          {displayName}
-                        </p>
-                        <p className="text-xs leading-none text-muted-foreground">
-                          {displayEmail}
-                        </p>
-                      </div>
-                    </DropdownMenuLabel>
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem asChild>
-                      <Link to="/profile" className="cursor-pointer">
-                        <User className="mr-2 h-4 w-4" />
-                        <span>Profile</span>
-                      </Link>
-                    </DropdownMenuItem>
-                    {/* Only show admin link for admin users */}
-                    {isAdmin && (
-                      <DropdownMenuItem asChild>
-                        <Link to="/admin" className="cursor-pointer">
-                          <span className="mr-2 text-xs">⚙️</span>
-                          <span>Admin Dashboard</span>
-                        </Link>
-                      </DropdownMenuItem>
-                    )}
-                    <DropdownMenuSeparator />
-                    <DropdownMenuItem onClick={handleSignOut} className="cursor-pointer text-red-600">
-                      <LogOut className="mr-2 h-4 w-4" />
-                      <span>Log out</span>
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
+              <div className="w-px h-6 bg-border mx-2" />
+
+              {user ? (
+                <Link to="/profile">
+                  <Button variant="ghost" size="icon" className="h-9 w-9 rounded-full hover:bg-secondary">
+                    <User className="h-4 w-4" />
+                  </Button>
+                </Link>
               ) : (
-                <div className="flex items-center gap-2">
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => openAuthModal("login")}
-                    className="rounded-full"
-                  >
+                <Link to="/login">
+                  <Button variant="default" size="sm" className="rounded-full px-4 ml-2">
                     Sign In
                   </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => openAuthModal("signup")}
-                    className="rounded-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-                  >
-                    Get Started
-                  </Button>
-                </div>
+                </Link>
               )}
             </div>
 
@@ -322,78 +192,32 @@ const Header = () => {
                   </Button>
                   <ThemeToggle />
                 </div>
+
+                <div className="flex items-center gap-2">
+                  {user ? (
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
+                      <Button variant="secondary" className="rounded-full gap-2">
+                        <User className="h-4 w-4" />
+                        Profile
+                      </Button>
+                    </Link>
+                  ) : (
+                    <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+                      <Button className="rounded-full gap-2">
+                        <LogIn className="h-4 w-4" />
+                        Sign In
+                      </Button>
+                    </Link>
+                  )}
+                </div>
               </div>
 
-              {/* Mobile Authentication */}
-              <div className="pt-4 mt-4 border-t border-border/50">
-                {user ? (
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-3 p-3 bg-secondary/50 rounded-xl">
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={profile?.avatar_url || user?.user_metadata?.avatar_url} alt={displayName} />
-                        <AvatarFallback>{getUserInitials(displayName)}</AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="text-sm font-medium">{displayName}</p>
-                        <p className="text-xs text-muted-foreground">{displayEmail}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Link to="/profile" onClick={() => setIsMenuOpen(false)}>
-                        <Button variant="ghost" size="sm" className="w-full justify-start rounded-xl">
-                          <User className="mr-2 h-4 w-4" />
-                          Profile
-                        </Button>
-                      </Link>
-                      {/* Only show admin link for admin users */}
-                      {isAdmin && (
-                        <Link to="/admin" onClick={() => setIsMenuOpen(false)}>
-                          <Button variant="ghost" size="sm" className="w-full justify-start rounded-xl">
-                            <span className="mr-2 text-xs">⚙️</span>
-                            Admin Dashboard
-                          </Button>
-                        </Link>
-                      )}
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={handleSignOut}
-                        className="w-full justify-start rounded-xl text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950"
-                      >
-                        <LogOut className="mr-2 h-4 w-4" />
-                        Sign Out
-                      </Button>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="space-y-3">
-                    <Button
-                      onClick={() => openAuthModal("login")}
-                      variant="outline"
-                      className="w-full rounded-xl"
-                    >
-                      Sign In
-                    </Button>
-                    <Button
-                      onClick={() => openAuthModal("signup")}
-                      className="w-full rounded-xl bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800"
-                    >
-                      Get Started
-                    </Button>
-                  </div>
-                )}
-              </div>
             </nav>
           </div>
         </div>
       )}
 
-      {/* Auth Modal */}
-      <AuthModal
-        open={authModalOpen}
-        onOpenChange={setAuthModalOpen}
-        defaultTab={authModalTab}
-      />
+
     </>
   );
 };

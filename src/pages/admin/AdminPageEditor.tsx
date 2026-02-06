@@ -42,7 +42,17 @@ const AdminPageEditor = () => {
                 const data = await getPageContent(slug);
                 if (data) {
                     setPage(data as any);
-                    setSections(data.sections || {});
+                    // content is where the JSON data lives in our schema
+                    let content = data.content || {};
+                    if (typeof content === 'string') {
+                        try {
+                            content = JSON.parse(content);
+                        } catch (e) {
+                            console.error("Failed to parse page content JSON", e);
+                            content = {};
+                        }
+                    }
+                    setSections(content);
                 } else {
                     // Try to fetch page metadata at least if getPageContent returned null (maybe draft)
                     // For now, if null, redirect or show error

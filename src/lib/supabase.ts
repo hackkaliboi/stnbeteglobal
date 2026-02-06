@@ -1,198 +1,79 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-console.log('🔧 [Supabase] Initializing client with:', {
-    url: supabaseUrl,
-    keyPrefix: supabaseAnonKey?.substring(0, 20) + '...',
-    hasUrl: !!supabaseUrl,
-    hasKey: !!supabaseAnonKey
-})
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables')
+    throw new Error('Missing Supabase environment variables');
 }
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-    auth: {
-        autoRefreshToken: true,
-        persistSession: true,
-        detectSessionInUrl: true
-    },
-    global: {
-        headers: {
-            'x-client-info': 'author-haven-web'
-        }
-    }
-})
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-// Database types (we'll expand these as we create tables)
-export type Database = {
-    public: {
-        Tables: {
-            books: {
-                Row: {
-                    id: string
-                    title: string
-                    author: string
-                    price: number
-                    cover_image: string | null
-                    category: string
-                    description: string | null
-                    is_new: boolean
-                    is_bestseller: boolean
-                    in_stock: boolean
-                    selar_url: string | null
-                    isbn: string | null
-                    pages: number
-                    publisher: string
-                    publication_year: number | null
-                    format: string
-                    dimensions: string
-                    weight: string
-                    language: string
-                    edition: string
-                    rating: number
-                    review_count: number
-                    created_at: string
-                    updated_at: string
-                }
-                Insert: {
-                    id?: string
-                    title: string
-                    author: string
-                    price: number
-                    cover_image?: string | null
-                    category: string
-                    description?: string | null
-                    is_new?: boolean
-                    is_bestseller?: boolean
-                    in_stock?: boolean
-                    selar_url?: string | null
-                    isbn?: string | null
-                    pages?: number
-                    publisher?: string
-                    publication_year?: number | null
-                    format?: string
-                    dimensions?: string
-                    weight?: string
-                    language?: string
-                    edition?: string
-                    rating?: number
-                    review_count?: number
-                    created_at?: string
-                    updated_at?: string
-                }
-                Update: {
-                    id?: string
-                    title?: string
-                    author?: string
-                    price?: number
-                    cover_image?: string | null
-                    category?: string
-                    description?: string | null
-                    is_new?: boolean
-                    is_bestseller?: boolean
-                    in_stock?: boolean
-                    selar_url?: string | null
-                    isbn?: string | null
-                    pages?: number
-                    publisher?: string
-                    publication_year?: number | null
-                    format?: string
-                    dimensions?: string
-                    weight?: string
-                    language?: string
-                    edition?: string
-                    rating?: number
-                    review_count?: number
-                    created_at?: string
-                    updated_at?: string
-                }
-            }
-            blog_posts: {
-                Row: {
-                    id: string
-                    title: string
-                    excerpt: string
-                    content: string
-                    author: string
-                    image: string | null
-                    category: string
-                    featured: boolean
-                    published: boolean
-                    read_time: string
-                    created_at: string
-                    updated_at: string
-                }
-                Insert: {
-                    id?: string
-                    title: string
-                    excerpt: string
-                    content: string
-                    author: string
-                    image?: string | null
-                    category: string
-                    featured?: boolean
-                    published?: boolean
-                    read_time: string
-                    created_at?: string
-                    updated_at?: string
-                }
-                Update: {
-                    id?: string
-                    title?: string
-                    excerpt?: string
-                    content?: string
-                    author?: string
-                    image?: string | null
-                    category?: string
-                    featured?: boolean
-                    published?: boolean
-                    read_time?: string
-                    created_at?: string
-                    updated_at?: string
-                }
-            }
-            users: {
-                Row: {
-                    id: string
-                    email: string
-                    full_name: string | null
-                    avatar_url: string | null
-                    role: 'user' | 'admin'
-                    created_at: string
-                    updated_at: string
-                }
-                Insert: {
-                    id: string
-                    email: string
-                    full_name?: string | null
-                    avatar_url?: string | null
-                    role?: 'user' | 'admin'
-                    created_at?: string
-                    updated_at?: string
-                }
-                Update: {
-                    id?: string
-                    email?: string
-                    full_name?: string | null
-                    avatar_url?: string | null
-                    role?: 'user' | 'admin'
-                    created_at?: string
-                    updated_at?: string
-                }
-            }
+// Simplified Book type - just mockup and Selar link
+// All other book details (price, description, etc.) are on Selar
+export interface Book {
+    id: string;
+    title: string;
+    author: string;
+    cover_image: string | null; // Book cover mockup
+    selar_url: string; // Link to Selar product page
+    is_featured: boolean; // Show on homepage
+    created_at: string;
+    updated_at: string;
+}
+
+// Helper function to upload book cover mockup
+export async function uploadBookCover(file: File, bookId: string): Promise<string | null> {
+    try {
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${bookId}-${Date.now()}.${fileExt}`;
+        const filePath = `covers/${fileName}`;
+
+        const { error: uploadError } = await supabase.storage
+            .from('book-covers')
+            .upload(filePath, file, {
+                cacheControl: '3600',
+                upsert: true
+            });
+
+        if (uploadError) {
+            console.error('Upload error:', uploadError);
+            return null;
         }
-        Views: {
-            [_ in never]: never
+
+        // Get public URL
+        const { data } = supabase.storage
+            .from('book-covers')
+            .getPublicUrl(filePath);
+
+        return data.publicUrl;
+    } catch (error) {
+        console.error('Error uploading book cover:', error);
+        return null;
+    }
+}
+
+// Helper function to delete book cover
+export async function deleteBookCover(coverUrl: string): Promise<boolean> {
+    try {
+        // Extract file path from URL
+        const urlParts = coverUrl.split('/book-covers/');
+        if (urlParts.length < 2) return false;
+
+        const filePath = urlParts[1];
+
+        const { error } = await supabase.storage
+            .from('book-covers')
+            .remove([filePath]);
+
+        if (error) {
+            console.error('Delete error:', error);
+            return false;
         }
-        Functions: {
-            [_ in never]: never
-        }
-        Enums: {
-            [_ in never]: never
-        }
+
+        return true;
+    } catch (error) {
+        console.error('Error deleting book cover:', error);
+        return false;
     }
 }

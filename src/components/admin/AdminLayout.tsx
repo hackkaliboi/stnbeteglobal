@@ -12,7 +12,6 @@ import {
   X,
   Bell,
   Users,
-  Tag,
   ArrowLeft,
   LayoutTemplate
 } from "lucide-react";
@@ -27,7 +26,6 @@ interface AdminLayoutProps {
 
 const navItems = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { name: "Categories", href: "/admin/categories", icon: Tag },
   { name: "Pages", href: "/admin/pages", icon: LayoutTemplate },
   { name: "Books", href: "/admin/books", icon: BookOpen },
   { name: "Blog Posts", href: "/admin/posts", icon: FileText },

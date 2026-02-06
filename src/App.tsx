@@ -1,32 +1,38 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
-import AuthDebugger from "@/pages/debug/AuthDebugger";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ThemeProvider } from "@/components/theme-provider";
-import { AuthProvider } from "./contexts/AuthContext";
-import { ProtectedRoute, AdminRoute } from "@/components/auth/RouteGuards";
 import Index from "./pages/Index";
-import Auth from "./pages/Auth";
 import Books from "./pages/Books";
 import BookDetails from "./pages/BookDetails";
 import Blog from "./pages/Blog";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
-import Profile from "@/pages/Profile";
+import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Profile from "./pages/Profile";
+import { AuthProvider } from "@/contexts/AuthContext";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBooks from "./pages/admin/AdminBooks";
 import AdminPosts from "./pages/admin/AdminPosts";
+import AdminPages from "./pages/admin/AdminPages";
 import AdminSettings from "./pages/admin/AdminSettings";
 import AdminNewsletter from "./pages/admin/AdminNewsletter";
-import AdminTest from "./pages/admin/AdminTest";
-import AdminCategories from "./pages/admin/AdminCategories";
-import AdminPages from "./pages/admin/AdminPages";
 import AdminPageEditor from "./pages/admin/AdminPageEditor";
-import NotFound from "./pages/NotFound";
+import { AdminGuard, RequireAuth } from "./components/auth/RouteGuards";
 
-const queryClient = new QueryClient();
+// Create a client for React Query
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60 * 1000,
+      retry: 1,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -36,80 +42,94 @@ const App = () => (
       enableSystem
       disableTransitionOnChange
     >
-      <AuthProvider>
-        <TooltipProvider>
+      <TooltipProvider>
+        <AuthProvider>
           <Toaster />
           <Sonner />
           <BrowserRouter>
             <Routes>
-              {/* Storefront Routes */}
+              {/* Public Routes */}
               <Route path="/" element={<Index />} />
-              <Route path="/debug-auth" element={<AuthDebugger />} />
-              <Route path="/auth" element={<Auth />} />
               <Route path="/books" element={<Books />} />
               <Route path="/books/:id" element={<BookDetails />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/profile" element={
-                <ProtectedRoute>
-                  <Profile />
-                </ProtectedRoute>
-              } />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route
+                path="/profile"
+                element={
+                  <RequireAuth>
+                    <Profile />
+                  </RequireAuth>
+                }
+              />
 
               {/* Admin Routes */}
-              <Route path="/admin" element={
-                <AdminRoute>
-                  <AdminDashboard />
-                </AdminRoute>
-              } />
-              <Route path="/admin/books" element={
-                <AdminRoute>
-                  <AdminBooks />
-                </AdminRoute>
-              } />
-              <Route path="/admin/categories" element={
-                <AdminRoute>
-                  <AdminCategories />
-                </AdminRoute>
-              } />
-              <Route path="/admin/pages" element={
-                <AdminRoute>
-                  <AdminPages />
-                </AdminRoute>
-              } />
-              <Route path="/admin/pages/edit/:slug" element={
-                <AdminRoute>
-                  <AdminPageEditor />
-                </AdminRoute>
-              } />
-              <Route path="/admin/posts" element={
-                <AdminRoute>
-                  <AdminPosts />
-                </AdminRoute>
-              } />
-              <Route path="/admin/settings" element={
-                <AdminRoute>
-                  <AdminSettings />
-                </AdminRoute>
-              } />
-              <Route path="/admin/newsletter" element={
-                <AdminRoute>
-                  <AdminNewsletter />
-                </AdminRoute>
-              } />
-              <Route path="/admin/test" element={
-                <AdminRoute>
-                  <AdminTest />
-                </AdminRoute>
-              } />
+              <Route
+                path="/admin"
+                element={
+                  <AdminGuard>
+                    <AdminDashboard />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/books"
+                element={
+                  <AdminGuard>
+                    <AdminBooks />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/posts"
+                element={
+                  <AdminGuard>
+                    <AdminPosts />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/pages"
+                element={
+                  <AdminGuard>
+                    <AdminPages />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/pages/:slug"
+                element={
+                  <AdminGuard>
+                    <AdminPageEditor />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/settings"
+                element={
+                  <AdminGuard>
+                    <AdminSettings />
+                  </AdminGuard>
+                }
+              />
+              <Route
+                path="/admin/newsletter"
+                element={
+                  <AdminGuard>
+                    <AdminNewsletter />
+                  </AdminGuard>
+                }
+              />
 
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
-        </TooltipProvider>
-      </AuthProvider>
+        </AuthProvider>
+      </TooltipProvider>
     </ThemeProvider>
   </QueryClientProvider>
 );

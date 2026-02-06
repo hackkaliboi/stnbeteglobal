@@ -14,7 +14,6 @@ import {
   ArrowDownRight,
   Loader2,
   Settings,
-  Tag,
   LayoutTemplate
 } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -27,15 +26,12 @@ interface DashboardStats {
   totalBooks: number;
   totalPosts: number;
   publishedPosts: number;
-  inStockBooks: number;
-  newBooks: number;
   bestsellers: number;
 }
 
 const quickActions = [
   { name: "Add New Book", href: "/admin/books", icon: BookOpen },
   { name: "Create Blog Post", href: "/admin/posts", icon: FileText },
-  { name: "Categories", href: "/admin/categories", icon: Tag },
   { name: "Site Pages", href: "/admin/pages", icon: LayoutTemplate },
   { name: "Newsletter", href: "/admin/newsletter", icon: TrendingUp },
   { name: "Settings", href: "/admin/settings", icon: Settings },
@@ -44,7 +40,7 @@ const quickActions = [
 const AdminDashboard = () => {
   const [userCount, setUserCount] = useState(0);
 
-  const { books, loading: booksLoading } = useBooks();
+  const { data: books = [], isLoading: booksLoading } = useBooks();
   const { posts, loading: postsLoading } = useBlogPosts();
   const { user, isAdmin, loading: profileLoading } = useAuth();
 
@@ -71,9 +67,7 @@ const AdminDashboard = () => {
     totalBooks: books.length,
     totalPosts: posts.length,
     publishedPosts: posts.filter(post => post.published).length,
-    inStockBooks: books.filter(book => book.in_stock).length,
-    newBooks: books.filter(book => book.is_new).length,
-    bestsellers: books.filter(book => book.is_bestseller).length,
+    bestsellers: books.filter(book => book.is_featured).length,
   };
 
   if (profileLoading) {
@@ -102,195 +96,116 @@ const AdminDashboard = () => {
   const statCards = [
     {
       title: "Total Books",
-      value: stats.totalBooks.toString(),
-      subtitle: `${stats.inStockBooks} in stock`,
+      value: stats.totalBooks,
       icon: BookOpen,
-      color: "text-blue-600",
+      change: "+0",
+      description: "In library",
+      color: "text-blue-500",
     },
     {
-      title: "Blog Posts",
-      value: stats.totalPosts.toString(),
-      subtitle: `${stats.publishedPosts} published`,
-      icon: FileText,
-      color: "text-green-600",
-    },
-    {
-      title: "New Releases",
-      value: stats.newBooks.toString(),
-      subtitle: "Recently added",
+      title: "Featured Books",
+      value: stats.bestsellers,
       icon: TrendingUp,
-      color: "text-purple-600",
+      change: "+0",
+      description: "Highlighted",
+      color: "text-amber-500",
     },
     {
-      title: "Registered Users",
-      value: userCount.toString(),
-      subtitle: "Total users",
+      title: "Total Posts",
+      value: stats.totalPosts,
+      icon: FileText,
+      change: "+0",
+      description: "Blog entries",
+      color: "text-green-500",
+    },
+    {
+      title: "Published Posts",
+      value: stats.publishedPosts,
       icon: Users,
-      color: "text-orange-600",
+      change: "+0",
+      description: "Live on site",
+      color: "text-purple-500",
     },
   ];
 
   return (
     <AdminLayout>
       <div className="space-y-8">
-        {/* Welcome */}
         <div>
-          <h1 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
-            Welcome back, Admin
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Here's what's happening with your store today.
+          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+          <p className="text-muted-foreground">
+            Welcome back, {user?.user_metadata?.first_name || 'Admin'}
           </p>
         </div>
 
-        {/* Stats */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {[...Array(4)].map((_, i) => (
-              <Card key={i}>
-                <CardContent className="p-6">
-                  <div className="flex items-center justify-center h-24">
-                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {statCards.map((stat, index) => {
+            const Icon = stat.icon;
+            return (
+              <Card key={index}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {stat.title}
+                  </CardTitle>
+                  <Icon className={`h-4 w-4 ${stat.color}`} />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : stat.value}
+                  </div>
+                  <div className="flex items-center text-xs text-muted-foreground mt-1">
+                    <span className="text-green-500 flex items-center mr-1">
+                      {stat.change === "+0" ? null : (
+                        <>
+                          {stat.change.startsWith('+') ? <ArrowUpRight className="h-3 w-3 mr-0.5" /> : <ArrowDownRight className="h-3 w-3 mr-0.5" />}
+                          {stat.change}
+                        </>
+                      )}
+                    </span>
+                    {stat.description}
                   </div>
                 </CardContent>
               </Card>
-            ))}
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {statCards.map((stat) => {
-              const Icon = stat.icon;
-              return (
-                <Card key={stat.title}>
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between">
-                      <div className={`w-12 h-12 rounded-full bg-accent/10 flex items-center justify-center`}>
-                        <Icon className={`h-6 w-6 ${stat.color}`} />
-                      </div>
-                    </div>
-                    <div className="mt-4">
-                      <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                      <p className="text-sm text-muted-foreground">{stat.title}</p>
-                      <p className="text-xs text-muted-foreground mt-1">{stat.subtitle}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        )}
+            );
+          })}
+        </div>
 
-        {/* Quick Actions */}
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-              {quickActions.map((action) => {
-                const Icon = action.icon;
-                return (
-                  <Link key={action.name} to={action.href}>
-                    <Button variant="outline" className="w-full h-auto py-4 flex-col gap-2 hover:bg-accent/50">
-                      <Icon className="h-5 w-5" />
-                      <span className="text-sm">{action.name}</span>
-                    </Button>
-                  </Link>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Recent Activity */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Recent Books */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">Recent Books</CardTitle>
-              <Link to="/admin/books">
-                <Button variant="ghost" size="sm">
-                  View all
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
+          <Card className="col-span-4">
+            <CardHeader>
+              <CardTitle>Recent Activity</CardTitle>
             </CardHeader>
             <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+              <div className="space-y-8">
+                {/* Simplified Activity Feed */}
+                <div className="flex items-center">
+                  <div className="ml-4 space-y-1">
+                    <p className="text-sm font-medium leading-none">System Ready</p>
+                    <p className="text-sm text-muted-foreground">
+                      Database connected and frontend updated.
+                    </p>
+                  </div>
+                  <div className="ml-auto font-medium">Just now</div>
                 </div>
-              ) : books.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">No books available</p>
-              ) : (
-                <div className="space-y-4">
-                  {books.slice(0, 5).map((book) => (
-                    <div key={book.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                      <div className="flex-1">
-                        <p className="font-medium text-foreground text-sm">{book.title}</p>
-                        <p className="text-xs text-muted-foreground">{book.author}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-medium text-sm">${book.price.toFixed(2)}</p>
-                        <div className="flex gap-1">
-                          {book.is_new && (
-                            <span className="text-xs bg-blue-100 text-blue-800 px-1 rounded">New</span>
-                          )}
-                          {book.is_bestseller && (
-                            <span className="text-xs bg-green-100 text-green-800 px-1 rounded">Best</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              </div>
             </CardContent>
           </Card>
 
-          {/* Recent Posts */}
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
-              <CardTitle className="text-lg font-semibold">Recent Posts</CardTitle>
-              <Link to="/admin/posts">
-                <Button variant="ghost" size="sm">
-                  View all
-                  <ArrowUpRight className="ml-2 h-4 w-4" />
-                </Button>
-              </Link>
+          <Card className="col-span-3">
+            <CardHeader>
+              <CardTitle>Quick Actions</CardTitle>
             </CardHeader>
             <CardContent>
-              {loading ? (
-                <div className="flex items-center justify-center py-8">
-                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-                </div>
-              ) : posts.length === 0 ? (
-                <p className="text-muted-foreground text-center py-8">No posts available</p>
-              ) : (
-                <div className="space-y-4">
-                  {posts.slice(0, 5).map((post) => (
-                    <div key={post.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                      <div className="flex-1">
-                        <p className="font-medium text-foreground text-sm line-clamp-1">{post.title}</p>
-                        <p className="text-xs text-muted-foreground">{post.category}</p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-muted-foreground">
-                          {new Date(post.created_at).toLocaleDateString()}
-                        </p>
-                        <div className="flex gap-1">
-                          {post.published && (
-                            <span className="text-xs bg-green-100 text-green-800 px-1 rounded">Published</span>
-                          )}
-                          {post.featured && (
-                            <span className="text-xs bg-purple-100 text-purple-800 px-1 rounded">Featured</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
+              <div className="grid grid-cols-2 gap-4">
+                {quickActions.map((action, i) => (
+                  <Link key={i} to={action.href}>
+                    <Button variant="outline" className="w-full h-24 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-colors">
+                      <action.icon className="h-6 w-6 mb-1" />
+                      {action.name}
+                    </Button>
+                  </Link>
+                ))}
+              </div>
             </CardContent>
           </Card>
         </div>

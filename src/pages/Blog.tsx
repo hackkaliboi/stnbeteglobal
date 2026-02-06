@@ -6,22 +6,28 @@ import { Calendar, Clock, ArrowRight, Loader2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 const Blog = () => {
-  const { posts, loading, error } = useBlogPosts();
+  const { posts, loading } = useBlogPosts();
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
   const { ref: previewRef, isVisible: previewVisible } = useScrollAnimation();
 
-  const featuredPost = posts.find((post) => post.featured);
-  const regularPosts = posts.filter((post) => !post.featured);
+  // Helper to calculate read time
+  const getReadTime = (content: string) => {
+    const wordsPerMinute = 200;
+    const words = (content || "").split(/\s+/).length;
+    const minutes = Math.ceil(words / wordsPerMinute);
+    return `${minutes} min read`;
+  };
 
-  if (error) {
+  const featuredPost = posts.find((post) => post.featured && post.published);
+  const regularPosts = posts.filter((post) => (!post.featured || !featuredPost) && post.published);
+
+  if (loading) {
     return (
       <MainLayout>
-        <div className="container mx-auto py-20 text-center">
-          <p className="text-red-500 mb-4">Error loading blog posts: {error}</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
+        <div className="min-h-screen flex items-center justify-center">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
         </div>
       </MainLayout>
     );
@@ -91,7 +97,7 @@ const Blog = () => {
                       month: 'short',
                       day: 'numeric',
                       year: 'numeric'
-                    })} • {featuredPost.read_time}
+                    })} • {getReadTime(featuredPost.content)}
                   </div>
                 </div>
               )}
@@ -101,15 +107,7 @@ const Blog = () => {
       </section>
 
       <div className="container mx-auto py-12 md:py-16">
-        {/* Loading State */}
-        {loading && (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-muted-foreground">Loading blog posts...</span>
-          </div>
-        )}
-
-        {!loading && posts.length === 0 && (
+        {posts.length === 0 && (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg mb-4">
               No blog posts available at the moment.
@@ -120,7 +118,7 @@ const Blog = () => {
           </div>
         )}
 
-        {!loading && posts.length > 0 && (
+        {posts.length > 0 && (
           <>
             {/* Featured Post */}
             {featuredPost && (
@@ -129,7 +127,7 @@ const Blog = () => {
                   <div className="grid lg:grid-cols-2">
                     <div className="aspect-video lg:aspect-auto">
                       <img
-                        src={featuredPost.image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop"}
+                        src={featuredPost.cover_image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop"}
                         alt={featuredPost.title}
                         className="w-full h-full object-cover"
                       />
@@ -153,7 +151,7 @@ const Blog = () => {
                         </span>
                         <span className="flex items-center gap-1">
                           <Clock className="h-4 w-4" />
-                          {featuredPost.read_time}
+                          {getReadTime(featuredPost.content)}
                         </span>
                       </div>
                     </CardContent>
@@ -170,7 +168,7 @@ const Blog = () => {
                     <Card className="h-full overflow-hidden hover:shadow-lg transition-all hover:-translate-y-1">
                       <div className="aspect-video overflow-hidden">
                         <img
-                          src={post.image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop"}
+                          src={post.cover_image || "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&h=500&fit=crop"}
                           alt={post.title}
                           className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
                         />

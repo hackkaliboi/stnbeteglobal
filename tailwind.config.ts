@@ -21,6 +21,14 @@ export default {
 		},
 		extend: {
 			colors: {
+				brand: {
+					navy: '#000042',
+					purple: '#5602B1',
+					ivory: '#F9F1E6',
+					brown: '#A68E74',
+					grey: '#232323',
+					light: '#DBD7D7',
+				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',
 				ring: 'hsl(var(--ring))',

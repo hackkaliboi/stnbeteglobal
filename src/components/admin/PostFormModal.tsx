@@ -32,19 +32,6 @@ interface PostFormModalProps {
     post?: BlogPost | null;
 }
 
-const categories = [
-    "Industry News",
-    "Book Lists",
-    "Tips & Advice",
-    "Author Interviews",
-    "Reviews",
-    "Writing Tips",
-    "Reading Guides",
-    "Book Recommendations",
-    "Literary Analysis",
-    "Publishing News",
-];
-
 export function PostFormModal({ open, onOpenChange, post }: PostFormModalProps) {
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState<BlogPostInsert>({
@@ -53,7 +40,7 @@ export function PostFormModal({ open, onOpenChange, post }: PostFormModalProps) 
         content: "",
         author: "",
         image: "",
-        category: "",
+        category: "General",
         featured: false,
         published: true,
         read_time: "5 min read",
@@ -72,7 +59,7 @@ export function PostFormModal({ open, onOpenChange, post }: PostFormModalProps) 
                 content: post.content,
                 author: post.author,
                 image: post.image || "",
-                category: post.category,
+                category: post.category || "General",
                 featured: post.featured,
                 published: post.published,
                 read_time: post.read_time,
@@ -84,7 +71,7 @@ export function PostFormModal({ open, onOpenChange, post }: PostFormModalProps) 
                 content: "",
                 author: "stnbeteglobal Team",
                 image: "",
-                category: "",
+                category: "General",
                 featured: false,
                 published: true,
                 read_time: "5 min read",
@@ -99,7 +86,7 @@ export function PostFormModal({ open, onOpenChange, post }: PostFormModalProps) 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.title || !formData.excerpt || !formData.content || !formData.author || !formData.category) {
+        if (!formData.title || !formData.excerpt || !formData.content || !formData.author) {
             toast({
                 title: "Error",
                 description: "Please fill in all required fields",
@@ -175,34 +162,14 @@ export function PostFormModal({ open, onOpenChange, post }: PostFormModalProps) 
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                            <Label htmlFor="category">Category *</Label>
-                            <Select
-                                value={formData.category}
-                                onValueChange={(value) => handleInputChange("category", value)}
-                            >
-                                <SelectTrigger>
-                                    <SelectValue placeholder="Select category" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    {categories.map((category) => (
-                                        <SelectItem key={category} value={category}>
-                                            {category}
-                                        </SelectItem>
-                                    ))}
-                                </SelectContent>
-                            </Select>
-                        </div>
-                        <div className="space-y-2">
-                            <Label htmlFor="read_time">Read Time</Label>
-                            <Input
-                                id="read_time"
-                                value={formData.read_time}
-                                onChange={(e) => handleInputChange("read_time", e.target.value)}
-                                placeholder="5 min read"
-                            />
-                        </div>
+                    <div className="space-y-2">
+                        <Label htmlFor="read_time">Read Time</Label>
+                        <Input
+                            id="read_time"
+                            value={formData.read_time}
+                            onChange={(e) => handleInputChange("read_time", e.target.value)}
+                            placeholder="5 min read"
+                        />
                     </div>
 
                     <div className="space-y-2">

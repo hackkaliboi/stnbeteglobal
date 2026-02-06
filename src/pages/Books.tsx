@@ -16,28 +16,14 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-// Book type from Supabase
-export interface Book {
-  id: string;
-  title: string;
-  author: string;
-  price: number;
-  cover_image: string | null;
-  category: string;
-  description?: string | null;
-  is_new: boolean;
-  is_bestseller: boolean;
-  in_stock: boolean;
-}
-
 const categories = ["All", "Fiction", "Non-Fiction", "Romance", "Mystery", "Self-Help", "Business", "Science Fiction", "Cooking", "Writing"];
 
 const Books = () => {
+  const { data: books = [], isLoading, error } = useBooks();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
 
-  const { books, loading, error } = useBooks();
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
   const { ref: statsRef, isVisible: statsVisible } = useScrollAnimation();
 
@@ -62,17 +48,6 @@ const Books = () => {
           return 0;
       }
     });
-
-  if (error) {
-    return (
-      <MainLayout>
-        <div className="container mx-auto py-20 text-center">
-          <p className="text-red-500 mb-4">Error loading books: {error}</p>
-          <Button onClick={() => window.location.reload()}>Try Again</Button>
-        </div>
-      </MainLayout>
-    );
-  }
 
   return (
     <MainLayout>
@@ -214,16 +189,8 @@ const Books = () => {
           </p>
         </div>
 
-        {/* Loading State */}
-        {loading && (
-          <div className="flex items-center justify-center py-16">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            <span className="ml-2 text-muted-foreground">Loading books...</span>
-          </div>
-        )}
-
         {/* Books Grid */}
-        {!loading && filteredBooks.length > 0 ? (
+        {filteredBooks.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {filteredBooks.map((book) => (
               <BookCard
@@ -250,7 +217,7 @@ const Books = () => {
               />
             ))}
           </div>
-        ) : !loading && (
+        ) : (
           <div className="text-center py-16">
             <p className="text-muted-foreground text-lg mb-4">
               No books found matching your criteria.

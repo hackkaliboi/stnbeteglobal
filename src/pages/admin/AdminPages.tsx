@@ -87,7 +87,7 @@ const AdminPages = () => {
                 await updatePage(editingPage.id, formData);
                 toast({ title: "Success", description: "Page metadata updated successfully." });
             } else {
-                await createPage(formData);
+                await createPage({ ...formData, content: {} });
                 toast({ title: "Success", description: "Page created successfully." });
             }
             setIsDialogOpen(false);
@@ -188,7 +188,7 @@ const AdminPages = () => {
                                             <TableCell className="text-right">
                                                 <div className="flex justify-end gap-2">
                                                     <Button variant="outline" size="sm" asChild>
-                                                        <Link to={`/admin/pages/edit/${page.slug}`}>
+                                                        <Link to={`/admin/pages/${encodeURIComponent(page.slug)}`}>
                                                             <FileEdit className="h-4 w-4 mr-2" />
                                                             Edit Content
                                                         </Link>

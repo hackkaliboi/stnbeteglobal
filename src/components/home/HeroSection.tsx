@@ -10,15 +10,15 @@ const HeroSection = () => {
   const { ref: leftRef, isVisible: leftVisible } = useScrollAnimation();
   const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
   const [heroContent, setHeroContent] = useState({
-    title: "Discover Stories\nThat Inspire",
-    subtitle: "Curated books for curious minds. Explore our collection of bestsellers, new releases, and timeless classics.",
-    cta_text: "Browse Books",
+    title: "Rebuilding Society\nThrough Multifaceted Wisdom",
+    subtitle: "Leadership Development • Mentorship • Life-transforming Resources • Consultancy",
+    cta_text: "Browse Resources",
     cta_link: "/books",
     secondary_cta_text: "Our Story",
     secondary_cta_link: "/about",
     image_url: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?w=400&h=600&fit=crop",
     stats_titles: "500+",
-    stats_categories: "12",
+    stats_categories: "4",
     stats_readers: "2k+"
   });
 
@@ -26,8 +26,8 @@ const HeroSection = () => {
     const fetchContent = async () => {
       try {
         const pageData = await getPageContent('/');
-        if (pageData && pageData.sections && pageData.sections.hero) {
-          setHeroContent(prev => ({ ...prev, ...pageData.sections.hero }));
+        if (pageData && pageData.content && pageData.content.hero) {
+          setHeroContent(prev => ({ ...prev, ...pageData.content.hero }));
         }
       } catch (error) {
         console.error("Failed to load hero content:", error);
