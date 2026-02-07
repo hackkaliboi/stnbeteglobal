@@ -162,14 +162,14 @@ const AdminNewsletter = () => {
     return (
         <AdminLayout>
             <div className="space-y-6">
-                <div className="flex items-center justify-between">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-3xl font-bold">Newsletter Subscribers</h1>
                         <p className="text-muted-foreground">
                             Manage your newsletter subscriber list
                         </p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-4 self-start sm:self-auto">
                         <Badge variant="secondary">
                             {activeCount} active of {totalCount} total
                         </Badge>
@@ -213,7 +213,7 @@ const AdminNewsletter = () => {
 
                 {/* Search */}
                 <div className="flex items-center gap-4">
-                    <div className="relative flex-1 max-w-md">
+                    <div className="relative flex-1 w-full sm:max-w-md">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                         <Input
                             placeholder="Search subscribers..."
