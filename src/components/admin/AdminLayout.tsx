@@ -136,7 +136,7 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
         )}
 
         {/* Main Content */}
-        <div className="flex-1 lg:ml-0">
+        <div className="flex-1 min-w-0 lg:ml-0">
           {/* Top Bar */}
           <header className="hidden lg:flex sticky top-0 z-30 h-16 items-center justify-between bg-background border-b border-border px-6">
             <h1 className="text-lg font-semibold text-foreground">

@@ -248,7 +248,7 @@ const AdminNewsletter = () => {
                         <CardContent>
                             <div className="space-y-4">
                                 {filteredSubscribers.map((subscriber) => (
-                                    <div key={subscriber.id} className="flex items-center justify-between p-4 border rounded-lg">
+                                    <div key={subscriber.id} className="flex flex-col sm:flex-row sm:items-center justify-between p-4 border rounded-lg gap-4">
                                         <div className="space-y-1">
                                             <div className="flex items-center gap-2">
                                                 <span className="font-medium">{subscriber.email}</span>
