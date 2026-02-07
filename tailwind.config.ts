@@ -22,12 +22,12 @@ export default {
 		extend: {
 			colors: {
 				brand: {
-					navy: '#000042',
-					purple: '#5602B1',
-					ivory: '#F9F1E6',
-					brown: '#A68E74',
-					grey: '#232323',
-					light: '#DBD7D7',
+					navy: 'hsl(220, 100%, 10%)', // Deep Navy
+					purple: 'hsl(220, 100%, 40%)', // Royal Blue (replacing purple)
+					ivory: 'hsl(220, 100%, 97%)', // Very Light Blue (replacing ivory)
+					brown: 'hsl(220, 100%, 96%)', // Pale Blue (replacing brown)
+					grey: 'hsl(220, 100%, 10%)', // Deep Navy (replacing grey)
+					light: 'hsl(220, 100%, 90%)', // Light Blue
 				},
 				border: 'hsl(var(--border))',
 				input: 'hsl(var(--input))',

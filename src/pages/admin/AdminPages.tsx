@@ -160,63 +160,65 @@ const AdminPages = () => {
                                 <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                             </div>
                         ) : (
-                            <Table>
-                                <TableHeader>
-                                    <TableRow>
-                                        <TableHead>Title</TableHead>
-                                        <TableHead>Slug</TableHead>
-                                        <TableHead>Status</TableHead>
-                                        <TableHead className="text-right">Actions</TableHead>
-                                    </TableRow>
-                                </TableHeader>
-                                <TableBody>
-                                    {pages.map((page) => (
-                                        <TableRow key={page.id}>
-                                            <TableCell className="font-medium">
-                                                <div className="flex flex-col">
-                                                    <span>{page.title}</span>
-                                                    <span className="text-xs text-muted-foreground truncate max-w-[200px]">{page.meta_description}</span>
-                                                </div>
-                                            </TableCell>
-                                            <TableCell className="text-muted-foreground text-sm font-mono">{page.slug}</TableCell>
-                                            <TableCell>
-                                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${page.is_published ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
-                                                    }`}>
-                                                    {page.is_published ? 'Published' : 'Draft'}
-                                                </span>
-                                            </TableCell>
-                                            <TableCell className="text-right">
-                                                <div className="flex justify-end gap-2">
-                                                    <Button variant="outline" size="sm" asChild>
-                                                        <Link to={`/admin/pages/${encodeURIComponent(page.slug)}`}>
-                                                            <FileEdit className="h-4 w-4 mr-2" />
-                                                            Edit Content
-                                                        </Link>
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(page)} title="Edit Metadata">
-                                                        <Pencil className="h-4 w-4" />
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" asChild title="View Page">
-                                                        <a href={page.slug} target="_blank" rel="noopener noreferrer">
-                                                            <ExternalLink className="h-4 w-4" />
-                                                        </a>
-                                                    </Button>
-                                                    <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90" onClick={() => handleDelete(page.id)}>
-                                                        <Trash2 className="h-4 w-4" />
-                                                    </Button>
-                                                </div>
-                                            </TableCell>
-                                        </TableRow>
-                                    ))}
-                                    {pages.length === 0 && (
+                            <div className="overflow-x-auto">
+                                <Table>
+                                    <TableHeader>
                                         <TableRow>
-                                            <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                                                No pages found. Create one (e.g., Home, About) to get started.
-                                            </TableCell>
+                                            <TableHead>Title</TableHead>
+                                            <TableHead>Slug</TableHead>
+                                            <TableHead>Status</TableHead>
+                                            <TableHead className="text-right">Actions</TableHead>
                                         </TableRow>
-                                    )}
-                                </TableBody>
-                            </Table>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {pages.map((page) => (
+                                            <TableRow key={page.id}>
+                                                <TableCell className="font-medium">
+                                                    <div className="flex flex-col">
+                                                        <span>{page.title}</span>
+                                                        <span className="text-xs text-muted-foreground truncate max-w-[200px]">{page.meta_description}</span>
+                                                    </div>
+                                                </TableCell>
+                                                <TableCell className="text-muted-foreground text-sm font-mono whitespace-nowrap">{page.slug}</TableCell>
+                                                <TableCell>
+                                                    <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${page.is_published ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200' : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                                                        }`}>
+                                                        {page.is_published ? 'Published' : 'Draft'}
+                                                    </span>
+                                                </TableCell>
+                                                <TableCell className="text-right">
+                                                    <div className="flex justify-end gap-2">
+                                                        <Button variant="outline" size="sm" asChild>
+                                                            <Link to={`/admin/pages/${encodeURIComponent(page.slug)}`}>
+                                                                <FileEdit className="h-4 w-4 mr-2" />
+                                                                Edit Content
+                                                            </Link>
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" onClick={() => handleOpenDialog(page)} title="Edit Metadata">
+                                                            <Pencil className="h-4 w-4" />
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" asChild title="View Page">
+                                                            <a href={page.slug} target="_blank" rel="noopener noreferrer">
+                                                                <ExternalLink className="h-4 w-4" />
+                                                            </a>
+                                                        </Button>
+                                                        <Button variant="ghost" size="icon" className="text-destructive hover:text-destructive/90" onClick={() => handleDelete(page.id)}>
+                                                            <Trash2 className="h-4 w-4" />
+                                                        </Button>
+                                                    </div>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                        {pages.length === 0 && (
+                                            <TableRow>
+                                                <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                                                    No pages found. Create one (e.g., Home, About) to get started.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
+                                    </TableBody>
+                                </Table>
+                            </div>
                         )}
                     </CardContent>
                 </Card>
