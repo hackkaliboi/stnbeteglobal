@@ -8,12 +8,15 @@ import { getSiteSetting } from "@/lib/cms";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
 
+import logo from "@/assets/logo.png";
+
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [siteName, setSiteName] = useState("STNBETE");
+  const [siteName, setSiteName] = useState("STNBETE"); // Keep for metadata if needed, or remove if unused locally beyond this.
   const location = useLocation();
   const { user } = useAuth();
+  // ... (keeping existing hooks)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -62,12 +65,9 @@ const Header = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="flex items-center gap-2 text-xl font-bold tracking-tight text-brand-navy z-50 relative hover:opacity-80 transition-opacity"
+              className="flex items-center gap-2 z-50 relative hover:opacity-80 transition-opacity"
             >
-              <div className="w-8 h-8 bg-brand-navy rounded-lg flex items-center justify-center">
-                <span className="text-white text-sm font-bold">S</span>
-              </div>
-              <span className="hidden sm:block text-brand-navy dark:text-white">{siteName}</span>
+              <img src={logo} alt={siteName} className="h-10 w-auto object-contain" />
             </Link>
 
             {/* Desktop Navigation - Centered */}

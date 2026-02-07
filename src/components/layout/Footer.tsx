@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAllSiteSettings } from "@/lib/cms";
+import logo from "@/assets/logo.png";
 
 const Footer = () => {
   const [settings, setSettings] = useState<Record<string, any>>({});
@@ -33,8 +34,8 @@ const Footer = () => {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
           {/* Brand - Large */}
           <div className="lg:col-span-4">
-            <Link to="/" className="text-2xl font-bold tracking-tight text-white">
-              STNBETE
+            <Link to="/" className="inline-block hover:opacity-80 transition-opacity">
+              <img src={logo} alt={siteName} className="h-12 w-auto object-contain brightness-0 invert" />
             </Link>
             <p className="text-gray-300 mt-4 max-w-sm leading-relaxed">
               Rebuilding Society Through Multifaceted Wisdom.

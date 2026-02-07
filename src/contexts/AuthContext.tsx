@@ -8,7 +8,7 @@ interface AuthContextType {
     loading: boolean;
     isAdmin: boolean;
     signIn: () => Promise<void>;
-    signOut: () => Promise<void>;
+    signOut: () => Promise<{ error: Error | null }>;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,7 +17,7 @@ const AuthContext = createContext<AuthContextType>({
     loading: true,
     isAdmin: false,
     signIn: async () => { },
-    signOut: async () => { },
+    signOut: async () => { return { error: null } },
 });
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
@@ -84,7 +84,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     };
 
     const signOut = async () => {
-        await supabase.auth.signOut();
+        return await supabase.auth.signOut();
     };
 
     return (

@@ -19,6 +19,7 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
+import logo from "@/assets/logo.png";
 
 interface AdminLayoutProps {
   children: ReactNode;
@@ -65,8 +66,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
     <div className="min-h-screen bg-muted/30">
       {/* Mobile Header */}
       <header className="lg:hidden sticky top-0 z-50 bg-background border-b border-border px-4 py-3 flex items-center justify-between">
-        <Link to="/admin" className="font-serif text-xl font-bold text-primary">
-          stnbeteglobal Admin
+        <Link to="/admin" className="flex items-center gap-2">
+          <img src={logo} alt="STNBETE Admin" className="h-8 w-auto object-contain" />
         </Link>
         <Button variant="ghost" size="icon" onClick={() => setSidebarOpen(!sidebarOpen)}>
           {sidebarOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
@@ -82,8 +83,8 @@ const AdminLayout = ({ children }: AdminLayoutProps) => {
           <div className="flex flex-col h-full">
             {/* Logo */}
             <div className="hidden lg:flex items-center h-16 px-6 border-b border-sidebar-border">
-              <Link to="/admin" className="font-serif text-xl font-bold text-sidebar-foreground">
-                stnbeteglobal Admin
+              <Link to="/admin" className="flex items-center gap-2">
+                <img src={logo} alt="STNBETE Admin" className="h-8 w-auto object-contain" />
               </Link>
             </div>
 
