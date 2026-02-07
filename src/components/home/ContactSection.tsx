@@ -61,8 +61,7 @@ const ContactSection = () => {
                   <span className="text-xs uppercase tracking-wider font-mono">Location</span>
                 </div>
                 <p className="text-sm text-muted-foreground">
-                  123 Book Street<br />
-                  Reading City, RC 12345
+                  www.stnbeteglobal.com
                 </p>
               </div>
 
@@ -96,10 +95,10 @@ const ContactSection = () => {
                   <span className="text-xs uppercase tracking-wider font-mono">Phone</span>
                 </div>
                 <a
-                  href="tel:+12345678900"
+                  href="tel:+2347034546060"
                   className="text-sm text-muted-foreground hover:text-foreground transition-colors"
                 >
-                  +1 (234) 567-8900
+                  +234 703 454 6060
                 </a>
               </div>
             </div>
