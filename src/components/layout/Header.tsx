@@ -7,16 +7,22 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { getSiteSetting } from "@/lib/cms";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/contexts/AuthContext";
+import { useTheme } from "next-themes";
 
-import logo from "@/assets/logo.png";
+import logoDark from "@/assets/logo-dark.png";
+import logoLight from "@/assets/logo-light.png";
+
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [siteName, setSiteName] = useState("STNBETE"); // Keep for metadata if needed, or remove if unused locally beyond this.
+  const [siteName, setSiteName] = useState("STNBETE");
   const location = useLocation();
   const { user } = useAuth();
-  // ... (keeping existing hooks)
+  const { theme, resolvedTheme } = useTheme();
+
+  // Determine which logo to use based on theme
+  const currentLogo = (resolvedTheme === 'dark' || theme === 'dark') ? logoDark : logoLight;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -67,7 +73,7 @@ const Header = () => {
               to="/"
               className="flex items-center gap-2 z-50 relative hover:opacity-80 transition-opacity"
             >
-              <img src={logo} alt={siteName} className="h-10 w-auto object-contain" />
+              <img src={currentLogo} alt={siteName} className="h-10 w-auto object-contain" />
             </Link>
 
             {/* Desktop Navigation - Centered */}

@@ -9,10 +9,10 @@ const FeaturedBooks = () => {
   const { data: books = [], isLoading: loading } = useBooks();
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
 
-  // Get featured books
+  // Get featured books - show up to 8 for a fuller display
   const featuredBooks = books
     .filter(book => book.is_featured)
-    .slice(0, 4);
+    .slice(0, 8);
 
   const { setRef, visibleItems } = useMultipleScrollAnimation(featuredBooks.length);
 
@@ -31,7 +31,7 @@ const FeaturedBooks = () => {
   return (
     <section className="py-24 md:py-32 bg-background">
       <div className="container mx-auto">
-        {/* Editorial Header - Asymmetric */}
+        {/* Header Section */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-16">
           <div
             ref={headerRef}
@@ -68,58 +68,30 @@ const FeaturedBooks = () => {
           </div>
         </div>
 
-        {/* Editorial Grid - Varied sizes */}
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-          {/* Large featured book */}
-          {featuredBooks[0] && (
+        {/* Full Grid Layout - Matching Books Page */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {featuredBooks.map((book, i) => (
             <div
-              ref={setRef(0)}
+              key={book.id}
+              ref={setRef(i)}
               className={cn(
-                "md:col-span-7 md:row-span-2 animate-on-scroll",
-                visibleItems[0] && "is-visible"
+                "animate-on-scroll",
+                visibleItems[i] && "is-visible"
               )}
             >
               <BookCard
                 book={{
-                  id: featuredBooks[0].id,
-                  title: featuredBooks[0].title,
-                  author: featuredBooks[0].author,
-                  coverImage: featuredBooks[0].cover_image || "/placeholder.svg",
-                  selarUrl: featuredBooks[0].selar_url,
-                  isFeatured: featuredBooks[0].is_featured
+                  id: book.id,
+                  title: book.title,
+                  author: book.author,
+                  coverImage: book.cover_image || "/placeholder.svg",
+                  selarUrl: book.selar_url,
+                  isFeatured: book.is_featured
                 }}
-                variant="featured"
+                variant="default"
               />
             </div>
-          )}
-
-          {/* Stacked smaller books */}
-          {featuredBooks.slice(1).length > 0 && (
-            <div className="md:col-span-5 md:row-span-2 flex flex-col gap-6">
-              {featuredBooks.slice(1).map((book, i) => (
-                <div
-                  key={book.id}
-                  ref={setRef(i + 1)}
-                  className={cn(
-                    "flex-1 animate-on-scroll",
-                    visibleItems[i + 1] && "is-visible"
-                  )}
-                >
-                  <BookCard
-                    book={{
-                      id: book.id,
-                      title: book.title,
-                      author: book.author,
-                      coverImage: book.cover_image || "/placeholder.svg",
-                      selarUrl: book.selar_url,
-                      isFeatured: book.is_featured
-                    }}
-                    variant="horizontal"
-                  />
-                </div>
-              ))}
-            </div>
-          )}
+          ))}
         </div>
       </div>
     </section>
