@@ -1,11 +1,18 @@
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getAllSiteSettings } from "@/lib/cms";
-import logo from "@/assets/logo.png";
+import { useTheme } from "next-themes";
+
+import logoDark from "@/assets/logo-dark.png";
+import logoLight from "@/assets/logo-light.png";
 
 const Footer = () => {
   const [settings, setSettings] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
+  const { theme, resolvedTheme } = useTheme();
+
+  // Determine which logo to use based on theme
+  const currentLogo = (resolvedTheme === 'dark' || theme === 'dark') ? logoDark : logoLight;
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -35,7 +42,7 @@ const Footer = () => {
           {/* Brand - Large */}
           <div className="lg:col-span-4">
             <Link to="/" className="inline-block hover:opacity-80 transition-opacity">
-              <img src={logo} alt={siteName} className="h-12 w-auto object-contain brightness-0 invert" />
+              <img src={currentLogo} alt={siteName} className="h-12 w-auto object-contain brightness-0 invert" />
             </Link>
             <p className="text-gray-300 mt-4 max-w-sm leading-relaxed">
               Rebuilding Society Through Multifaceted Wisdom.

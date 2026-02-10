@@ -1,40 +1,49 @@
 import { useEffect, useState } from "react";
 import AdminLayout from "@/components/admin/AdminLayout";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
   BookOpen,
-  ShoppingCart,
-  Users,
-  DollarSign,
   TrendingUp,
   FileText,
-  Calendar,
-  ArrowUpRight,
-  ArrowDownRight,
+  Users,
   Loader2,
   Settings,
-  LayoutTemplate
+  LayoutTemplate,
+  Mail,
+  BarChart3,
+  Activity
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBooks } from "@/hooks/useBooks";
 import { useBlogPosts } from "@/hooks/useBlogPosts";
 import { useAuth } from "../../contexts/AuthContext";
 import { supabase } from "@/lib/supabase";
+import {
+  BarChart,
+  Bar,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
+} from "recharts";
 
 interface DashboardStats {
   totalBooks: number;
   totalPosts: number;
   publishedPosts: number;
-  bestsellers: number;
+  featuredBooks: number;
 }
 
 const quickActions = [
-  { name: "Add New Book", href: "/admin/books", icon: BookOpen },
-  { name: "Create Blog Post", href: "/admin/posts", icon: FileText },
-  { name: "Site Pages", href: "/admin/pages", icon: LayoutTemplate },
-  { name: "Newsletter", href: "/admin/newsletter", icon: TrendingUp },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  { name: "Add Book", href: "/admin/books", icon: BookOpen, color: "text-blue-500" },
+  { name: "New Post", href: "/admin/posts", icon: FileText, color: "text-green-500" },
+  { name: "Pages", href: "/admin/pages", icon: LayoutTemplate, color: "text-purple-500" },
+  { name: "Newsletter", href: "/admin/newsletter", icon: Mail, color: "text-amber-500" },
 ];
 
 const AdminDashboard = () => {
@@ -67,8 +76,29 @@ const AdminDashboard = () => {
     totalBooks: books.length,
     totalPosts: posts.length,
     publishedPosts: posts.filter(post => post.published).length,
-    bestsellers: books.filter(book => book.is_featured).length,
+    featuredBooks: books.filter(book => book.is_featured).length,
   };
+
+  // Chart data
+  const contentData = [
+    {
+      name: "Books",
+      total: stats.totalBooks,
+      featured: stats.featuredBooks,
+    },
+    {
+      name: "Posts",
+      total: stats.totalPosts,
+      featured: stats.publishedPosts,
+    },
+  ];
+
+  const overviewData = [
+    { name: "Total Books", value: stats.totalBooks },
+    { name: "Featured", value: stats.featuredBooks },
+    { name: "Total Posts", value: stats.totalPosts },
+    { name: "Published", value: stats.publishedPosts },
+  ];
 
   if (profileLoading) {
     return (
@@ -98,117 +128,179 @@ const AdminDashboard = () => {
       title: "Total Books",
       value: stats.totalBooks,
       icon: BookOpen,
-      change: "+0",
-      description: "In library",
-      color: "text-blue-500",
+      description: "Books in library",
+      gradient: "from-blue-500 to-blue-600",
+      iconBg: "bg-blue-500/10",
+      iconColor: "text-blue-500",
     },
     {
       title: "Featured Books",
-      value: stats.bestsellers,
+      value: stats.featuredBooks,
       icon: TrendingUp,
-      change: "+0",
-      description: "Highlighted",
-      color: "text-amber-500",
+      description: "Highlighted books",
+      gradient: "from-amber-500 to-amber-600",
+      iconBg: "bg-amber-500/10",
+      iconColor: "text-amber-500",
     },
     {
       title: "Total Posts",
       value: stats.totalPosts,
       icon: FileText,
-      change: "+0",
       description: "Blog entries",
-      color: "text-green-500",
+      gradient: "from-green-500 to-green-600",
+      iconBg: "bg-green-500/10",
+      iconColor: "text-green-500",
     },
     {
       title: "Published Posts",
       value: stats.publishedPosts,
       icon: Users,
-      change: "+0",
       description: "Live on site",
-      color: "text-purple-500",
+      gradient: "from-purple-500 to-purple-600",
+      iconBg: "bg-purple-500/10",
+      iconColor: "text-purple-500",
     },
   ];
 
   return (
     <AdminLayout>
       <div className="space-y-8">
-        <div>
-          <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
-          <p className="text-muted-foreground">
-            Welcome back, {user?.user_metadata?.first_name || 'Admin'}
-          </p>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-3xl font-bold tracking-tight">Dashboard</h2>
+            <p className="text-muted-foreground mt-1">
+              Welcome back, {user?.user_metadata?.first_name || 'Admin'}
+            </p>
+          </div>
+          <Link to="/admin/settings">
+            <Button variant="outline" size="sm">
+              <Settings className="h-4 w-4 mr-2" />
+              Settings
+            </Button>
+          </Link>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {/* Stat Cards */}
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           {statCards.map((stat, index) => {
             const Icon = stat.icon;
             return (
-              <Card key={index}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">
+              <Card key={index} className="overflow-hidden border-0 shadow-lg">
+                <div className={`h-2 bg-gradient-to-r ${stat.gradient}`} />
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <CardTitle className="text-sm font-medium text-muted-foreground">
                     {stat.title}
                   </CardTitle>
-                  <Icon className={`h-4 w-4 ${stat.color}`} />
+                  <div className={`p-2 rounded-lg ${stat.iconBg}`}>
+                    <Icon className={`h-5 w-5 ${stat.iconColor}`} />
+                  </div>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-2xl font-bold">
-                    {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : stat.value}
+                  <div className="text-3xl font-bold">
+                    {loading ? <Loader2 className="h-6 w-6 animate-spin" /> : stat.value}
                   </div>
-                  <div className="flex items-center text-xs text-muted-foreground mt-1">
-                    <span className="text-green-500 flex items-center mr-1">
-                      {stat.change === "+0" ? null : (
-                        <>
-                          {stat.change.startsWith('+') ? <ArrowUpRight className="h-3 w-3 mr-0.5" /> : <ArrowDownRight className="h-3 w-3 mr-0.5" />}
-                          {stat.change}
-                        </>
-                      )}
-                    </span>
+                  <p className="text-xs text-muted-foreground mt-2">
                     {stat.description}
-                  </div>
+                  </p>
                 </CardContent>
               </Card>
             );
           })}
         </div>
 
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-          <Card className="col-span-4">
+        {/* Charts Section */}
+        <div className="grid gap-6 md:grid-cols-2">
+          {/* Content Comparison Chart */}
+          <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
+              <div className="flex items-center gap-2">
+                <BarChart3 className="h-5 w-5 text-blue-500" />
+                <CardTitle>Content Overview</CardTitle>
+              </div>
+              <CardDescription>Comparison of total and featured content</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="space-y-8">
-                {/* Simplified Activity Feed */}
-                <div className="flex items-center">
-                  <div className="ml-4 space-y-1">
-                    <p className="text-sm font-medium leading-none">System Ready</p>
-                    <p className="text-sm text-muted-foreground">
-                      Database connected and frontend updated.
-                    </p>
-                  </div>
-                  <div className="ml-auto font-medium">Just now</div>
-                </div>
-              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <BarChart data={contentData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="name" className="text-xs" />
+                  <YAxis className="text-xs" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Legend />
+                  <Bar dataKey="total" fill="hsl(220, 100%, 50%)" name="Total" radius={[8, 8, 0, 0]} />
+                  <Bar dataKey="featured" fill="hsl(45, 100%, 50%)" name="Featured/Published" radius={[8, 8, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
 
-          <Card className="col-span-3">
+          {/* Activity Overview Chart */}
+          <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle>Quick Actions</CardTitle>
+              <div className="flex items-center gap-2">
+                <Activity className="h-5 w-5 text-green-500" />
+                <CardTitle>Content Distribution</CardTitle>
+              </div>
+              <CardDescription>Overview of all content types</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-2 gap-4">
-                {quickActions.map((action, i) => (
-                  <Link key={i} to={action.href}>
-                    <Button variant="outline" className="w-full h-24 flex flex-col items-center justify-center gap-2 hover:bg-muted/50 transition-colors">
-                      <action.icon className="h-6 w-6 mb-1" />
-                      {action.name}
-                    </Button>
-                  </Link>
-                ))}
-              </div>
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={overviewData}>
+                  <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                  <XAxis dataKey="name" className="text-xs" />
+                  <YAxis className="text-xs" />
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'hsl(var(--background))',
+                      border: '1px solid hsl(var(--border))',
+                      borderRadius: '8px'
+                    }}
+                  />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="hsl(220, 100%, 50%)"
+                    fill="hsl(220, 100%, 50%)"
+                    fillOpacity={0.2}
+                    name="Count"
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
             </CardContent>
           </Card>
         </div>
+
+        {/* Quick Actions */}
+        <Card className="shadow-lg">
+          <CardHeader>
+            <CardTitle>Quick Actions</CardTitle>
+            <CardDescription>Frequently used admin functions</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              {quickActions.map((action, i) => (
+                <Link key={i} to={action.href}>
+                  <Button
+                    variant="outline"
+                    className="w-full h-28 flex flex-col items-center justify-center gap-3 hover:bg-muted/50 hover:border-primary transition-all group"
+                  >
+                    <div className={`p-3 rounded-lg bg-muted group-hover:scale-110 transition-transform`}>
+                      <action.icon className={`h-6 w-6 ${action.color}`} />
+                    </div>
+                    <span className="text-sm font-medium">{action.name}</span>
+                  </Button>
+                </Link>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
       </div>
     </AdminLayout>
   );
