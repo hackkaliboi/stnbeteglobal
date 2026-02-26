@@ -2,73 +2,102 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
+import { useState } from "react";
+
+const AUTHOR_IMAGE = "/images/author.jpg";
 
 const AboutSection = () => {
   const { ref: leftRef, isVisible: leftVisible } = useScrollAnimation();
   const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
+  const [imgError, setImgError] = useState(false);
 
   return (
-    <section className="py-24 md:py-32 bg-background">
-      <div className="container mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8">
-          {/* Left - Large typography */}
+    <section className="py-24 md:py-32 bg-muted/30">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
+
+          {/* ── Author portrait ── */}
           <div
             ref={leftRef}
             className={cn(
-              "lg:col-span-5 animate-on-scroll-left",
+              "flex justify-center lg:justify-end animate-on-scroll-left",
               leftVisible && "is-visible"
             )}
           >
-            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground mb-6 block font-mono">
-              About Us
-            </span>
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground leading-[1.1]">
-              More than<br />
-              just a<br />
-              <span className="italic">bookstore</span>
-            </h2>
+            <div className="relative w-72 h-96 lg:w-80 lg:h-[500px] shrink-0">
+              {/* Decorative offset frame */}
+              <div className="absolute -inset-4 bg-gradient-to-br from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-600 rounded-3xl opacity-25" />
+              <div className="relative w-full h-full rounded-3xl overflow-hidden bg-muted shadow-2xl">
+                {!imgError ? (
+                  <img
+                    src={AUTHOR_IMAGE}
+                    alt="Saturday T. Nbete"
+                    className="w-full h-full object-cover object-top"
+                    onError={() => setImgError(true)}
+                  />
+                ) : (
+                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900 gap-3">
+                    <span className="text-7xl font-light text-white tracking-widest select-none">
+                      STN
+                    </span>
+                    <span className="text-blue-200 text-xs font-mono uppercase tracking-widest">
+                      Author
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
 
-          {/* Right - Content offset */}
+          {/* ── Bio text ── */}
           <div
             ref={rightRef}
             className={cn(
-              "lg:col-span-5 lg:col-start-8 lg:pt-24 animate-on-scroll-right",
+              "space-y-6 animate-on-scroll-right",
               rightVisible && "is-visible"
             )}
           >
-            <div className="space-y-6">
-              <p className="text-muted-foreground text-lg leading-relaxed">
-                Founded with a passion for literature, stnbeteglobal is a sanctuary for book lovers.
-                We believe in the power of stories to transform minds and connect hearts.
-              </p>
-              <p className="text-muted-foreground leading-relaxed">
-                Our carefully curated collection spans genres and generations, from contemporary
-                bestsellers to timeless classics. Every book on our shelves is chosen with care.
-              </p>
+            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono">
+              About the Author
+            </span>
 
-              <div className="pt-6 border-t border-border">
-                <div className="grid grid-cols-2 gap-8">
-                  <div>
-                    <span className="text-3xl font-light text-foreground block">10+</span>
-                    <span className="text-sm text-muted-foreground">Years of service</span>
-                  </div>
-                  <div>
-                    <span className="text-3xl font-light text-foreground block">50k+</span>
-                    <span className="text-sm text-muted-foreground">Books sold</span>
-                  </div>
-                </div>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground leading-[1.05] tracking-tight">
+              Saturday T.<br />
+              <span className="italic">Nbete</span>
+            </h2>
+
+            <p className="text-muted-foreground text-lg leading-relaxed border-l-2 border-border pl-5">
+              Founder of STNBETE Global and a passionate advocate for
+              leadership development and societal transformation.
+            </p>
+
+            <p className="text-muted-foreground leading-relaxed">
+              With over 15 years of experience in mentorship, consultancy,
+              and publishing, Saturday has dedicated his life to equipping
+              individuals with the wisdom and tools they need to excel —
+              in business, in leadership, and in life.
+            </p>
+
+            <div className="pt-4 grid grid-cols-2 gap-8 border-t border-border">
+              <div>
+                <span className="text-3xl font-light text-foreground block">500+</span>
+                <span className="text-sm text-muted-foreground">Resources published</span>
               </div>
-
-              <Link
-                to="/about"
-                className="inline-flex items-center text-sm font-medium text-foreground hover:text-muted-foreground transition-colors group pt-4"
-              >
-                Learn more about us
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Link>
+              <div>
+                <span className="text-3xl font-light text-foreground block">15+</span>
+                <span className="text-sm text-muted-foreground">Years of impact</span>
+              </div>
             </div>
+
+            <Link
+              to="/about"
+              className="inline-flex items-center text-sm font-medium text-foreground hover:text-muted-foreground transition-colors group pt-2"
+            >
+              Read full story
+              <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
           </div>
+
         </div>
       </div>
     </section>

@@ -1,237 +1,228 @@
 import MainLayout from "@/components/layout/MainLayout";
-import { Card, CardContent } from "@/components/ui/card";
-import { BookOpen, Users, Target, Heart, Award, Globe, Loader2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getPageContent } from "@/lib/cms";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
-// Default content fallback
 const defaultContent = {
   hero: {
     title: "About STNBETE Global",
-    subtitle: "For over 15 years, we have been on a mission to connect readers with stories that inspire, educate, and transform."
+    subtitle:
+      "We are on a mission to rebuild society through multifaceted wisdom — connecting people with resources that inspire, educate, and transform.",
   },
   mission: {
     title: "Our Mission",
-    description: "To create a sanctuary where book lovers can discover, discuss, and share their passion for reading.",
+    description:
+      "STNBETE Global is a platform rooted in leadership development, mentorship, and life-transforming resources. We believe the right knowledge, placed in the right hands, can change communities and reshape destinies.",
     stats: {
       readers: "2k+",
       books: "500+",
-      years: "15"
-    }
+      years: "15",
+    },
   },
-  story: {
-    title: "Our Story - From Small Beginnings",
-    description: "STNBETE Global started as a small corner shop in 2008... What began as a modest collection has grown into a comprehensive library."
-  },
-  values: [
-    {
-      title: "Passion for Literature",
-      description: "Every book we curate reflects our deep love for storytelling."
-    },
-    {
-      title: "Community First",
-      description: "We build connections between readers, authors, and book lovers."
-    },
-    {
-      title: "Quality Selection",
-      description: "Our expert team carefully selects each title."
-    },
-    {
-      title: "Accessible Reading",
-      description: "We believe everyone deserves access to great literature."
-    }
-  ],
-  team: [
-    {
-      name: "Saturday T. Nbete",
-      role: "Founder & CEO",
-      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop"
-    },
-    {
-      name: "Sarah Williams",
-      role: "Community Manager",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=400&h=400&fit=crop"
-    }
-  ]
 };
+
+const AUTHOR_IMAGE = "/images/author.jpg"; // drop your photo at public/images/author.jpg
 
 const About = () => {
   const [content, setContent] = useState<any>(defaultContent);
-  const [loading, setLoading] = useState(true);
+  const [authorImgError, setAuthorImgError] = useState(false);
+  const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
+  const { ref: authorRef, isVisible: authorVisible } = useScrollAnimation();
 
   useEffect(() => {
     const fetchContent = async () => {
       try {
-        const pageData = await getPageContent('/about');
-        if (pageData && pageData.content) {
-          // Merge with default to ensure structure exists
+        const pageData = await getPageContent("/about");
+        if (pageData?.content) {
           setContent((prev: any) => ({ ...prev, ...pageData.content }));
         }
       } catch (error) {
         console.error("Failed to load about content:", error);
-      } finally {
-        setLoading(false);
       }
     };
     fetchContent();
   }, []);
 
-  const valuesIcons: any = {
-    "Passion for Literature": Heart,
-    "Community First": Users,
-    "Quality Selection": Target,
-    "Accessible Reading": Globe
-  };
-
   return (
     <MainLayout>
-      {/* Hero Section */}
-      <section className="min-h-[60vh] flex items-center bg-gradient-to-br from-background via-brand-ivory to-white dark:from-background dark:via-gray-900/50 dark:to-gray-900/30 pt-20">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-            {/* Left Content */}
-            <div className="lg:col-span-7">
-              <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-brand-navy/10 dark:bg-brand-navy/30 mb-6">
-                <BookOpen className="h-8 w-8 text-brand-navy dark:text-brand-purple" />
-              </div>
-              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-mono">
-                {content.hero?.label || "Our Story"}
+      {/* ── Hero ── */}
+      <section className="min-h-screen flex items-center bg-gradient-to-br from-background via-blue-50 to-blue-100 dark:from-background dark:via-blue-950/50 dark:to-blue-900/30 pt-20 overflow-hidden">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center min-h-[calc(100vh-5rem)] py-16">
+
+            {/* Left — text */}
+            <div
+              ref={heroRef}
+              className={cn("animate-on-scroll-left", heroVisible && "is-visible")}
+            >
+              <span className="inline-flex items-center gap-2 text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono mb-6">
+                <BookOpen className="h-3.5 w-3.5" />
+                Our Story
               </span>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-light text-foreground leading-[1.1] tracking-tight mb-6 whitespace-pre-line">
+
+              <h1 className="text-5xl sm:text-6xl md:text-7xl font-light text-foreground leading-[0.95] tracking-tight mb-8">
                 {content.hero.title}
               </h1>
-              <p className="text-muted-foreground text-lg md:text-xl max-w-2xl leading-relaxed mb-8">
+
+              <p className="text-muted-foreground text-xl max-w-xl leading-relaxed font-light mb-10">
                 {content.hero.subtitle}
               </p>
 
-              <div className="flex flex-wrap gap-6">
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="w-2 h-2 bg-brand-navy rounded-full"></div>
-                  <span>{content.hero?.est_label || "Est. 2008"}</span>
+              <div className="flex flex-wrap gap-8 text-sm">
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  Leadership Development
                 </div>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <div className="w-2 h-2 bg-brand-navy rounded-full"></div>
-                  <span>{content.hero?.exp_label || "15+ Years Experience"}</span>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  Mentorship
                 </div>
-              </div>
-            </div>
-
-            {/* Right Content - Mission Statement */}
-            <div className="lg:col-span-5">
-              <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-8 border border-brand-navy/10 shadow-lg">
-                <h3 className="text-xl font-medium text-brand-navy dark:text-white mb-4">{content.mission?.title || "Our Mission"}</h3>
-                <p className="text-muted-foreground leading-relaxed mb-6">
-                  {content.mission?.description}
-                </p>
-                <div className="grid grid-cols-3 gap-4 text-center">
-                  <div>
-                    <div className="text-2xl font-light text-brand-navy dark:text-white mb-1">{content.mission?.stats?.readers_count || "2k+"}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">{content.mission?.stats?.readers_label || "Readers"}</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-light text-brand-navy dark:text-white mb-1">{content.mission?.stats?.books_count || "500+"}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">{content.mission?.stats?.books_label || "Books"}</div>
-                  </div>
-                  <div>
-                    <div className="text-2xl font-light text-brand-navy dark:text-white mb-1">{content.mission?.stats?.years_count || "15"}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-wider">{content.mission?.stats?.years_label || "Years"}</div>
-                  </div>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                  <div className="w-1.5 h-1.5 rounded-full bg-blue-500" />
+                  Consultancy
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
 
-      {/* Story Section */}
-      <section className="py-16 md:py-24 bg-brand-ivory/30">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto text-center">
-            <span className="text-brand-brown font-medium text-sm uppercase tracking-wider">
-              {content.story?.label || "Our Journey"}
-            </span>
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-brand-navy mt-3 mb-6">
-              {content.story?.title}
-            </h2>
-            <div className="space-y-4 text-muted-foreground text-lg leading-relaxed">
-              <p>{content.story?.description}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Values */}
-      <section className="py-16 md:py-24 bg-white dark:bg-background">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-brand-navy dark:text-white mb-4">
-              {content.values_header?.title || "Our Values"}
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              {content.values_header?.subtitle || "These core principles guide everything we do at STNBETE Global."}
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {content.values?.map((value: any, index: number) => {
-              const Icon = valuesIcons[value.title] || Heart;
-              return (
-                <Card key={index} className="text-center border-brand-navy/10 hover:border-brand-navy/30 transition-colors">
-                  <CardContent className="p-6">
-                    <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-brand-ivory mb-4">
-                      <Icon className="h-7 w-7 text-brand-brown" />
+            {/* Right — portrait */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative w-72 h-96 lg:w-[360px] lg:h-[500px] shrink-0">
+                <div className="absolute -inset-4 bg-gradient-to-br from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-600 rounded-3xl opacity-25" />
+                <div className="relative w-full h-full rounded-3xl overflow-hidden bg-muted shadow-2xl">
+                  {!authorImgError ? (
+                    <img
+                      src={AUTHOR_IMAGE}
+                      alt="Saturday T. Nbete"
+                      className="w-full h-full object-cover object-top"
+                      onError={() => setAuthorImgError(true)}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900 gap-4">
+                      <span className="text-7xl font-light text-white tracking-widest select-none">STN</span>
+                      <span className="text-blue-200 text-xs font-mono uppercase tracking-widest">Saturday T. Nbete</span>
                     </div>
-                    <h3 className="font-semibold text-brand-navy dark:text-white mb-2">{value.title}</h3>
-                    <p className="text-muted-foreground text-sm">{value.description}</p>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
-        </div>
-      </section>
-
-      {/* Team */}
-      <section className="py-16 md:py-24 bg-brand-ivory/20">
-        <div className="container mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="font-serif text-3xl md:text-4xl font-bold text-brand-navy dark:text-white mb-4">
-              {content.team_header?.title || "Meet Our Team"}
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              {content.team_header?.subtitle || "The passionate individuals behind STNBETE Global."}
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 max-w-4xl mx-auto justify-center">
-            {content.team?.map((member: any, index: number) => (
-              <Card key={index} className="overflow-hidden border-border bg-white dark:bg-card">
-                <div className="aspect-square overflow-hidden bg-brand-navy/5">
-                  <img
-                    src={member.image}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
+                  )}
+                  {/* Name overlay at bottom */}
+                  <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-6 py-5">
+                    <p className="text-white font-medium text-sm">Saturday T. Nbete</p>
+                    <p className="text-white/70 text-xs">Founder & Executive Director</p>
+                  </div>
                 </div>
-                <CardContent className="p-6 text-center">
-                  <h3 className="font-semibold text-brand-navy dark:text-white text-lg">{member.name}</h3>
-                  <p className="text-brand-brown font-medium text-sm">{member.role}</p>
-                </CardContent>
-              </Card>
-            ))}
+              </div>
+            </div>
+
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-16 md:py-24 bg-brand-navy">
-        <div className="container mx-auto text-center">
-          <Award className="h-12 w-12 text-brand-purple mx-auto mb-6" />
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-white mb-4">
-            Join Our Reading Community
-          </h2>
-          <p className="text-brand-ivory/80 text-lg max-w-2xl mx-auto">
-            Connect with fellow book lovers, attend author events, and be the first
-            to know about new releases and exclusive offers.
+
+
+
+      {/* ── Meet the Author ── */}
+      <section className="py-24 md:py-32 bg-muted/30">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div
+            ref={authorRef}
+            className={cn(
+              "grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center animate-on-scroll-up",
+              authorVisible && "is-visible"
+            )}
+          >
+            {/* Portrait */}
+            <div className="flex justify-center lg:justify-end">
+              <div className="relative w-72 h-96 lg:w-80 lg:h-[480px] shrink-0">
+                {/* Decorative offset frame */}
+                <div className="absolute -inset-3 bg-gradient-to-br from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-600 rounded-3xl opacity-30" />
+                <div className="relative w-full h-full rounded-3xl overflow-hidden bg-muted shadow-2xl">
+                  {!authorImgError ? (
+                    <img
+                      src={AUTHOR_IMAGE}
+                      alt="Saturday T. Nbete"
+                      className="w-full h-full object-cover object-top"
+                      onError={() => setAuthorImgError(true)}
+                    />
+                  ) : (
+                    /* Initials fallback */
+                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900">
+                      <span className="text-7xl font-light text-white tracking-wider select-none">
+                        STN
+                      </span>
+                      <span className="text-blue-200 text-sm mt-3 font-mono uppercase tracking-widest">
+                        Author
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Bio */}
+            <div className="space-y-6">
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono">
+                About the Author
+              </span>
+              <h2 className="text-4xl md:text-5xl font-light text-foreground leading-tight tracking-tight">
+                Saturday T. Nbete
+              </h2>
+              <p className="text-muted-foreground text-base leading-relaxed border-l-2 border-border pl-5">
+                Founder of STNBETE Global and a passionate advocate for
+                leadership development and societal transformation.
+              </p>
+              <p className="text-muted-foreground text-base leading-relaxed">
+                With over 15 years of experience in mentorship, consultancy,
+                and publishing, Saturday has dedicated his life to equipping
+                individuals with the wisdom and tools they need to excel —
+                in business, in leadership, and in life.
+              </p>
+              <p className="text-muted-foreground text-base leading-relaxed">
+                His works span leadership principles, personal development,
+                and faith-based growth — each crafted to challenge readers
+                to rise above mediocrity and fulfil their God-given potential.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Divider quote ── */}
+      <section className="py-20 bg-foreground dark:bg-white">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <p className="text-background dark:text-foreground text-2xl md:text-3xl font-light leading-relaxed max-w-3xl mx-auto italic">
+            "Rebuilding society through multifaceted wisdom — one resource at a time."
           </p>
+        </div>
+      </section>
+
+      {/* ── CTA ── */}
+      <section className="py-24 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8 border border-border rounded-2xl p-10 md:p-14">
+            <div>
+              <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono mb-3">
+                Explore
+              </span>
+              <h2 className="text-3xl md:text-4xl font-light text-foreground tracking-tight">
+                Browse Our Resources
+              </h2>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-4 shrink-0">
+              <Link to="/books">
+                <Button size="lg" className="min-w-[160px] group">
+                  View Books
+                  <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Button>
+              </Link>
+              <Link to="/contact">
+                <Button size="lg" variant="outline" className="min-w-[160px]">
+                  Get in Touch
+                </Button>
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
     </MainLayout>
