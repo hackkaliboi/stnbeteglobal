@@ -18,10 +18,7 @@ export function useScrollAnimation<T extends HTMLElement = HTMLDivElement>(
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(element);
-        }
+        setIsVisible(entry.isIntersecting);
       },
       { threshold, rootMargin }
     );
@@ -49,14 +46,11 @@ export function useMultipleScrollAnimation(count: number, options: UseScrollAnim
 
       const observer = new IntersectionObserver(
         ([entry]) => {
-          if (entry.isIntersecting) {
-            setVisibleItems((prev) => {
-              const next = [...prev];
-              next[index] = true;
-              return next;
-            });
-            observer.unobserve(element);
-          }
+          setVisibleItems((prev) => {
+            const next = [...prev];
+            next[index] = entry.isIntersecting;
+            return next;
+          });
         },
         { threshold, rootMargin }
       );

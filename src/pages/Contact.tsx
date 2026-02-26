@@ -4,6 +4,8 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Clock, Mail, Phone, MapPin, Facebook, Youtube, Globe } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getPageContent } from "@/lib/cms";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 // Default content fallback
 const defaultContent = {
@@ -25,6 +27,10 @@ const defaultContent = {
 const Contact = () => {
   const [content, setContent] = useState<any>(defaultContent);
   const [loading, setLoading] = useState(true);
+
+  const { ref: heroLeftRef, isVisible: heroLeftVisible } = useScrollAnimation();
+  const { ref: heroRightRef, isVisible: heroRightVisible } = useScrollAnimation();
+  const { ref: bookingRef, isVisible: bookingVisible } = useScrollAnimation();
 
   useEffect(() => {
     const fetchContent = async () => {
@@ -49,7 +55,10 @@ const Contact = () => {
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
             {/* Left Content */}
-            <div className="lg:col-span-7">
+            <div
+              ref={heroLeftRef}
+              className={cn("lg:col-span-7 animate-on-scroll-left", heroLeftVisible && "is-visible")}
+            >
               <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground mb-4 font-mono">
                 {content.hero?.label || "Get In Touch"}
               </span>
@@ -76,7 +85,10 @@ const Contact = () => {
             </div>
 
             {/* Right Content - Contact Info */}
-            <div className="lg:col-span-5">
+            <div
+              ref={heroRightRef}
+              className={cn("lg:col-span-5 animate-on-scroll-right", heroRightVisible && "is-visible")}
+            >
               <div className="bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm rounded-lg p-8 border border-brand-navy/10 shadow-lg">
                 <h3 className="text-xl font-medium text-brand-navy dark:text-white mb-6">
                   {content.contact_info?.header || "Reach Out"}
@@ -176,7 +188,10 @@ const Contact = () => {
       {/* Booking Section */}
       <section className="py-12 bg-background">
         <div className="container mx-auto">
-          <div className="max-w-3xl mx-auto">
+          <div
+            ref={bookingRef}
+            className={cn("max-w-3xl mx-auto animate-on-scroll-up", bookingVisible && "is-visible")}
+          >
             <Card className="bg-brand-ivory/30 border-brand-navy/10">
               <CardContent className="p-6 md:p-8">
                 <div className="flex items-start gap-4">

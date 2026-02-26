@@ -4,11 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { ShoppingCart, ArrowLeft, Loader2 } from "lucide-react";
 import { useBook, useBooks } from "@/hooks/useBooks";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 const BookDetails = () => {
     const { id } = useParams<{ id: string }>();
     const { data: book, isLoading: bookLoading } = useBook(id);
     const { data: allBooks = [] } = useBooks();
+
+    const { ref: coverRef, isVisible: coverVisible } = useScrollAnimation();
+    const { ref: infoRef, isVisible: infoVisible } = useScrollAnimation();
 
     // We can infer related books from the same author or just random ones since we removed categories
     const relatedBooks = allBooks
@@ -53,7 +58,10 @@ const BookDetails = () => {
                 {/* Main Content */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
                     {/* Book Cover */}
-                    <div className="relative">
+                    <div
+                        ref={coverRef}
+                        className={cn("relative animate-on-scroll-left", coverVisible && "is-visible")}
+                    >
                         <div className="aspect-[3/4] overflow-hidden bg-muted shadow-2xl" style={{ borderRadius: '50px 0 50px 0' }}>
                             <img
                                 src={book.cover_image || "/placeholder.svg"}
@@ -71,7 +79,10 @@ const BookDetails = () => {
                     </div>
 
                     {/* Book Info */}
-                    <div className="flex flex-col justify-center">
+                    <div
+                        ref={infoRef}
+                        className={cn("flex flex-col justify-center animate-on-scroll-right", infoVisible && "is-visible")}
+                    >
                         <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground mb-2">{book.title}</h1>
                         <p className="text-xl text-muted-foreground mb-6">by {book.author}</p>
 

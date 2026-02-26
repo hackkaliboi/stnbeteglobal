@@ -7,6 +7,8 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import { cn } from "@/lib/utils";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -14,6 +16,7 @@ const Login = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const { toast } = useToast();
+    const { ref, isVisible } = useScrollAnimation();
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -62,7 +65,7 @@ const Login = () => {
 
     return (
         <div className="flex items-center justify-center min-h-screen bg-background">
-            <Card className="w-[400px]">
+            <Card ref={ref} className={cn("w-[400px] animate-on-scroll-up", isVisible && "is-visible")}>
                 <CardHeader className="text-center">
                     <CardTitle className="text-2xl">Admin Login</CardTitle>
                     <CardDescription>Enter your credentials to access the dashboard</CardDescription>
