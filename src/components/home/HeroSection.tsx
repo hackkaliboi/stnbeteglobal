@@ -82,13 +82,7 @@ const HeroSection = () => {
           </h1>
 
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to={heroContent.cta_link}>
-              <Button size="lg" className="min-w-[160px] group">
-                {heroContent.cta_text}
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
+          <div className="flex flex-col justify-center">
             <Link to={heroContent.secondary_cta_link}>
               <Button size="lg" variant="outline" className="min-w-[160px]">
                 {heroContent.secondary_cta_text}

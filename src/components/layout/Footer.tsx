@@ -45,8 +45,10 @@ const Footer = () => {
               <img src={currentLogo} alt={siteName} className="h-12 w-auto object-contain brightness-0 invert" />
             </Link>
             <p className="text-gray-300 mt-4 max-w-sm leading-relaxed">
-              Rebuilding Society Through Multifaceted Wisdom.
-              Leadership Development, Mentorship, and Life-transforming Resources.
+              <Link to="/leadership" className="hover:text-white hover:underline transition-colors">Leadership</Link>,{' '}
+              <Link to="/development" className="hover:text-white hover:underline transition-colors">Development</Link>,{' '}
+              <Link to="/mentorship" className="hover:text-white hover:underline transition-colors">Mentorship</Link>, and{' '}
+              <Link to="/life-transforming-resources" className="hover:text-white hover:underline transition-colors">Life-transforming Resources</Link>.
             </p>
             <div className="flex gap-4 mt-6">
               {/* Social Links */}

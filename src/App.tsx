@@ -14,6 +14,10 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
+import Leadership from "./pages/Leadership";
+import Development from "./pages/Development";
+import Mentorship from "./pages/Mentorship";
+import LifeTransformingResources from "./pages/LifeTransformingResources";
 import { AuthProvider } from "@/contexts/AuthContext";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBooks from "./pages/admin/AdminBooks";
@@ -55,6 +59,10 @@ const App = () => (
               <Route path="/blog" element={<Blog />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/leadership" element={<Leadership />} />
+              <Route path="/development" element={<Development />} />
+              <Route path="/mentorship" element={<Mentorship />} />
+              <Route path="/life-transforming-resources" element={<LifeTransformingResources />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route
