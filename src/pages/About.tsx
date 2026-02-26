@@ -27,6 +27,17 @@ const defaultContent = {
 
 const AUTHOR_IMAGE = "/images/author.jpg"; // drop your photo at public/images/author.jpg
 
+const galleryImages = [
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.46 (1).jpeg",
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.46 (2).jpeg",
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.46 (3).jpeg",
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.46.jpeg",
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.47 (1).jpeg",
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.47 (2).jpeg",
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.47.jpeg",
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.48.jpeg"
+];
+
 const About = () => {
   const [content, setContent] = useState<any>(defaultContent);
   const [authorImgError, setAuthorImgError] = useState(false);
@@ -188,12 +199,38 @@ const About = () => {
         </div>
       </section>
 
-      {/* ── Divider quote ── */}
-      <section className="py-20 bg-foreground dark:bg-white">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p className="text-background dark:text-foreground text-2xl md:text-3xl font-light leading-relaxed max-w-3xl mx-auto italic">
-            "Rebuilding society through multifaceted wisdom — one resource at a time."
-          </p>
+      {/* ── Image Gallery ── */}
+      <section className="py-20 md:py-32 bg-background">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono mb-4">
+              Gallery
+            </span>
+            <h2 className="text-3xl md:text-5xl font-light text-foreground tracking-tight">
+              Dr. Saturday T. Nbete in Action
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6">
+            {galleryImages.map((src, index) => (
+              <div
+                key={index}
+                className={cn(
+                  "relative group overflow-hidden rounded-2xl bg-muted aspect-[3/4]",
+                  index === 0 && "md:col-span-2 md:row-span-2 aspect-[3/4] md:aspect-auto", // Make first one larger
+                  index === 4 && "md:col-span-2 aspect-[3/4] md:aspect-[3/2]" // Make 5th one wide
+                )}
+              >
+                <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-500 z-10" />
+                <img
+                  src={src}
+                  alt={`Dr. Nbete Gallery Image ${index + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                  loading="lazy"
+                />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 

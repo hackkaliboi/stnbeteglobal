@@ -71,11 +71,6 @@ const HeroSection = () => {
             isVisible && "is-visible"
           )}
         >
-          {/* Label */}
-          <span className="inline-block text-xs uppercase tracking-[0.3em] text-muted-foreground font-mono">
-            Independent Bookstore
-          </span>
-
           {/* Title */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-foreground leading-[0.95] tracking-tight">
             {renderTitle(heroContent.title)}
