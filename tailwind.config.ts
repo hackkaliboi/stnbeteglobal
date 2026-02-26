@@ -124,25 +124,21 @@ export default {
 			},
 			fontFamily: {
 				sans: [
-					'Inter',
+					'DM Sans',
 					'ui-sans-serif',
 					'system-ui',
 					'-apple-system',
 					'BlinkMacSystemFont',
-					'Segoe UI',
-					'Roboto',
 					'Helvetica Neue',
 					'Arial',
-					'Noto Sans',
 					'sans-serif'
 				],
 				serif: [
-					'Lora',
+					'Cormorant',
 					'ui-serif',
 					'Georgia',
 					'Cambria',
 					'Times New Roman',
-					'Times',
 					'serif'
 				],
 				mono: [
