@@ -76,6 +76,25 @@ const HeroSection = () => {
             {renderTitle(heroContent.title)}
           </h1>
 
+          {/* Navigation Links */}
+          <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
+            <Link to="/leadership" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Leadership
+            </Link>
+            <span className="text-muted-foreground">•</span>
+            <Link to="/development" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Development
+            </Link>
+            <span className="text-muted-foreground">•</span>
+            <Link to="/mentorship" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Mentorship
+            </Link>
+            <span className="text-muted-foreground">•</span>
+            <Link to="/life-transforming-resources" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Life-transforming Resources
+            </Link>
+          </div>
+
           {/* CTAs */}
           <div className="flex flex-col justify-center">
             <Link to={heroContent.secondary_cta_link}>

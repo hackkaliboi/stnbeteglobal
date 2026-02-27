@@ -2,14 +2,12 @@ import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { cn } from "@/lib/utils";
-import { useState } from "react";
 
-const AUTHOR_IMAGE = "/images/author.jpg";
+const AUTHOR_IMAGE = "/stnbete.jpeg";
 
 const AboutSection = () => {
   const { ref: leftRef, isVisible: leftVisible } = useScrollAnimation();
   const { ref: rightRef, isVisible: rightVisible } = useScrollAnimation();
-  const [imgError, setImgError] = useState(false);
 
   return (
     <section className="py-24 md:py-32 bg-muted/30">
@@ -28,23 +26,11 @@ const AboutSection = () => {
               {/* Decorative offset frame */}
               <div className="absolute -inset-4 bg-gradient-to-br from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-600 rounded-3xl opacity-25" />
               <div className="relative w-full h-full rounded-3xl overflow-hidden bg-muted shadow-2xl">
-                {!imgError ? (
-                  <img
-                    src={AUTHOR_IMAGE}
-                    alt="Saturday T. Nbete"
-                    className="w-full h-full object-cover object-top"
-                    onError={() => setImgError(true)}
-                  />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900 gap-3">
-                    <span className="text-7xl font-light text-white tracking-widest select-none">
-                      STN
-                    </span>
-                    <span className="text-blue-200 text-xs font-mono uppercase tracking-widest">
-                      Author
-                    </span>
-                  </div>
-                )}
+                <img
+                  src={AUTHOR_IMAGE}
+                  alt="Saturday T. Nbete"
+                  className="w-full h-full object-cover object-top"
+                />
               </div>
             </div>
           </div>

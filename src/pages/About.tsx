@@ -25,7 +25,7 @@ const defaultContent = {
   },
 };
 
-const AUTHOR_IMAGE = "/images/author.jpg"; // drop your photo at public/images/author.jpg
+const AUTHOR_IMAGE = "/stnbete.jpeg";
 
 const galleryImages = [
   "/stn-images/WhatsApp Image 2026-02-26 at 10.29.46 (1).jpeg",
@@ -40,7 +40,6 @@ const galleryImages = [
 
 const About = () => {
   const [content, setContent] = useState<any>(defaultContent);
-  const [authorImgError, setAuthorImgError] = useState(false);
   const { ref: heroRef, isVisible: heroVisible } = useScrollAnimation();
   const { ref: authorRef, isVisible: authorVisible } = useScrollAnimation();
 
@@ -104,19 +103,11 @@ const About = () => {
               <div className="relative w-72 h-96 lg:w-[360px] lg:h-[500px] shrink-0">
                 <div className="absolute -inset-4 bg-gradient-to-br from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-600 rounded-3xl opacity-25" />
                 <div className="relative w-full h-full rounded-3xl overflow-hidden bg-muted shadow-2xl">
-                  {!authorImgError ? (
-                    <img
-                      src={AUTHOR_IMAGE}
-                      alt="Saturday T. Nbete"
-                      className="w-full h-full object-cover object-top"
-                      onError={() => setAuthorImgError(true)}
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900 gap-4">
-                      <span className="text-7xl font-light text-white tracking-widest select-none">STN</span>
-                      <span className="text-blue-200 text-xs font-mono uppercase tracking-widest">Saturday T. Nbete</span>
-                    </div>
-                  )}
+                  <img
+                    src={AUTHOR_IMAGE}
+                    alt="Saturday T. Nbete"
+                    className="w-full h-full object-cover object-top"
+                  />
                   {/* Name overlay at bottom */}
                   <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent px-6 py-5">
                     <p className="text-white font-medium text-sm">Saturday T. Nbete</p>
@@ -149,24 +140,11 @@ const About = () => {
                 {/* Decorative offset frame */}
                 <div className="absolute -inset-3 bg-gradient-to-br from-blue-200 to-blue-400 dark:from-blue-800 dark:to-blue-600 rounded-3xl opacity-30" />
                 <div className="relative w-full h-full rounded-3xl overflow-hidden bg-muted shadow-2xl">
-                  {!authorImgError ? (
-                    <img
-                      src={AUTHOR_IMAGE}
-                      alt="Saturday T. Nbete"
-                      className="w-full h-full object-cover object-top"
-                      onError={() => setAuthorImgError(true)}
-                    />
-                  ) : (
-                    /* Initials fallback */
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-blue-600 to-blue-900">
-                      <span className="text-7xl font-light text-white tracking-wider select-none">
-                        STN
-                      </span>
-                      <span className="text-blue-200 text-sm mt-3 font-mono uppercase tracking-widest">
-                        Author
-                      </span>
-                    </div>
-                  )}
+                  <img
+                    src={AUTHOR_IMAGE}
+                    alt="Saturday T. Nbete"
+                    className="w-full h-full object-cover object-top"
+                  />
                 </div>
               </div>
             </div>
