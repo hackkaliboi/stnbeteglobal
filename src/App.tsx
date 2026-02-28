@@ -18,6 +18,7 @@ import Leadership from "./pages/Leadership";
 import Development from "./pages/Development";
 import Mentorship from "./pages/Mentorship";
 import LifeTransformingResources from "./pages/LifeTransformingResources";
+import Consultancy from "./pages/Consultancy";
 import { AuthProvider } from "@/contexts/AuthContext";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AdminBooks from "./pages/admin/AdminBooks";
@@ -63,6 +64,7 @@ const App = () => (
               <Route path="/development" element={<Development />} />
               <Route path="/mentorship" element={<Mentorship />} />
               <Route path="/life-transforming-resources" element={<LifeTransformingResources />} />
+              <Route path="/consultancy" element={<Consultancy />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
               <Route

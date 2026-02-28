@@ -93,6 +93,10 @@ const HeroSection = () => {
             <Link to="/life-transforming-resources" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
               Life-transforming Resources
             </Link>
+            <span className="text-muted-foreground">•</span>
+            <Link to="/consultancy" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Consultancy
+            </Link>
           </div>
 
           {/* CTAs */}

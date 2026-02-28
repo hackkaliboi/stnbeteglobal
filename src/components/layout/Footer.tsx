@@ -47,8 +47,9 @@ const Footer = () => {
             <p className="text-gray-300 mt-4 max-w-sm leading-relaxed">
               <Link to="/leadership" className="hover:text-white hover:underline transition-colors">Leadership</Link>,{' '}
               <Link to="/development" className="hover:text-white hover:underline transition-colors">Development</Link>,{' '}
-              <Link to="/mentorship" className="hover:text-white hover:underline transition-colors">Mentorship</Link>, and{' '}
-              <Link to="/life-transforming-resources" className="hover:text-white hover:underline transition-colors">Life-transforming Resources</Link>.
+              <Link to="/mentorship" className="hover:text-white hover:underline transition-colors">Mentorship</Link>,{' '}
+              <Link to="/life-transforming-resources" className="hover:text-white hover:underline transition-colors">Life-transforming Resources</Link>, and{' '}
+              <Link to="/consultancy" className="hover:text-white hover:underline transition-colors">Consultancy</Link>.
             </p>
             <div className="flex gap-4 mt-6">
               {/* Social Links */}

@@ -35,7 +35,19 @@ const galleryImages = [
   "/stn-images/WhatsApp Image 2026-02-26 at 10.29.47 (1).jpeg",
   "/stn-images/WhatsApp Image 2026-02-26 at 10.29.47 (2).jpeg",
   "/stn-images/WhatsApp Image 2026-02-26 at 10.29.47.jpeg",
-  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.48.jpeg"
+  "/stn-images/WhatsApp Image 2026-02-26 at 10.29.48.jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.14.jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.15 (1).jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.15.jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.16 (1).jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.16.jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.17 (1).jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.17.jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.18 (1).jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.18.jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.19 (1).jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.19.jpeg",
+  "/stn-images2/WhatsApp Image 2026-02-28 at 15.36.20.jpeg",
 ];
 
 const About = () => {
@@ -158,19 +170,20 @@ const About = () => {
                 Saturday T. Nbete
               </h2>
               <p className="text-muted-foreground text-base leading-relaxed border-l-2 border-border pl-5">
-                Founder of STNBETE Global and a passionate advocate for
-                leadership development and societal transformation.
+                International conference speaker, author, and leadership mentor recognised for his insightful
+                teaching and passion for personal and organisational growth.
               </p>
               <p className="text-muted-foreground text-base leading-relaxed">
-                With over 15 years of experience in mentorship, consultancy,
-                and publishing, Saturday has dedicated his life to equipping
-                individuals with the wisdom and tools they need to excel —
-                in business, in leadership, and in life.
+                S. T. Nbete is the Executive Director of STNBETEBOOKS & RESOURCES, which provides mentorship
+                and consultancy to leaders and institutions across diverse fields. With a background in theology
+                and leadership, Dr. Nbete has earned degrees up to the doctoral level in New Testament Studies,
+                and has served in various leadership and advisory roles spanning education, faith communities,
+                and organisational development.
               </p>
               <p className="text-muted-foreground text-base leading-relaxed">
-                His works span leadership principles, personal development,
-                and faith-based growth — each crafted to challenge readers
-                to rise above mediocrity and fulfil their God-given potential.
+                An accomplished writer, he has authored several bestselling books that inspire transformation,
+                renewal, and effective leadership. He is married to Baridole, a professional accountant, and
+                together with their family, they live in Port Harcourt, Nigeria.
               </p>
             </div>
           </div>
