@@ -53,15 +53,14 @@ const AboutSection = () => {
             </h2>
 
             <p className="text-muted-foreground text-lg leading-relaxed border-l-2 border-border pl-5">
-              Founder of STNBETE Global and a passionate advocate for
-              leadership development and societal transformation.
+              S. T. Nbete is an international conference speaker, author, and leadership mentor recognised for his insightful teaching and passion for personal and organisational growth. He is the Executive Director of STNBETEBOOKS & RESOURCES, which provides mentorship and consultancy to leaders and institutions across diverse fields.
             </p>
 
             <p className="text-muted-foreground leading-relaxed">
-              With over 15 years of experience in mentorship, consultancy,
-              and publishing, Saturday has dedicated his life to equipping
-              individuals with the wisdom and tools they need to excel —
-              in business, in leadership, and in life.
+              With a background in theology and leadership, Dr. Nbete has earned degrees up to the doctoral level in New Testament Studies. He has also served in various leadership and advisory roles that span education, faith communities, and organisational development. 
+              An accomplished writer, he has authored several bestselling books that inspire transformation, renewal, and effective leadership.
+              He is married to Baridole, a professional accountant, and together with their family, they live in Port Harcourt, Nigeria
+
             </p>
 
             <div className="pt-4 grid grid-cols-2 gap-8 border-t border-border">
