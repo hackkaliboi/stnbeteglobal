@@ -45,8 +45,7 @@ const Footer = () => {
               <img src={currentLogo} alt={siteName} className="h-12 w-auto object-contain brightness-0 invert" />
             </Link>
             <p className="text-gray-300 mt-4 max-w-sm leading-relaxed">
-              <Link to="/leadership" className="hover:text-white hover:underline transition-colors">Leadership</Link>,{' '}
-              <Link to="/development" className="hover:text-white hover:underline transition-colors">Development</Link>,{' '}
+              <Link to="/leadership-development" className="hover:text-white hover:underline transition-colors">Leadership &amp; Development</Link>,{' '}
               <Link to="/mentorship" className="hover:text-white hover:underline transition-colors">Mentorship</Link>,{' '}
               <Link to="/life-transforming-resources" className="hover:text-white hover:underline transition-colors">Life-transforming Resources</Link>, and{' '}
               <Link to="/consultancy" className="hover:text-white hover:underline transition-colors">Consultancy</Link>.

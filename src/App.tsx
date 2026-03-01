@@ -14,8 +14,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Profile from "./pages/Profile";
-import Leadership from "./pages/Leadership";
-import Development from "./pages/Development";
+import LeadershipAndDevelopment from "./pages/LeadershipAndDevelopment";
 import Mentorship from "./pages/Mentorship";
 import LifeTransformingResources from "./pages/LifeTransformingResources";
 import Consultancy from "./pages/Consultancy";
@@ -60,8 +59,10 @@ const App = () => (
               <Route path="/blog" element={<Blog />} />
               <Route path="/about" element={<About />} />
               <Route path="/contact" element={<Contact />} />
-              <Route path="/leadership" element={<Leadership />} />
-              <Route path="/development" element={<Development />} />
+              <Route path="/leadership-development" element={<LeadershipAndDevelopment />} />
+              {/* legacy redirects */}
+              <Route path="/leadership" element={<LeadershipAndDevelopment />} />
+              <Route path="/development" element={<LeadershipAndDevelopment />} />
               <Route path="/mentorship" element={<Mentorship />} />
               <Route path="/life-transforming-resources" element={<LifeTransformingResources />} />
               <Route path="/consultancy" element={<Consultancy />} />

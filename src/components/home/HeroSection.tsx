@@ -78,12 +78,8 @@ const HeroSection = () => {
 
           {/* Navigation Links */}
           <div className="flex flex-wrap justify-center gap-4 text-sm md:text-base">
-            <Link to="/leadership" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
-              Leadership
-            </Link>
-            <span className="text-muted-foreground">•</span>
-            <Link to="/development" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
-              Development
+            <Link to="/leadership-development" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
+              Leadership &amp; Development
             </Link>
             <span className="text-muted-foreground">•</span>
             <Link to="/mentorship" className="text-muted-foreground hover:text-foreground transition-colors underline-offset-4 hover:underline">
